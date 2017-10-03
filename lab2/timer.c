@@ -1,6 +1,8 @@
 #include <minix/syslib.h>
 #include <minix/drivers.h>
 
+#include "i8254.h"
+
 int timer_set_frequency(unsigned char timer, unsigned long freq) {
 
 	return 1;
@@ -42,7 +44,7 @@ int timer_get_conf(unsigned char timer, unsigned char *st) {
 
 	stout = TIMER_RB_CMD | timerselect | TIMER_RB_STATUS_;
 	sys_outb(TIMER_CTRL, stout);
-	sys_inb(timerport, &st);
+	sys_inb(timerport,(unsigned long int *) st );
 	return 0;
 }
 
@@ -95,14 +97,16 @@ int timer_test_int(unsigned long time) {
 }
 
 int timer_test_config(unsigned char timer) {
+	unsigned char st;
+
 	// testar as duas funções e avisar no caso de dar erro
-	if(timer_get_conf()!=0){
+	if(timer_get_conf(timer,&st)!=0){
 	//se não der avisar o erro
 		return 1;
 	} else
 	{
 	//se der, testar o outro
-	if(timer_display_conf()!=0){
+	if(timer_display_conf(timer)!=0){
 	return 1;
 	}}
 
@@ -110,11 +114,13 @@ int timer_test_config(unsigned char timer) {
 	return 0;
 }
 
-int timer_test_time_base(unsigned long freq) {
+int timer_test_time_base(unsigned long freq) {/*
 	unsigned long cenasoutbin,cenasoutbcd;
 cenasoutbin=cenasoutbin|BIT(2)|BIT(3)|BIT(6);
 
 timer_set_frequency();
+
+*/
 //cenasoutbin=00100110;
     //cenasoutbcd=00100111;
 //USAR O timerfreq
