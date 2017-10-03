@@ -47,11 +47,46 @@ int timer_get_conf(unsigned char timer, unsigned char *st) {
 }
 
 int timer_display_conf(unsigned char conf) {
+	printf("type of access: \n");
+	if (conf & (BIT(5) | BIT(4)) == BIT(5) | BIT(4))
+		printf("LSB followed by MSB \n");
+	else if (conf & (BIT(5)) == BIT(5))
+		printf("MSB \n");
+	else if (conf & (BIT(4)) == BIT(4))
+		printf("LSB \n");
 
-	//develop
+	printf("Operating mode: \n");
+	if (conf & BIT(3) == 0) {
+		if (conf & BIT(2) == 0)
+			if (conf & BIT(1) == 0)
+				printf(" Operating mode 0 \n");
+			else
+				printf("Operating mode 1 \n");
+		else if (conf & BIT(1) == 0)
+			printf("Operating mode 2 \n");
+		else
+			printf("Operating mode 3 \n");
+	} else {
+		if (conf & BIT(2) == 0) {
+			if (conf & BIT(1) == 0)
+				printf(" Operating mode 4 \n");
+			else
+				printf("Operating mode 5 \n");
+		} else {
+			if (conf & BIT(1) == 0)
+				printf("Operating mode 2 \n");
+			else
+				printf("Operating mode 3 \n");
+		}
+	}
 
+	printf("Counting mode: \n");
+	if (conf & BIT(0) == 0)
+					printf("Binary \n");
+				else
+					printf("BCD \n");
 
-	return 1;
+	return 0;
 }
 
 int timer_test_int(unsigned long time) {
