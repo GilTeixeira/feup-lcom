@@ -3,10 +3,6 @@
 
 #include "i8254.h"
 
-int timer_set_frequency(unsigned char timer, unsigned long freq) {
-
-	return 1;
-}
 
 int timer_subscribe_int(void ) {
 
@@ -28,20 +24,23 @@ int timer_get_conf(unsigned char timer, unsigned char *st) {
 	unsigned long timerselect;
 
 	switch (timer) {
-	case '0': //timer 0
+	case 0: //timer 0
 		timerport = TIMER_0;
 		timerselect = TIMER_SEL0;
 		break;
-	case '1': //timer1
+	case 1: //timer1
 		timerport = TIMER_1;
-		timerselect = TIMER_SEL0;
+		timerselect = TIMER_SEL1;
 		break;
-	case '2': //timer2
+	case 2: //timer2
 		timerport = TIMER_2;
-		timerselect = TIMER_SEL0;
+		timerselect = TIMER_SEL2;
 		break;
-	}
 
+	default:
+		printf("error: timer doesn't exist");
+		return 1;
+	}
 	stout = TIMER_RB_CMD | timerselect | TIMER_RB_STATUS_;
 	sys_outb(TIMER_CTRL, stout);
 	sys_inb(timerport,(unsigned long int *) st );
@@ -49,7 +48,7 @@ int timer_get_conf(unsigned char timer, unsigned char *st) {
 }
 
 int timer_display_conf(unsigned char conf) {
-	printf("type of access: \n");
+	printf("type of access: ");
 	if (conf & (BIT(5) | BIT(4)) == BIT(5) | BIT(4))
 		printf("LSB followed by MSB \n");
 	else if (conf & (BIT(5)) == BIT(5))
@@ -57,7 +56,7 @@ int timer_display_conf(unsigned char conf) {
 	else if (conf & (BIT(4)) == BIT(4))
 		printf("LSB \n");
 
-	printf("Operating mode: \n");
+	printf("Operating mode: ");
 	if (conf & BIT(3) == 0) {
 		if (conf & BIT(2) == 0)
 			if (conf & BIT(1) == 0)
@@ -82,7 +81,7 @@ int timer_display_conf(unsigned char conf) {
 		}
 	}
 
-	printf("Counting mode: \n");
+	printf("Counting mode: ");
 	if (conf & BIT(0) == 0)
 					printf("Binary \n");
 				else
@@ -114,16 +113,38 @@ int timer_test_config(unsigned char timer) {
 	return 0;
 }
 
-int timer_test_time_base(unsigned long freq) {/*
-	unsigned long cenasoutbin,cenasoutbcd;
-cenasoutbin=cenasoutbin|BIT(2)|BIT(3)|BIT(6);
 
-timer_set_frequency();
+int timer_set_frequency(unsigned char timer, unsigned long freq) {
 
-*/
-//cenasoutbin=00100110;
-    //cenasoutbcd=00100111;
-//USAR O timerfreq
+	unsigned char timerconfig;
+	char lsb,msb;
+	//Changes the operating frequency of a timer.
+	//Must not change the 3 LSBs (mode and BCD/binary) of the timer's control word.
+	if (timer != 0 && timer != 1 && timer != 2) {
+		printf("error: impossible timer");
+	}
+
+	if (freq > TIMER_FREQ) {
+		printf("error: frequency bigger than TIMER_FREQ");
+	}
+
+	long timerfreqdiv = TIMER_FREQ / freq;
+	lsb= freq;
+	msb= freq>>8;
+
+	timer_get_conf(0, &timerconfig);
+	timerconfig= timerconfig | TIMER_LSB_MSB;
+	sys_outb(TIMER_CTRL, timerconfig);
+	sys_outb(TIMER_0, lsb);
+	sys_outb(TIMER_0, msb);
+
+
+	return 0;
+}
+
+int timer_test_time_base(unsigned long freq) {
+
+timer_set_frequency(0,freq);
 
 
 //enviar para 0x40 a informação com o timer que eu quero (timer 0, timer 1 , etc)
@@ -131,5 +152,5 @@ timer_set_frequency();
 //vector 0x08
 
 
-	return 1;
+	return 0;
 }
