@@ -3,20 +3,29 @@
 
 #include "i8254.h"
 
+int hook_id=0;
+int counter =0;
+
 
 int timer_subscribe_int(void ) {
+	sys_irqsetpolicy(TIMER0_IRQ, IRQ_REENABLE, &hook_id);
+	sys_irqenable(&hook_id);
 
-	return 1;
+	return Ok;
 }
 
 int timer_unsubscribe_int() {
 
-	return 1;
+	sys_irqrmpolicy(&hook_id);
+	sys_irqdisable(&hook_id);
+
+	return Ok;
 }
 
 void timer_int_handler() {
-
+	counter++;
 }
+
 
 int timer_get_conf(unsigned char timer, unsigned char *st) {
 	unsigned long stout;
@@ -92,15 +101,47 @@ int timer_display_conf(unsigned char conf) {
 
 int timer_test_int(unsigned long time) {
 
-	return 1;
+	int ipc_status, r, irq_set;
+	message msg;
+
+	unsigned long timePassed=0;
+
+	timer_subscribe_int();
+	while (timePassed<time) { /* You may want to use a different condition */
+		/* Get a request message. */
+		if ((r = driver_receive(ANY, &msg, &ipc_status)) != 0) {
+			printf("driver_receive failed with: %d", r);
+			continue;
+		}
+		if (is_ipc_notify(ipc_status)) { /* received notification */
+			switch (_ENDPOINT_P(msg.m_source)) {
+			case HARDWARE: /* hardware interrupt notification */
+				if (msg.NOTIFY_ARG & irq_set) { /* subscribed interrupt */
+					timer_int_handler();
+					if(counter%60==0){
+						printf("1 second passed.");
+						timePassed++;
+					}
+				}
+				break;
+			default:
+				break; /* no other notifications expected: do nothing */
+			}
+		} else { /* received a standard message, not a notification */
+			/* no standard messages expected: do nothing */
+		}
+	}
+	timer_unsubscribe_int();
+return 0;
+
 }
 
 int timer_test_config(unsigned char timer) {
 	unsigned char st;
 
-	// testar as duas funções e avisar no caso de dar erro
+	// testar as duas funï¿½ï¿½es e avisar no caso de dar erro
 	if(timer_get_conf(timer,&st)!=0){
-	//se não der avisar o erro
+	//se nï¿½o der avisar o erro
 		return 1;
 	} else
 	{
@@ -116,8 +157,8 @@ int timer_test_config(unsigned char timer) {
 
 int timer_set_frequency(unsigned char timer, unsigned long freq) {
 
-	unsigned char timerconfig;
-	char lsb,msb;
+	unsigned char timerconfig=0;
+	unsigned char lsb,msb;
 	//Changes the operating frequency of a timer.
 	//Must not change the 3 LSBs (mode and BCD/binary) of the timer's control word.
 	if (timer != 0 && timer != 1 && timer != 2) {
@@ -128,9 +169,9 @@ int timer_set_frequency(unsigned char timer, unsigned long freq) {
 		printf("error: frequency bigger than TIMER_FREQ");
 	}
 
-	long timerfreqdiv = TIMER_FREQ / freq;
-	lsb= freq;
-	msb= freq>>8;
+	unsigned long timerfreqdiv = TIMER_FREQ / freq;
+	lsb= freq & 0xFF;
+	msb= (freq>>8) & 0xFF;
 
 	timer_get_conf(0, &timerconfig);
 	timerconfig= timerconfig | TIMER_LSB_MSB;
@@ -147,7 +188,7 @@ int timer_test_time_base(unsigned long freq) {
 timer_set_frequency(0,freq);
 
 
-//enviar para 0x40 a informação com o timer que eu quero (timer 0, timer 1 , etc)
+//enviar para 0x40 a informaï¿½ï¿½o com o timer que eu quero (timer 0, timer 1 , etc)
 
 //vector 0x08
 
