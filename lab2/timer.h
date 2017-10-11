@@ -13,7 +13,6 @@
  * @brief Changes the operating frequency of a timer
  * 
  * Must not change the 3 LSBs (mode and BCD/binary) of the timer's control word.
- * 
  * @param timer Timer to configure. (Ranges from 0 to 2)
  * @param freq Timer operating frequency
  * @return Return 0 upon success and non-zero otherwise
