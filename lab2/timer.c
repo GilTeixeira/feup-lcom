@@ -204,7 +204,7 @@ int timer_test_int(unsigned long time) {
 
                                         if(counter%60==0){
 
-                                                printf("1 second passed.");
+                                                printf("%d second passed. \n",counter/60);
 
 
                                         }
