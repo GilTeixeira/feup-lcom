@@ -59,6 +59,12 @@ static int proc_args(int argc, char **argv)
 			printf("timer: wrong no of arguments for timer_test_int()\n");
 			return 1;
 		}
+
+		if(argv[2][0]=='-'){
+			printf("time: cant be negative\n");
+			return 1;
+		}
+
 		time = parse_ulong(argv[2], 10);						/* Parses string to unsigned long */
 		if (time == ULONG_MAX)
 			return 1;

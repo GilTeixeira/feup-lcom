@@ -3,11 +3,38 @@
 
 #include "i8254.h"
 
+#define DEBUG 0
+
+#define IRQ_SET_ERROR 2
+#define IRQ_ENAB_ERROR 3
+#define IRQ_DISAB_ERROR 4
+#define IRQ_REM_ERROR 5
+#define TIMER_CONF_ERROR 6
+#define SYS_OUT_ERROR 7
+#define SYS_IN_ERROR 8
+#define TIMER_SUB_ERROR 9
+#define TIMER_UNSUB_ERROR 10
+#define TIMER_GET_CONF_ERROR 11
+#define TIMER_DISPLAY_CONF_ERROR 12
+#define FREQ_NEG_ERROR 13
+#define FREQ_OVERFLOW_ERROR 14
+#define INPUT_NEG_ERROR 15
+
+
 /** @defgroup timer timer
  * @{
  *
  * Functions for using the i8254 timers
  */
+
+/**
+ * @brief print error message when DEBUG is activated (= 1)
+ *
+ * @param msg The message to print
+ */
+void printErrors(char * msg);
+
+
 
 /**
  * @brief Changes the operating frequency of a timer
@@ -91,5 +118,8 @@ int timer_test_int(unsigned long time);
  * @return Return 0 upon success and non-zero otherwise
  */
 int timer_test_config(unsigned char timer);
+
+
+
 
 #endif /* __TIMER_H */
