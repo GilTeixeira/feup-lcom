@@ -8,6 +8,7 @@ PROG= lab3
 SRCS= lab3.c test3.c 
 
 CFLAGS= -Wall
+CPPFLAGS += -D LAB3
 
 DPADD+= ${LIBDRIVER} ${LIBSYS}
 LDADD+= -ldriver -lsys

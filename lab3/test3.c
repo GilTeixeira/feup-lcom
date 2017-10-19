@@ -5,8 +5,6 @@
 #include <errno.h>
 
 
-
-
 int kbd_subscribe_int(void) {
 
 	int temp_hook_id = hook_id;
@@ -25,12 +23,9 @@ int kbd_unsubscribe_int() { //the order we disable and remove the policy must be
 	return Ok;
 }
 
-
-
-
 int kbd_test_scan(unsigned short assembly) {
 
-
+	int irq_set;
 
 	if(assembly==0){
 		kbd_test_scan_c();
@@ -42,6 +37,33 @@ int kbd_test_scan(unsigned short assembly) {
 	}
 	/*else {kbd_test_scan_assembly();*/
 
+
+	while () {
+
+			if ((r = driver_receive(ANY, &msg, &ipc_status)) != 0) {
+				printf("driver_receive failed with: %d", r);
+				continue;
+			}
+
+			if (is_ipc_notify(ipc_status)) { /* received notification */
+				switch (_ENDPOINT_P(msg.m_source)) {
+				case HARDWARE: /* hardware interrupt notification */
+					if (msg.NOTIFY_ARG & irq_set) { /* subscribed interrupt */
+
+//até aqui está bem
+						timer_int_handler();
+						if (counter % 60 == 0) {
+							printf("\n Seconds passed: %d ", counter / 60);
+							break;
+						}
+					}
+					break;
+				default:
+					break;
+				}
+			} else {
+			}
+		}
 
 //usar variaveis entre c e assembly
 /**
@@ -58,21 +80,21 @@ int kbd_test_scan(unsigned short assembly) {
 /*0x81 - ESC */
 
 //numlock_on,capslock_on,scrolllock_on
-	return 0;
+	return Ok;
 }
 
 int kbd_test_scan_c(){
 
 
 
-	return 0;
+	return Ok;
 }
 
 int kbd_test_scan_assembly(){
 
 
 
-	return 0;
+	return Ok;
 }
 
 
@@ -80,10 +102,10 @@ int readcode(){}
 int kbd_test_poll() {
 
 
-	return 0;
+	return Ok;
 
 }
 int kbd_test_timed_scan(unsigned short n) {
 	/* To be completed */
-	return 0;
+	return Ok;
 }
