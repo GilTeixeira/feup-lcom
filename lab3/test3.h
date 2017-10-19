@@ -34,7 +34,7 @@ int kbd_test_poll();
  * 
  *  Similar to kbd_test_scan() except that it 
  *  should terminate also if no scancodes are received for n seconds
- * 
+ * ou seja com o esc ou tempo
  * @param n Number of seconds without scancodes before exiting
  * 
  * @return Return 0 upon success and non-zero otherwise
