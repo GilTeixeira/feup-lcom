@@ -1,5 +1,8 @@
-#include <string.h>
 #include "i8024.h"
+#include "i8254.h"
+#include <limits.h>
+#include <string.h>
+#include <errno.h>
 
 
 
