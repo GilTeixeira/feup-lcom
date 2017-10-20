@@ -1,44 +1,38 @@
+#include <minix/syslib.h>
+#include <minix/driver.h>
 #include "i8042.h"
 #include "i8254.h"
+#include "kbd.c"
 #include <limits.h>
 #include <string.h>
 #include <errno.h>
 
+//#ifdef LAB3
+//int sys_inb_cnt(port_t port, unsigned long* byte);
+//#else
+//#define sys_inb_cnt(p,q) sys_inb(p,q)
+//#endif
 
-int kbd_subscribe_int(void) {
+int sys_inb_cnt =0;
 
-	int temp_hook_id = hook_id;
 
-	sys_irqsetpolicy(TIMER0_IRQ, IRQ_EXCLUSIVE |IRQ_REENABLE, &hook_id);
-	sys_irqenable(&hook_id);
 
-	return BIT(temp_hook_id);
-}
-
-int kbd_unsubscribe_int() { //the order we disable and remove the policy must be done on the opposite way we make in subscribe_int
-
-	sys_irqdisable(&hook_id);
-	sys_irqrmpolicy(&hook_id);
-
-	return Ok;
-}
 
 int kbd_test_scan(unsigned short assembly) {
 
-	int irq_set;
-
-	if(assembly==0){
-		kbd_test_scan_c();
-
-		printf("Makecode: %d",makecode);
-		printf("Breakcode: %d",breakcode);
 
 
-	}
-	/*else {kbd_test_scan_assembly();*/
+    int ipc_status, r, irq_set;
+    int isSecondByte=0;
+
+    unsigned long code=0;
+
+    message msg;
+
+    irq_set = kbd_subscribe_int();
 
 
-	while () {
+	while (code!=ESC) {
 
 			if ((r = driver_receive(ANY, &msg, &ipc_status)) != 0) {
 				printf("driver_receive failed with: %d", r);
@@ -50,12 +44,14 @@ int kbd_test_scan(unsigned short assembly) {
 				case HARDWARE: /* hardware interrupt notification */
 					if (msg.NOTIFY_ARG & irq_set) { /* subscribed interrupt */
 
-//até aqui está bem
-						timer_int_handler();
-						if (counter % 60 == 0) {
-							printf("\n Seconds passed: %d ", counter / 60);
-							break;
-						}
+						if(code==FIRST_BYTE)
+							isSecondByte=1;
+
+						code=kbd_handler();
+						if(code!=FIRST_BYTE)
+							printcode(code,isSecondByte);
+
+						isSecondByte=0;
 					}
 					break;
 				default:
@@ -63,23 +59,19 @@ int kbd_test_scan(unsigned short assembly) {
 				}
 			} else {
 			}
-		}
+	}
+	unsigned long stat;
 
-//usar variaveis entre c e assembly
-/**
- * @brief To test reading of scancode via KBD interrupts
- *
- * Displays the scancodes received from the keyboard
- *
- *
- * Exits upon release of the ESC key
- *
- * @param asm Which IH to use: if 0, in C, otherwise in assembly
- *
-*/
-/*0x81 - ESC */
+	sys_inb(STAT_REG, &stat);
 
-//numlock_on,capslock_on,scrolllock_on
+	if (stat & OBF){
+		sys_inb(OUT_BUF, &code);
+	}
+
+	kbd_unsubscribe_int();
+
+
+
 	return Ok;
 }
 
@@ -98,7 +90,7 @@ int kbd_test_scan_assembly(){
 }
 
 
-int readcode(){}
+
 int kbd_test_poll() {
 
 
@@ -109,3 +101,14 @@ int kbd_test_timed_scan(unsigned short n) {
 	/* To be completed */
 	return Ok;
 }
+
+/*
+int sys_inb_cnt(port_t port, unsigned long* byte){
+	sys_inb(port,byte);
+	sys_inb_cnt++;
+
+
+}
+
+
+*/
