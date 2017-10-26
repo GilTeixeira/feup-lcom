@@ -10,8 +10,21 @@
 #define KBC_CMD_REG 0x64
 
 
-#define OBF 0x01
-#define IBF 0x02
+#define OBF BIT(0)
+#define IBF BIT(1)
+#define AUX BIT(5)
+#define PAR_ERR BIT(7)
+#define TO_ERR BIT(6)
+
+
+#define ENABLE_KBD_INT BIT(0)
+
+#define READ_COMM_BYTE 0x20
+#define WRITE_COMM_BYTE 0x60
+
+#define DELAY_US    20000
+
+
 
 
 

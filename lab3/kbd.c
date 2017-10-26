@@ -1,26 +1,23 @@
-#include "i8042.h"
-#include "i8254.h"
-#include <limits.h>
-#include <string.h>
-#include <errno.h>
 
-int hook_id = 1;
+#include "kbd.h"
+
+int hook_id_kbd = 1;
 
 int kbd_subscribe_int(void) {
 
-	int temp_hook_id = hook_id;
+	int temp_hook_id_kbd = hook_id_kbd;
 
-	sys_irqsetpolicy(KBD_IRQ, IRQ_EXCLUSIVE |IRQ_REENABLE, &hook_id);
-	sys_irqenable(&hook_id);
+	sys_irqsetpolicy(KBD_IRQ, IRQ_EXCLUSIVE |IRQ_REENABLE, &hook_id_kbd);
+	sys_irqenable(&hook_id_kbd);
 
-	return BIT(temp_hook_id);
+	return BIT(temp_hook_id_kbd);
 }
 
 int kbd_unsubscribe_int() { //the order we disable and remove the policy must be done on the opposite way we make in subscribe_int
 	int i, j;
 
-	i=sys_irqdisable(&hook_id);
-	j=sys_irqrmpolicy(&hook_id);
+	i=sys_irqdisable(&hook_id_kbd);
+	j=sys_irqrmpolicy(&hook_id_kbd);
 	printf("%d %d",i,j);
 
 	return Ok;
@@ -33,21 +30,48 @@ unsigned long readcode() {
 	unsigned long stat, code;
 
 	while (1) {
-		sys_inb(STAT_REG, &stat);
+		sys_inb_cnt(STAT_REG, &stat);
 
 		if (stat & OBF) {
 
 			/* assuming it returns OK */
 			/*	loop while 8042 input buffer is not empty	*/
 			if ((stat & IBF) == 0) {
-				sys_inb(OUT_BUF, &code);
+				sys_inb_cnt(OUT_BUF, &code);
 
 				return code;
 			}
 		}
-		//delay(WAIT_KBC);
+		tickdelay(micros_to_ticks(DELAY_US));
 	}
 
+}
+
+
+unsigned long polling(){
+	unsigned long stat, code;
+
+	while (1) {
+		sys_inb_cnt(STAT_REG, &stat);
+		//printf("%d \n", stat);
+		//
+
+		//stat= 0010.1001
+
+		if (stat & OBF && ((stat & AUX)==0)) {
+			//printf("2\n");
+
+			/* assuming it returns OK */
+			/*	loop while 8042 input buffer is not empty	*/
+			if ((stat & IBF) == 0) {
+				//printf("3\n");
+				sys_inb_cnt(OUT_BUF, &code);
+
+				return code;
+			}
+		}
+		tickdelay(micros_to_ticks(DELAY_US));
+	}
 }
 
 
@@ -82,5 +106,41 @@ int kbd_handler() {
 	return readcode();
 
 }
+
+
+int WriteCommandByte(unsigned long port, unsigned long cmd) {
+	unsigned long stat;
+
+	while (1) {
+		sys_inb_cnt(STAT_REG, &stat); /* assuming it returns OK */
+		/* loop while 8042 input buffer is not empty */
+		if ((stat & IBF) == 0) {
+			sys_outb(port, cmd); /* no args command */
+			return 0;
+		}
+		tickdelay(micros_to_ticks(DELAY_US));
+	}
+}
+
+unsigned long ReadCommandByte() {
+
+	unsigned long stat, data;
+
+	//It is not robust against failures in the KBC/keyboard
+
+	while (1) {
+		sys_inb_cnt(STAT_REG, &stat); /* assuming it returns OK */
+		/* loop while 8042 output buffer is empty */
+		if (stat & OBF) {
+			sys_inb_cnt(OUT_BUF, &data); /* assuming it returns OK */
+			if ((stat & (PAR_ERR | TO_ERR)) == 0)
+				return data;
+			else
+				return -1;
+		}
+		tickdelay(micros_to_ticks(DELAY_US));
+	}
+}
+
 
 

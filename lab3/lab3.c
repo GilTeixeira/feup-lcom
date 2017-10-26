@@ -1,7 +1,10 @@
-#include "i8254.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <errno.h>
 #include <limits.h>
 #include <string.h>
-#include <errno.h>
+#include "test3.h"
+#include <minix/driver.h>
 
 static int proc_args(int argc, char **argv);
 static unsigned short parse_ushort(char *str, int base);
@@ -22,7 +25,7 @@ static void print_usage(char **argv) {
 	printf("Usage: one of the following:\n"
 			"\t service run %s -args \"scan <decimal no.- assembly>\"\n"
 			"\t service run %s -args \"poll\"\n"
-			"\t service run %s -args \"scan <decimal no. - n>\"\n", argv[0],
+			"\t service run %s -args \"timed <decimal no. - n>\"\n", argv[0],
 			argv[0], argv[0]);
 }
 
