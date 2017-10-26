@@ -43,8 +43,11 @@ int kbd_test_scan(unsigned short assembly) {
 
 						if(code==FIRST_BYTE)
 							isSecondByte=1;
-
+						if(assembly==0)
 						code=kbd_handler();
+						else code=kbd_asm_handler();
+
+
 						if(code!=FIRST_BYTE)
 							printcode(code,isSecondByte);
 
@@ -67,7 +70,7 @@ int kbd_test_scan(unsigned short assembly) {
 
 	kbd_unsubscribe_int();
 
-
+	printf("\nNumber of sys_inb calls: %d\n", sys_inb_counter);
 
 	return Ok;
 }
@@ -119,6 +122,8 @@ int kbd_test_poll() {
 
 	WriteCommandByte(KBC_CMD_REG, WRITE_COMM_BYTE);
 	WriteCommandByte(OUT_BUF, ComByte);
+
+	printf("\nNumber of sys_inb calls: %d\n", sys_inb_counter);
 
 	return Ok;
 

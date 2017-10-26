@@ -30,3 +30,5 @@ int kbd_handler();
 int WriteCommandByte(unsigned long port, unsigned long cmd);
 
 unsigned long ReadCommandByte();
+
+extern char kbd_asm_handler();
