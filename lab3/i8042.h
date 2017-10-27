@@ -3,7 +3,7 @@
 
 #define ESC 			0x81
 #define FIRST_BYTE		0xE0
-
+#define BIT(n) (0x01<<(n))
 #define OUT_BUF 0x60
 #define IN_BUF 0x64
 #define STAT_REG 0x64

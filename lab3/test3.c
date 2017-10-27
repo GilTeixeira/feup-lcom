@@ -8,63 +8,55 @@
 #include <string.h>
 #include <errno.h>
 
-
-
-int sys_inb_counter =0;
-
-
-
+int sys_inb_counter = 0;
 
 int kbd_test_scan(unsigned short assembly) {
 
+	int ipc_status, r, irq_set;
+	int isSecondByte = 0;
 
+	unsigned long code = 0;
 
-    int ipc_status, r, irq_set;
-    int isSecondByte=0;
+	message msg;
 
-    unsigned long code=0;
+	irq_set = kbd_subscribe_int();
 
-    message msg;
+	while (code != ESC) {
 
-    irq_set = kbd_subscribe_int();
+		if ((r = driver_receive(ANY, &msg, &ipc_status)) != 0) {
+			printf("driver_receive failed with: %d", r);
+			continue;
+		}
 
+		if (is_ipc_notify(ipc_status)) { /* received notification */
+			switch (_ENDPOINT_P(msg.m_source)) {
+			case HARDWARE: /* hardware interrupt notification */
+				if (msg.NOTIFY_ARG & irq_set) { /* subscribed interrupt */
 
-	while (code!=ESC) {
+					if (code == FIRST_BYTE)
+						isSecondByte = 1;
+					if (assembly == 0)
+						code = kbd_handler();
+					else
+						code = kbd_asm_handler();
 
-			if ((r = driver_receive(ANY, &msg, &ipc_status)) != 0) {
-				printf("driver_receive failed with: %d", r);
-				continue;
-			}
+					if (code != FIRST_BYTE)
+						printcode(code, isSecondByte);
 
-			if (is_ipc_notify(ipc_status)) { /* received notification */
-				switch (_ENDPOINT_P(msg.m_source)) {
-				case HARDWARE: /* hardware interrupt notification */
-					if (msg.NOTIFY_ARG & irq_set) { /* subscribed interrupt */
-
-						if(code==FIRST_BYTE)
-							isSecondByte=1;
-						if(assembly==0)
-						code=kbd_handler();
-						else code=kbd_asm_handler();
-
-
-						if(code!=FIRST_BYTE)
-							printcode(code,isSecondByte);
-
-						isSecondByte=0;
-					}
-					break;
-				default:
-					break;
+					isSecondByte = 0;
 				}
-			} else {
+				break;
+			default:
+				break;
 			}
+		} else {
+		}
 	}
 	unsigned long stat;
 
 	sys_inb_cnt(STAT_REG, &stat);
 
-	if (stat & OBF){
+	if (stat & OBF) {
 		sys_inb_cnt(OUT_BUF, &code);
 	}
 
@@ -74,22 +66,6 @@ int kbd_test_scan(unsigned short assembly) {
 
 	return Ok;
 }
-
-int kbd_test_scan_c(){
-
-
-
-	return Ok;
-}
-
-int kbd_test_scan_assembly(){
-
-
-
-	return Ok;
-}
-
-
 
 int kbd_test_poll() {
 
@@ -115,10 +91,9 @@ int kbd_test_poll() {
 	}
 
 	WriteCommandByte(KBC_CMD_REG, READ_COMM_BYTE);
-	unsigned long ComByte= ReadCommandByte();
+	unsigned long ComByte = ReadCommandByte();
 
-	ComByte|=ENABLE_KBD_INT;
-
+	ComByte |= ENABLE_KBD_INT;
 
 	WriteCommandByte(KBC_CMD_REG, WRITE_COMM_BYTE);
 	WriteCommandByte(OUT_BUF, ComByte);
@@ -130,65 +105,60 @@ int kbd_test_poll() {
 }
 int kbd_test_timed_scan(unsigned short n) {
 
+	int ipc_status, r, irq_set_timer, irq_set_kbd;
+	int isSecondByte = 0;
 
-    int ipc_status, r, irq_set_timer, irq_set_kbd;
-    int isSecondByte=0;
+	int counter = 0;
 
-    int counter=0;
+	unsigned long code = 0;
 
-    unsigned long code=0;
+	message msg;
 
-    message msg;
+	irq_set_kbd = kbd_subscribe_int();
+	irq_set_timer = timer_subscribe_int();
 
-    irq_set_kbd = kbd_subscribe_int();
-    irq_set_timer = timer_subscribe_int();
+	while (code != ESC && counter != 60 * n) {
 
+		if ((r = driver_receive(ANY, &msg, &ipc_status)) != 0) {
+			printf("driver_receive failed with: %d", r);
+			continue;
+		}
 
+		if (is_ipc_notify(ipc_status)) { /* received notification */
+			switch (_ENDPOINT_P(msg.m_source)) {
+			case HARDWARE: /* hardware interrupt notification */
+				if (msg.NOTIFY_ARG & irq_set_kbd) { /* subscribed interrupt */
 
-	while (code!=ESC && counter!=60*n) {
+					if (code == FIRST_BYTE)
+						isSecondByte = 1;
 
-			if ((r = driver_receive(ANY, &msg, &ipc_status)) != 0) {
-				printf("driver_receive failed with: %d", r);
-				continue;
-			}
+					code = kbd_handler();
+					if (code != FIRST_BYTE)
+						printcode(code, isSecondByte);
 
-			if (is_ipc_notify(ipc_status)) { /* received notification */
-				switch (_ENDPOINT_P(msg.m_source)) {
-				case HARDWARE: /* hardware interrupt notification */
-					if (msg.NOTIFY_ARG & irq_set_kbd) { /* subscribed interrupt */
+					isSecondByte = 0;
 
-						if(code==FIRST_BYTE)
-							isSecondByte=1;
+					counter = 0;
 
-						code=kbd_handler();
-						if(code!=FIRST_BYTE)
-							printcode(code,isSecondByte);
-
-						isSecondByte=0;
-
-						counter=0;
-
-
-					}
+				}
 				if (msg.NOTIFY_ARG & irq_set_timer) { /* subscribed interrupt */
 					counter++;
 				}
 				break;
 
-				default:
-					break;
-				}
-			} else {
+			default:
+				break;
 			}
+		} else {
+		}
 	}
 	unsigned long stat;
 
 	sys_inb(STAT_REG, &stat);
 
-	if (stat & OBF){
+	if (stat & OBF) {
 		sys_inb(OUT_BUF, &code);
 	}
-
 
 	timer_unsubscribe_int();
 	kbd_unsubscribe_int();
@@ -196,13 +166,10 @@ int kbd_test_timed_scan(unsigned short n) {
 	return Ok;
 }
 
-
-int sys_inb_cnt(port_t port, unsigned long* byte){
+int sys_inb_cnt(port_t port, unsigned long* byte) {
 	sys_inb_counter++;
 
-	return sys_inb(port,byte);
-
+	return sys_inb(port, byte);
 
 }
-
 

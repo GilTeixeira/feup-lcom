@@ -13,6 +13,9 @@ static void print_usage(char **argv);
 int main(int argc, char **argv) {
 	/* Initialize service */
 	sef_startup();
+	/* Enable IO-sensitive operations for ourselves */
+	    sys_enable_iop(SELF);
+
 
 	if (argc == 1) { /* Prints usage of the program if no arguments are passed */
 		print_usage(argv);
