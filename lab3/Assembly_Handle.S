@@ -2,6 +2,13 @@
 
 .global _kbd_asm_handler
 
+
+.global _codeAss
+.data
+_codeAss: .short 0
+
+
+
 .text
 _kbd_asm_handler:
 
@@ -11,7 +18,10 @@ start:
 	testb $OBF, %al
 	jz start
 	testb $IBF, %al
-	jz start
+	jnz start
 	in $OUT_BUF,%al
+
+	movb %al, _codeAss
+
 
 ret

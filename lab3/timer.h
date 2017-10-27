@@ -20,7 +20,6 @@
 #define FREQ_OVERFLOW_ERROR 14
 #define INPUT_NEG_ERROR 15
 
-
 /** @defgroup timer timer
  * @{
  *
@@ -33,8 +32,6 @@
  * @param msg The message to print
  */
 void printErrors(char * msg);
-
-
 
 /**
  * @brief Changes the operating frequency of a timer
@@ -51,7 +48,7 @@ int timer_set_frequency(unsigned char timer, unsigned long freq);
  *
  * @return Returns bit order in interrupt mask; negative value on failure
  */
-int timer_subscribe_int(void );
+int timer_subscribe_int(void);
 
 /**
  * @brief Unsubscribes Timer 0 interrupts
@@ -118,8 +115,5 @@ int timer_test_int(unsigned long time);
  * @return Return 0 upon success and non-zero otherwise
  */
 int timer_test_config(unsigned char timer);
-
-
-
 
 #endif /* __TIMER_H */

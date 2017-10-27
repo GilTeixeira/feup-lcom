@@ -1,32 +1,36 @@
-
 #include "kbd.h"
 
+
+
 int hook_id_kbd = 1;
+
+
 
 int kbd_subscribe_int(void) {
 
 	int temp_hook_id_kbd = hook_id_kbd;
 
-	sys_irqsetpolicy(KBD_IRQ, IRQ_EXCLUSIVE |IRQ_REENABLE, &hook_id_kbd);
-	sys_irqenable(&hook_id_kbd);
+	if(sys_irqsetpolicy(KBD_IRQ, IRQ_EXCLUSIVE | IRQ_REENABLE, &hook_id_kbd)!=Ok)
+		return IRQ_KBD_SET_ERROR;
+
+	if(sys_irqenable(&hook_id_kbd)!=Ok)
+		return IRQ_KBD_ENAB_ERROR;
 
 	return BIT(temp_hook_id_kbd);
 }
 
 int kbd_unsubscribe_int() { //the order we disable and remove the policy must be done on the opposite way we make in subscribe_int
-	int i, j;
 
-	i=sys_irqdisable(&hook_id_kbd);
-	j=sys_irqrmpolicy(&hook_id_kbd);
-	printf("%d %d",i,j);
+	if (sys_irqdisable(&hook_id_kbd) != Ok)
+		return IRQ_KBD_DISAB_ERROR;
+
+	if (sys_irqrmpolicy(&hook_id_kbd) != Ok)
+		return IRQ_KBD_REM_ERROR;
 
 	return Ok;
 }
 
-
-
-
-unsigned long readcode() {
+unsigned long readCode() {
 	unsigned long stat, code;
 
 	while (1) {
@@ -47,8 +51,7 @@ unsigned long readcode() {
 
 }
 
-
-unsigned long polling(){
+unsigned long polling() {
 	unsigned long stat, code;
 
 	while (1) {
@@ -58,7 +61,7 @@ unsigned long polling(){
 
 		//stat= 0010.1001
 
-		if (stat & OBF && ((stat & AUX)==0)) {
+		if (stat & OBF && ((stat & AUX) == 0)) {
 			//printf("2\n");
 
 			/* assuming it returns OK */
@@ -74,39 +77,33 @@ unsigned long polling(){
 	}
 }
 
-
-int printcode(unsigned long code, int isSecondByte){
+int printcode(unsigned long code, int isSecondByte) {
 	int msb = code & BIT(7);
 
-	if(code ==FIRST_BYTE)
+	if (code == FIRST_BYTE)
 		return Ok;
 
-
-
-	if (msb == 0){
-		if(isSecondByte)
+	if (msb == 0) {
+		if (isSecondByte)
 			printf("Make Code:  0xe0 0x%02x\n", code);
 		else
-		printf("Make Code:  0x%02x\n", code);
+			printf("Make Code:  0x%02x\n", code);
 	}
 
-	else{
-		if(isSecondByte)
+	else {
+		if (isSecondByte)
 			printf("Break Code: 0xe0 0x%02x\n", code);
 		else
-		printf("Break Code: 0x%02x\n", code);
+			printf("Break Code: 0x%02x\n", code);
 	}
-
 
 	return Ok;
 }
 
-int kbd_handler() {
-
-	return readcode();
+void kbd_handler() {
+	globalCode = readCode();
 
 }
-
 
 int WriteCommandByte(unsigned long port, unsigned long cmd) {
 	unsigned long stat;
@@ -141,6 +138,4 @@ unsigned long ReadCommandByte() {
 		tickdelay(micros_to_ticks(DELAY_US));
 	}
 }
-
-
 

@@ -10,6 +10,8 @@
 
 int sys_inb_counter = 0;
 
+short codeAss;
+
 int kbd_test_scan(unsigned short assembly) {
 
 	int ipc_status, r, irq_set;
@@ -35,10 +37,15 @@ int kbd_test_scan(unsigned short assembly) {
 
 					if (code == FIRST_BYTE)
 						isSecondByte = 1;
-					if (assembly == 0)
-						code = kbd_handler();
-					else
-						code = kbd_asm_handler();
+					if (assembly == 0){
+						kbd_handler();
+						code = globalCode;
+
+					}
+					else {
+						kbd_asm_handler();
+						code = codeAss;
+					}
 
 					if (code != FIRST_BYTE)
 						printcode(code, isSecondByte);
@@ -62,7 +69,11 @@ int kbd_test_scan(unsigned short assembly) {
 
 	kbd_unsubscribe_int();
 
-	printf("\nNumber of sys_inb calls: %d\n", sys_inb_counter);
+	if (assembly == 0) {
+		printf("\nNumber of sys_inb calls: %d\n", sys_inb_counter);
+
+	}
+
 
 	return Ok;
 }
@@ -131,8 +142,8 @@ int kbd_test_timed_scan(unsigned short n) {
 
 					if (code == FIRST_BYTE)
 						isSecondByte = 1;
-
-					code = kbd_handler();
+					kbd_handler();
+					code = globalCode;
 					if (code != FIRST_BYTE)
 						printcode(code, isSecondByte);
 
@@ -166,10 +177,10 @@ int kbd_test_timed_scan(unsigned short n) {
 	return Ok;
 }
 
-int sys_inb_cnt(port_t port, unsigned long* byte) {
-	sys_inb_counter++;
+int sys_inb_cnt(port_t port, unsigned long* byte){
+sys_inb_counter++;
 
-	return sys_inb(port, byte);
+return sys_inb(port, byte);
 
 }
 
