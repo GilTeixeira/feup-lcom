@@ -15,10 +15,19 @@ _kbd_asm_handler:
 start:
 	xor %eax, %eax
 	in $STAT_REG,%al
+
 	testb $OBF, %al
 	jz start
+
 	testb $IBF, %al
 	jnz start
+
+	testb $PAR_ERR, %al
+	jnz start
+
+	testb $TO_ERR, %al
+	jnz start
+
 	in $OUT_BUF,%al
 
 	movb %al, _codeAss

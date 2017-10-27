@@ -9,12 +9,14 @@
 #define STAT_REG 0x64
 #define KBC_CMD_REG 0x64
 
-
-#define OBF BIT(0)
-#define IBF BIT(1)
-#define AUX BIT(5)
 #define PAR_ERR BIT(7)
 #define TO_ERR BIT(6)
+#define AUX BIT(5)
+#define OBF BIT(0)
+#define IBF BIT(1)
+
+
+
 
 
 #define ENABLE_KBD_INT BIT(0)

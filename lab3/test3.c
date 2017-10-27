@@ -1,27 +1,32 @@
 #include <minix/syslib.h>
 #include <minix/driver.h>
+#include <limits.h>
+#include <string.h>
+#include <errno.h>
 #include "i8042.h"
 #include "i8254.h"
 #include "kbd.h"
 #include "timer.h"
-#include <limits.h>
-#include <string.h>
-#include <errno.h>
 
 int sys_inb_counter = 0;
-
 short codeAss;
+
+int sys_inb_cnt(port_t port, unsigned long* byte) {
+	sys_inb_counter++;
+	return sys_inb(port, byte);
+}
 
 int kbd_test_scan(unsigned short assembly) {
 
 	int ipc_status, r, irq_set;
 	int isSecondByte = 0;
-
-	unsigned long code = 0;
+	unsigned long code = 0, stat;
 
 	message msg;
-
 	irq_set = kbd_subscribe_int();
+
+	if (irq_set < 0)
+		return KBD_SUB_ERROR;
 
 	while (code != ESC) {
 
@@ -37,12 +42,11 @@ int kbd_test_scan(unsigned short assembly) {
 
 					if (code == FIRST_BYTE)
 						isSecondByte = 1;
-					if (assembly == 0){
+
+					if (assembly == 0) {
 						kbd_handler();
 						code = globalCode;
-
-					}
-					else {
+					} else {
 						kbd_asm_handler();
 						code = codeAss;
 					}
@@ -59,21 +63,22 @@ int kbd_test_scan(unsigned short assembly) {
 		} else {
 		}
 	}
-	unsigned long stat;
 
-	sys_inb_cnt(STAT_REG, &stat);
+	if (sys_inb_cnt(STAT_REG, &stat) != Ok)
+		return KBD_TEST_SCAN_ERROR;
 
 	if (stat & OBF) {
-		sys_inb_cnt(OUT_BUF, &code);
+		if (sys_inb_cnt(OUT_BUF, &code) != Ok)
+			return KBD_TEST_SCAN_ERROR;
 	}
 
-	kbd_unsubscribe_int();
+	if (kbd_unsubscribe_int() != 0)
+		return KBD_UNSUB_ERROR;
 
 	if (assembly == 0) {
 		printf("\nNumber of sys_inb calls: %d\n", sys_inb_counter);
 
 	}
-
 
 	return Ok;
 }
@@ -81,19 +86,18 @@ int kbd_test_scan(unsigned short assembly) {
 int kbd_test_poll() {
 
 	int isSecondByte = 0;
-
 	unsigned long code = 0;
+	unsigned long ComByte;
 
 	while (code != ESC) {
-		//printf("jlfdsljkdfs\n");
 
 		if (code == FIRST_BYTE)
 			isSecondByte = 1;
 
-		//printf("jlfdsljkdfs\n");
-
 		code = polling();
-		//printf("jlfdsljkdfs\n");
+
+		if (code == KBD_SYS_IN_ERROR)
+			return KBD_POLLING_ERROR;
 
 		if (code != FIRST_BYTE)
 			printcode(code, isSecondByte);
@@ -101,32 +105,44 @@ int kbd_test_poll() {
 		isSecondByte = 0;
 	}
 
-	WriteCommandByte(KBC_CMD_REG, READ_COMM_BYTE);
-	unsigned long ComByte = ReadCommandByte();
+	if (WriteCommandByte(KBC_CMD_REG, READ_COMM_BYTE) != Ok)
+		return KBD_WRITE_CMD_BYTE_ERROR;
+
+	ComByte = ReadCommandByte();
+
+	if (ComByte == KBD_IN_CMD_ERROR)
+		return KBD_POLLING_ERROR;
 
 	ComByte |= ENABLE_KBD_INT;
 
-	WriteCommandByte(KBC_CMD_REG, WRITE_COMM_BYTE);
-	WriteCommandByte(OUT_BUF, ComByte);
+	if (WriteCommandByte(KBC_CMD_REG, WRITE_COMM_BYTE) != Ok)
+		return KBD_WRITE_CMD_BYTE_ERROR;
+	if (WriteCommandByte(OUT_BUF, ComByte) != Ok)
+		return KBD_WRITE_CMD_BYTE_ERROR;
 
 	printf("\nNumber of sys_inb calls: %d\n", sys_inb_counter);
 
 	return Ok;
 
 }
+
 int kbd_test_timed_scan(unsigned short n) {
 
 	int ipc_status, r, irq_set_timer, irq_set_kbd;
 	int isSecondByte = 0;
-
 	int counter = 0;
-
 	unsigned long code = 0;
+	unsigned long stat;
 
 	message msg;
 
 	irq_set_kbd = kbd_subscribe_int();
+	if (irq_set_kbd < 0)
+		return KBD_SUB_ERROR;
+
 	irq_set_timer = timer_subscribe_int();
+	if (irq_set_timer < 0)
+		return TIMER_SUB_ERROR;
 
 	while (code != ESC && counter != 60 * n) {
 
@@ -163,24 +179,21 @@ int kbd_test_timed_scan(unsigned short n) {
 		} else {
 		}
 	}
-	unsigned long stat;
 
-	sys_inb(STAT_REG, &stat);
+	if (sys_inb(STAT_REG, &stat) != Ok)
+		return SYS_IN_ERROR;
 
 	if (stat & OBF) {
-		sys_inb(OUT_BUF, &code);
+		if (sys_inb(OUT_BUF, &code) != Ok)
+			return SYS_IN_ERROR;
 	}
 
-	timer_unsubscribe_int();
-	kbd_unsubscribe_int();
+	if (timer_unsubscribe_int() != Ok)
+		return TIMER_UNSUB_ERROR;
+
+	if (kbd_unsubscribe_int() != Ok)
+		return KBD_UNSUB_ERROR;
 
 	return Ok;
-}
-
-int sys_inb_cnt(port_t port, unsigned long* byte){
-sys_inb_counter++;
-
-return sys_inb(port, byte);
-
 }
 

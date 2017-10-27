@@ -1,12 +1,27 @@
 #ifndef __TEST3_H
 #define __TEST3_H
 
+#include <minix/syslib.h>
+
 
 /** @defgroup test3 test3
  * @{
  *
  * Functions for testing the kbd code
  */
+
+/**
+ * @brief Uses Sys_inb and increments counter
+ *
+ * @return Return 0 upon success and non-zero otherwise
+ */
+
+#ifdef LAB3
+int sys_inb_cnt(port_t port, unsigned long* byte);
+#else
+#define sys_inb_cnt(p,q) sys_inb(p,q)
+#endif
+
 
 /** 
  * @brief To test reading of scancode via KBD interrupts 
