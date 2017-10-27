@@ -16,18 +16,6 @@
 #define KBD_UNSUB_ERROR 24
 #define KBD_WRITE_CMD_BYTE_ERROR 25
 
-/*
- #define SYS_OUT_ERROR 7
- #define SYS_IN_ERROR 8
- #define TIMER_SUB_ERROR 9
- #define TIMER_UNSUB_ERROR 10
- #define TIMER_GET_CONF_ERROR 11
- #define TIMER_DISPLAY_CONF_ERROR 12
- #define FREQ_NEG_ERROR 13
- #define FREQ_OVERFLOW_ERROR 14
- #define INPUT_NEG_ERROR 15
- */
-
 unsigned long globalCode;
 
 /**
