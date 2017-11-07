@@ -29,6 +29,15 @@
 
 
 
+//mouse response
+#define ACK				0xFA
+#define NACK			0xFE
+#define ERROR 			0xFC
+
+//mouse commands
+#define DISABLE_DR 0XF5
+
+
 
 
 

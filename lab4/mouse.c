@@ -7,13 +7,13 @@
 #include "i8042.h"
 #include "i8254.h"
 #include "mouse.h"
+#include "kbd.h"
 
 
 int hook_id_mouse = 12;
 unsigned long packet[3];
 int mouse_counter=0;
 int fullPacket=0;
-
 
 int mouse_subscribe_int(void) {
 
@@ -100,9 +100,15 @@ int print_packets(){
 	return 0;
 }
 
-int enable_stream_mode(){
+int enable_stream_mode() {
+		unsigned long ret;
+		WriteCommandByte(0x64, 0xD4);
+		WriteCommandByte(0x60, DISABLE_DR);
+		while (ret != ack) {
 
-
+			ret = readByte();
+		}
+		return Ok;
 
 
 }
