@@ -3,8 +3,8 @@
 #include <errno.h>
 #include <limits.h>
 #include <string.h>
-#include "test4.h"
 #include <minix/driver.h>
+#include "test4.h"
 
 static int proc_args(int argc, char **argv);
 static unsigned short parse_ushort(char *str, int base);
