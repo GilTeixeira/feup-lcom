@@ -9,28 +9,23 @@
 
 
 int mouse_test_packet(unsigned short cnt){
-	printf("RIP?\n");
 	int ipc_status, r, irq_set;
 	unsigned short curr_num_packets=0;
 
 	message msg;
 	irq_set = mouse_subscribe_int();
-	printf("RIP2\n");
-
 
 	//if (irq_set < 0)
 		//return KBD_SUB_ERROR;
 	enable_stream_mode();
-	printf("RIP2.5\n");
-	while (curr_num_packets != cnt) {
-		printf("RIP3\n");
+
+	while (curr_num_packets < cnt*3) {
 
 
 		if ((r = driver_receive(ANY, &msg, &ipc_status)) != 0) {
 			printf("driver_receive failed with: %d", r);
 			continue;
 		}
-		printf("RIP4\n");
 
 
 		if (is_ipc_notify(ipc_status)) { /* received notification */
@@ -38,10 +33,10 @@ int mouse_test_packet(unsigned short cnt){
 			case HARDWARE: /* hardware interrupt notification */
 				if (msg.NOTIFY_ARG & irq_set) { /* subscribed interrupt */
 
-					printf("jiogipdsfjpkdfs\n");
 					mouse_handler();
 					if (fullPacket)
 						print_packets();
+					curr_num_packets++;
 				}
 				break;
 			default:
@@ -60,7 +55,6 @@ int mouse_test_packet(unsigned short cnt){
 	}
 
 	*/
-	printf("RIP5\n");
 	if (mouse_unsubscribe_int() != 0)
 		return 1;
 

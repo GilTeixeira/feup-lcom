@@ -99,11 +99,11 @@ int print_packets(){
 //	if(packet[0]&BIT(0))
 
 
-	printf("LB = %d ", packet[0] & MOUSE_LB);
-	printf("MB = %d ", packet[0] & MOUSE_MB);
-	printf("RB = %d ", packet[0] & MOUSE_RB);
-	printf("XOV = %d ", packet[0] & MOUSE_XOVFL);
-	printf("YOV = %d ", packet[0] & MOUSE_YOVFL);
+	printf("LB = %d ", packet[0] & MOUSE_LB ? 1 : 0);
+	printf("MB = %d ", packet[0] & MOUSE_MB ? 1 : 0);
+	printf("RB = %d ", packet[0] & MOUSE_RB ? 1 : 0);
+	printf("XOV = %d ", packet[0] & MOUSE_XOVFL ? 1 : 0);
+	printf("YOV = %d \n", packet[0] & MOUSE_YOVFL ? 1 : 0);
 
 
 
@@ -126,42 +126,62 @@ int print_packets(){
 
 int enable_stream_mode() {
 
-	printf("DEP1/n");
 	mouseWriteCommandByte(SET_STREAM_MODE);
-	printf("DEP1/n");
-	//mouseWriteCommandByte(ENABLE_DR);
-	printf("DEP1/n");
+	mouseWriteCommandByte(ENABLE_DR);
 
 	return Ok;
 
 }
 
+/*
+int mouseWriteCommandByte(unsigned long cmd) {
+	printf("DEP2/n");
+
+	WriteCommandByte(KBC_CMD_REG, WRITE_BYTE_MOUSE);
+
+	WriteCommandByte(IN_BUF, cmd);
+
+	while (1) {
+
+		unsigned long mouseOutput;
+		printf("kh/n");
+
+		mouseOutput = mouseReadOutput();
+		if (mouseOutput == ACK) {
+			return Ok;
+		}
+		printf("fdsfds2/n");
+		tickdelay(micros_to_ticks(DELAY_US));
+
+	}
+
+}
+*/
+
+
 
 int mouseWriteCommandByte(unsigned long cmd) {
 	unsigned long stat;
-	printf("DEP2/n");
 	while (1) {
-		if (sys_inb(STAT_REG, &stat) != Ok)
+		if (sys_inb(STAT_REG, &stat) != Ok){
 			return KBD_SYS_IN_ERROR;
-		printf("DEP2/n");
+
+		}
 
 		if ((stat & IBF) == 0) {
 			if (sys_outb(KBC_CMD_REG, WRITE_BYTE_MOUSE) != Ok)
 				return KBD_SYS_OUT_ERROR;
-			printf("DEP2/n");
 
 			if (sys_outb(IN_BUF, cmd) != Ok) {
 				//TO DO: por macro
 				return 1;
 			}
 			unsigned long mouseOutput;
-			printf("DEP2/n");
 
 			mouseOutput = mouseReadOutput();
 			if (mouseOutput == ACK) {
 				return Ok;
 			}
-			printf("DEP2/n");
 
 
 
@@ -174,24 +194,25 @@ int mouseWriteCommandByte(unsigned long cmd) {
 }
 
 
+
 //alterar macros
 unsigned long mouseReadOutput() {
 	unsigned long stat, mouseOutput;
 	while (1) {
 		if (sys_inb(STAT_REG, &stat) != Ok)
 			return KBD_IN_CMD_ERROR;
-
+		//printf("stat = %d \n", stat);
+		//0010.1000
 		if (stat & OBF) {
+
 			if (sys_inb(OUT_BUF, &mouseOutput) != Ok)
 				return KBD_IN_CMD_ERROR;
-			printf("DEP3/n");
 
 
 			if ((stat & (PAR_ERR | TO_ERR)) == 0)
 				return mouseOutput;
 			else
 				return KBD_IN_CMD_ERROR;
-			printf("DEP3/n");
 
 		}
 

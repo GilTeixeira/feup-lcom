@@ -40,7 +40,7 @@
 
 
 //mouse related commands
-#define WRITE_BYTE_MOUSE 0XF5
+#define WRITE_BYTE_MOUSE 0XD4
 
 
 
