@@ -9,6 +9,17 @@
 #include "kbd.h"
 #include "timer.h"
 
+unsigned long cleanOutBuf(){
+	unsigned long  stat, code;
+	if (sys_inb(STAT_REG, &stat) != Ok)
+				return SYS_IN_ERROR;
+
+			if (stat & OBF) {
+				if (sys_inb(OUT_BUF, &code) != Ok)
+					return SYS_IN_ERROR;
+			}
+			return Ok;
+}
 
 int mouse_test_packet(unsigned short cnt){
 	int ipc_status, r, irq_set;
@@ -146,8 +157,38 @@ int mouse_test_async(unsigned short idle_time) {
 }	
 
 int mouse_test_remote(unsigned long period, unsigned short cnt){
-    /* To be completed ... */
+	unsigned long cmd_byte;
 
+	mouseWriteCommandByte(DISABLE_DR);
+	mouseWriteCommandByte(SET_REMOTE_MODE);
+
+	cmd_byte = ReadCommandByte();
+	cmd_byte = cmd_byte | DISABLE_MOUSE_INT;
+
+	WriteCommandByte(KBC_CMD_REG, cmd_byte);
+
+	while (cnt < 0) {
+		print_packets();
+	}
+
+	//0xEB
+
+	//tickdelay()
+
+
+
+
+	//enable Minix’s IHby writing to the KBC’s command byte
+	cmd_byte = ReadCommandByte();
+	cmd_byte = cmd_byte | ENABLE_MOUSE_INT;
+
+	WriteCommandByte(KBC_CMD_REG, cmd_byte);
+
+	// Set	stream mode
+	// ensure data reporting is disabled
+	enable_stream_mode();
+
+	cleanOutBuf();
 	return 0;
 }	
 
@@ -156,3 +197,4 @@ int mouse_test_gesture(short length){
 
 	return 0;
 }	
+

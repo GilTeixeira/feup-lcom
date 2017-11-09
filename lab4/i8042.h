@@ -19,8 +19,10 @@
 
 
 
-
+//KBC command byte
 #define ENABLE_KBD_INT BIT(0)
+#define DISABLE_MOUSE_INT BIT(5)
+#define ENABLE_MOUSE_INT BIT(1)
 
 #define READ_COMM_BYTE 0x20
 #define WRITE_COMM_BYTE 0x60
@@ -37,6 +39,10 @@
 //mouse commands
 #define SET_STREAM_MODE 0XEA
 #define ENABLE_DR 0XF4
+#define DISABLE_DR 0XF5
+#define SET_REMOTE_MODE 0XF0
+#define READ_DATA 0XEB
+
 
 
 //mouse related commands
