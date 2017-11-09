@@ -20,7 +20,8 @@ int mouse_test_packet(unsigned short cnt){
 
 	//if (irq_set < 0)
 		//return KBD_SUB_ERROR;
-
+	enable_stream_mode();
+	printf("RIP2.5\n");
 	while (curr_num_packets != cnt) {
 		printf("RIP3\n");
 
@@ -39,7 +40,8 @@ int mouse_test_packet(unsigned short cnt){
 
 					printf("jiogipdsfjpkdfs\n");
 					mouse_handler();
-					print_packets();
+					if (fullPacket)
+						print_packets();
 				}
 				break;
 			default:
@@ -58,7 +60,7 @@ int mouse_test_packet(unsigned short cnt){
 	}
 
 	*/
-
+	printf("RIP5\n");
 	if (mouse_unsubscribe_int() != 0)
 		return 1;
 

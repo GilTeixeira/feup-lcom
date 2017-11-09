@@ -92,23 +92,110 @@ void mouse_handler() {
 
 int print_packets(){
 
-	printf("%d",packet[0]);
+	printf("B1 = 0x%02x ", packet[0]);
+	printf("B2 = 0x%02x ", packet[1]);
+	printf("B3 = 0x%02x ", packet[2]);
+
+//	if(packet[0]&BIT(0))
+
+
+	printf("LB = %d ", packet[0] & MOUSE_LB);
+	printf("MB = %d ", packet[0] & MOUSE_MB);
+	printf("RB = %d ", packet[0] & MOUSE_RB);
+	printf("XOV = %d ", packet[0] & MOUSE_XOVFL);
+	printf("YOV = %d ", packet[0] & MOUSE_YOVFL);
+
+
+
+	/*
+	printf("MB = 0x%02x ", packet[1]);
+	printf("RB = 0x%02x ", packet[2]);
+	printf("LB = 0x%02x ", packet[0]);
+	printf("XOV = 0x%02x ", packet[1]);
+	printf("YOV = 0x%02x ", packet[2]);
+	printf("X = 0x%02x ", packet[1]);
+	printf("Y = 0x%02x ", packet[2]);
+
+
 	printf("%d",packet[1]);
 	printf("%d",packet[2]);
 
-
+*/
 	return 0;
 }
 
 int enable_stream_mode() {
-		unsigned long ret;
-		WriteCommandByte(0x64, 0xD4);
-		WriteCommandByte(0x60, DISABLE_DR);
-		while (ret != ack) {
 
-			ret = readByte();
+	printf("DEP1/n");
+	mouseWriteCommandByte(SET_STREAM_MODE);
+	printf("DEP1/n");
+	//mouseWriteCommandByte(ENABLE_DR);
+	printf("DEP1/n");
+
+	return Ok;
+
+}
+
+
+int mouseWriteCommandByte(unsigned long cmd) {
+	unsigned long stat;
+	printf("DEP2/n");
+	while (1) {
+		if (sys_inb(STAT_REG, &stat) != Ok)
+			return KBD_SYS_IN_ERROR;
+		printf("DEP2/n");
+
+		if ((stat & IBF) == 0) {
+			if (sys_outb(KBC_CMD_REG, WRITE_BYTE_MOUSE) != Ok)
+				return KBD_SYS_OUT_ERROR;
+			printf("DEP2/n");
+
+			if (sys_outb(IN_BUF, cmd) != Ok) {
+				//TO DO: por macro
+				return 1;
+			}
+			unsigned long mouseOutput;
+			printf("DEP2/n");
+
+			mouseOutput = mouseReadOutput();
+			if (mouseOutput == ACK) {
+				return Ok;
+			}
+			printf("DEP2/n");
+
+
+
+
+
+			return 0;
 		}
-		return Ok;
+		tickdelay(micros_to_ticks(DELAY_US));
+	}
+}
 
+
+//alterar macros
+unsigned long mouseReadOutput() {
+	unsigned long stat, mouseOutput;
+	while (1) {
+		if (sys_inb(STAT_REG, &stat) != Ok)
+			return KBD_IN_CMD_ERROR;
+
+		if (stat & OBF) {
+			if (sys_inb(OUT_BUF, &mouseOutput) != Ok)
+				return KBD_IN_CMD_ERROR;
+			printf("DEP3/n");
+
+
+			if ((stat & (PAR_ERR | TO_ERR)) == 0)
+				return mouseOutput;
+			else
+				return KBD_IN_CMD_ERROR;
+			printf("DEP3/n");
+
+		}
+
+		tickdelay(micros_to_ticks(DELAY_US));
+	}
 
 }

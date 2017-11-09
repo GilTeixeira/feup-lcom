@@ -1,5 +1,5 @@
-#ifndef __KBD_H
-#define __KBD_H
+#ifndef __MOUSE_H
+#define __MOUSE_H
 
 
 #define IRQ_MOUSE_SET_ERROR 26
@@ -9,8 +9,9 @@
 
 
 //TO DO:ALTERAR
-#define KBD_SYS_IN_ERROR 29
+//#define KBD_SYS_IN_ERROR 29
 
+extern int fullPacket;
 
 
 int mouse_subscribe_int(void);
@@ -24,5 +25,7 @@ void mouse_handler();
 int print_packets();
 
 int enable_stream_mode();
+int mouseWriteCommandByte(unsigned long cmd);
+unsigned long mouseReadOutput();
 
 #endif
