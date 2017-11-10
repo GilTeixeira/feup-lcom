@@ -105,55 +105,34 @@ void mouse_handler() {
 
 }
 
-char convertNumber(char number, unsigned long msb) {
+long convertNumber(char number, unsigned long msb) {
 	if (msb == 0)
 		return number;
 	//else return
-	long teste = (~(number|0x100) + 1) & 0xFF;
-	printf("LB = %d \n", packet[0]);
-	printf("LB =  0x%02x \n", packet[0]);
+	long teste = -((~(number|0x100) + 1) & 0xFF);
+	return teste;
+	//printf("LB = %d \n", packet[0]);
+	//printf("LB =  0x%02x \n", packet[0]);
 
 }
 
-
-int print_packets(){
+int print_packets() {
 
 	printf("B1 = 0x%02x ", packet[0]);
 	printf("B2 = 0x%02x ", packet[1]);
 	printf("B3 = 0x%02x ", packet[2]);
-
-//	if(packet[0]&BIT(0))
-
-
 	printf("LB = %d ", packet[0] & MOUSE_LB ? 1 : 0);
 	printf("MB = %d ", packet[0] & MOUSE_MB ? 1 : 0);
 	printf("RB = %d ", packet[0] & MOUSE_RB ? 1 : 0);
 	printf("XOV = %d ", packet[0] & MOUSE_XOVFL ? 1 : 0);
-	printf("YOV = %d \n", packet[0] & MOUSE_YOVFL ? 1 : 0);
+	printf("YOV = %d ", packet[0] & MOUSE_YOVFL ? 1 : 0);
 
-	char number=0x43;
-	number = convertNumber(number,1);
-	//printf("B1 = 0x%02x \n", number);
+	long xdelta = convertNumber(packet[1], packet[0] & MOUSE_XSIGN);
+	long ydelta = convertNumber(packet[2], packet[0] & MOUSE_YSIGN);
 
+	printf("X = %d ", xdelta);
+	printf("Y = %d \n", ydelta);
 
-
-
-
-
-	/*
-	printf("MB = 0x%02x ", packet[1]);
-	printf("RB = 0x%02x ", packet[2]);
-	printf("LB = 0x%02x ", packet[0]);
-	printf("XOV = 0x%02x ", packet[1]);
-	printf("YOV = 0x%02x ", packet[2]);
-	printf("X = 0x%02x ", packet[1]);
-	printf("Y = 0x%02x ", packet[2]);
-
-
-	printf("%d",packet[1]);
-	printf("%d",packet[2]);
-
-*/
 	return 0;
 }
 
