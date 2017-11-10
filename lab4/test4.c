@@ -25,7 +25,7 @@ int mouse_test_packet(unsigned short cnt) {
 	if (irq_set < 0)
 		return MOUSE_SUB_ERROR;
 
-	if (enable_stream_mode() != 0)
+	if (enable_stream_mode() != Ok)
 		return ENAB_STREAM_MODE_ERROR;
 
 	while (curr_num_packets < cnt) {
@@ -110,7 +110,8 @@ int mouse_test_async(unsigned short idle_time) {
 		}
 	}
 
-	cleanOutBuf();
+	if (cleanOutBuf() != Ok)
+		return CLEAN_OUTBUFF_ERROR;
 
 	if (timer_unsubscribe_int() != Ok)
 		return TIMER_UNSUB_ERROR;
@@ -130,11 +131,14 @@ int mouse_test_remote(unsigned long period, unsigned short cnt) {
 	if (irq_set < 0)
 		return MOUSE_SUB_ERROR;
 
-	mouseWriteCommandByte(DISABLE_DR);
-	mouseWriteCommandByte(SET_REMOTE_MODE);
+	if (mouseWriteCommandByte(DISABLE_DR) != Ok)
+		return MOUSE_WRITE_CMD_ERROR;
+	if (mouseWriteCommandByte(SET_REMOTE_MODE) != Ok)
+		return MOUSE_WRITE_CMD_ERROR;
 
 	while (cnt > 0) {
-		mouseWriteCommandByte(READ_DATA);
+		if (mouseWriteCommandByte(READ_DATA) != Ok)
+			return MOUSE_WRITE_CMD_ERROR;
 
 		int i;
 		for (i = 0; i < 3; i++)
@@ -146,8 +150,10 @@ int mouse_test_remote(unsigned long period, unsigned short cnt) {
 		tickdelay(micros_to_ticks(period * 1000));
 	}
 
-	enable_stream_mode();
-	cleanOutBuf();
+	if (enable_stream_mode() != Ok)
+		return ENAB_STREAM_MODE_ERROR;
+	if (cleanOutBuf() != Ok)
+		return CLEAN_OUTBUFF_ERROR;
 	if (mouse_unsubscribe_int() != Ok)
 		return MOUSE_UNSUB_ERROR;
 
@@ -168,9 +174,11 @@ int mouse_test_gesture(short length) {
 
 	irq_set = mouse_subscribe_int();
 
-	//if (irq_set < 0)
-	//return KBD_SUB_ERROR;
-	enable_stream_mode();
+	if (irq_set < 0)
+		return MOUSE_SUB_ERROR;
+
+	if (enable_stream_mode() != Ok)
+		return ENAB_STREAM_MODE_ERROR;
 
 	while (mouseSt != DONE) {
 
@@ -205,7 +213,8 @@ int mouse_test_gesture(short length) {
 		}
 	}
 
-	cleanOutBuf();
+	if (cleanOutBuf() != Ok)
+			return CLEAN_OUTBUFF_ERROR;
 
 	if (mouse_unsubscribe_int() != Ok)
 		return 1;
@@ -322,7 +331,7 @@ void processEvent(struct event_t * mouseEvent) {
 
 		break;
 	case MOVUPRIGHT:
-		if (mouseEvent->deltax > 0 && mouseEvent->deltay >= 0
+		if (mouseEvent->deltax >= 0 && mouseEvent->deltay >= 0
 				&& mouseEvent->length_to_move > 0) {
 			mouseEvent->length_moved += mouseEvent->deltax;
 			if (mouseEvent->length_moved >= mouseEvent->length_to_move)
@@ -330,18 +339,24 @@ void processEvent(struct event_t * mouseEvent) {
 			else
 				mouseEvent->evType = MOVEDUPRIGHT;
 
-		} else if (mouseEvent->deltax < 0 && mouseEvent->deltay <= 0
+		} else if (mouseEvent->deltax <= 0 && mouseEvent->deltay <= 0
 				&& mouseEvent->length_to_move < 0) {
 			mouseEvent->length_moved += mouseEvent->deltax;
 			if (mouseEvent->length_moved <= mouseEvent->length_to_move)
 				mouseEvent->evType = COMPLETED;
 			else
 				mouseEvent->evType = MOVEDDOWNLEFT;
+
+		} else {
+			mouseEvent->length_moved = 0;
+			mouseEvent->evType = MBTTPRESSED;
 
 		}
+
+
 		break;
 	case MOVEDOWNLEFT:
-		if (mouseEvent->deltax > 0 && mouseEvent->deltay >= 0
+		if (mouseEvent->deltax >= 0 && mouseEvent->deltay >= 0
 				&& mouseEvent->length_to_move > 0) {
 			mouseEvent->length_moved += mouseEvent->deltax;
 			if (mouseEvent->length_moved >= mouseEvent->length_to_move)
@@ -349,13 +364,17 @@ void processEvent(struct event_t * mouseEvent) {
 			else
 				mouseEvent->evType = MOVEDUPRIGHT;
 
-		} else if (mouseEvent->deltax < 0 && mouseEvent->deltay <= 0
+		} else if (mouseEvent->deltax <= 0 && mouseEvent->deltay <= 0
 				&& mouseEvent->length_to_move < 0) {
 			mouseEvent->length_moved += mouseEvent->deltax;
 			if (mouseEvent->length_moved <= mouseEvent->length_to_move)
 				mouseEvent->evType = COMPLETED;
 			else
 				mouseEvent->evType = MOVEDDOWNLEFT;
+
+		} else {
+			mouseEvent->length_moved = 0;
+			mouseEvent->evType = MBTTPRESSED;
 
 		}
 		break;
