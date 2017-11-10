@@ -28,5 +28,6 @@ int print_packets();
 int enable_stream_mode();
 int mouseWriteCommandByte(unsigned long cmd);
 unsigned long mouseReadOutput();
+long convertNumber(char number, unsigned long msb);
 
 #endif

@@ -1,6 +1,25 @@
 #ifndef __TEST4_H
 #define __TEST4_H
 
+
+
+typedef enum {
+	INIT, MBTTPRESSED, MOVUPRIGHT, MOVEDOWNLEFT, DONE
+} state_t;
+
+typedef enum {
+	BTTDOWN, BTTUP, MOVEDUPRIGHT, MOVEDDOWNLEFT, COMPLETED
+} ev_type_t;
+
+struct event_t {
+	ev_type_t evType;
+	short length_moved;
+	short deltax;
+	short deltay;
+	short length_to_move;
+};
+
+
 /** @defgroup test4 test4
  * @{
  *
@@ -69,4 +88,18 @@ int mouse_test_remote(unsigned long period, unsigned short cnt);
 
 
 int mouse_test_gesture(short length);
+
+
+
+long getDeltaX();
+
+long getDeltaY();
+
+int isRightButtonPressed();
+
+void processEvent(struct event_t * mouseEvent);
+
+void processStateMachine(struct event_t * mouseEvent);
+
+
 #endif /* __TEST_4.H */

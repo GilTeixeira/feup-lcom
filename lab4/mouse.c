@@ -116,6 +116,7 @@ long convertNumber(char number, unsigned long msb) {
 
 }
 
+
 int print_packets() {
 
 	printf("B1 = 0x%02x ", packet[0]);
