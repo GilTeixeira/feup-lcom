@@ -21,6 +21,7 @@ int mouse_unsubscribe_int();
 unsigned long readByte();
 
 void mouse_handler();
+int mouse_subscribe_Exc_int(void);
 
 int print_packets();
 

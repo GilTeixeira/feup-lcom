@@ -31,6 +31,22 @@ int mouse_subscribe_int(void) {
 
 }
 
+int mouse_subscribe_Exc_int(void) {
+
+	int temp_hook_id_mouse = hook_id_mouse;
+
+	if (sys_irqsetpolicy(MOUSE_IRQ, IRQ_EXCLUSIVE,
+			&hook_id_mouse)!=Ok)
+		return IRQ_MOUSE_SET_ERROR;
+
+	if (sys_irqenable(&hook_id_mouse) != Ok)
+		return IRQ_MOUSE_ENAB_ERROR;
+
+	return BIT(temp_hook_id_mouse);
+
+
+}
+
 int mouse_unsubscribe_int() {
 
 	if (sys_irqdisable(&hook_id_mouse) != Ok)
@@ -184,7 +200,7 @@ int mouseWriteCommandByte(unsigned long cmd) {
 			return KBD_SYS_IN_ERROR;
 
 		}
-
+		//printf("a\n");
 		if ((stat & IBF) == 0) {
 			if (sys_outb(KBC_CMD_REG, WRITE_BYTE_MOUSE) != Ok)
 				return KBD_SYS_OUT_ERROR;
@@ -194,12 +210,12 @@ int mouseWriteCommandByte(unsigned long cmd) {
 				return 1;
 			}
 			unsigned long mouseOutput;
-
+			//printf("b\n");
 			mouseOutput = mouseReadOutput();
 			if (mouseOutput == ACK) {
 				return Ok;
 			}
-
+			//printf("c\n");
 
 
 
@@ -216,20 +232,23 @@ int mouseWriteCommandByte(unsigned long cmd) {
 unsigned long mouseReadOutput() {
 	unsigned long stat, mouseOutput;
 	while (1) {
+		printf("x\n");
 		if (sys_inb(STAT_REG, &stat) != Ok)
 			return KBD_IN_CMD_ERROR;
 		//printf("stat = %d \n", stat);
 		//0010.1000
+		printf("y\n");
 		if (stat & OBF) {
 
 			if (sys_inb(OUT_BUF, &mouseOutput) != Ok)
 				return KBD_IN_CMD_ERROR;
-
+			printf("z\n");
 
 			if ((stat & (PAR_ERR | TO_ERR)) == 0)
 				return mouseOutput;
 			else
 				return KBD_IN_CMD_ERROR;
+			printf("b\n");
 
 		}
 

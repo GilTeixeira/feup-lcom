@@ -160,18 +160,22 @@ int mouse_test_async(unsigned short idle_time) {
 
 int mouse_test_remote(unsigned long period, unsigned short cnt) {
 	unsigned long cmd_byte;
+	mouse_subscribe_Exc_int();
+
 	printf("1\n");
+
 	mouseWriteCommandByte(DISABLE_DR);
 	printf("2\n");
 	mouseWriteCommandByte(SET_REMOTE_MODE);
 	printf("3\n");
-
+	/*
 	cmd_byte = ReadCommandByte();
 	printf("4\n");
 	cmd_byte = cmd_byte | DISABLE_MOUSE_INT;
 	printf("5\n");
 
 	WriteCommandByte(KBC_CMD_REG, cmd_byte);
+	*/
 	printf("6\n");
 
 	while (cnt > 0) {
@@ -185,25 +189,28 @@ int mouse_test_remote(unsigned long period, unsigned short cnt) {
 
 		print_packets();
 
-		tickdelay(micros_to_ticks(period));
+		tickdelay(micros_to_ticks(period*1000));
 
 	}
 
-	//0xEB
 
-	//tickdelay()
 
 	//enable Minix’s IHby writing to the KBC’s command byte
+	/*
 	cmd_byte = ReadCommandByte();
 	cmd_byte = cmd_byte | ENABLE_MOUSE_INT;
 
 	WriteCommandByte(KBC_CMD_REG, cmd_byte);
-
+*/
 	// Set	stream mode
 	// ensure data reporting is disabled
+	printf("7\n");
 	enable_stream_mode();
+	printf("8\n");
 
 	cleanOutBuf();
+	printf("9\n");
+	mouse_unsubscribe_int();
 	return 0;
 }	
 
