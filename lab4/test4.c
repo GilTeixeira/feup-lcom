@@ -26,6 +26,8 @@ struct event_t {
 	short deltay;
 };
 
+//static state_t mouseSt = INIT; // initial state; keep state
+
 unsigned long cleanOutBuf(){
 	unsigned long  stat, code;
 	if (sys_inb(STAT_REG, &stat) != Ok)
@@ -176,7 +178,6 @@ int mouse_test_async(unsigned short idle_time) {
 
 
 int mouse_test_remote(unsigned long period, unsigned short cnt) {
-	unsigned long cmd_byte;
 	mouse_subscribe_Exc_int();
 
 	//printf("1\n");
@@ -261,13 +262,15 @@ int mouse_test_gesture(short length){
 			switch (_ENDPOINT_P(msg.m_source)) {
 			case HARDWARE: /* hardware interrupt notification */
 				if (msg.NOTIFY_ARG & irq_set) { /* subscribed interrupt */
-/*
+
 					mouse_handler();
 					if (fullPacket) {
 
+
+
 						print_packets();
 					}
-*/
+
 				}
 				break;
 			default:
@@ -294,47 +297,71 @@ int mouse_test_gesture(short length){
 	return Ok;
 
 }
+
+
 /*
-
-
 state_t check_hor_line(event_t * evt) {
-	static state_t st = INIT; // initial state; keep state
-	switch (st) {
+
+	switch (mouseSt) {
 	case INIT:
 		if (evt->type == RDOWN)
-			st = DRAW;
+			mouseSt = DRAW;
 		break;
 	case DRAW:
 		if (evt->type == MOVE) {
+
+
 			//[...] // need to check if events VERT_LINE  or HOR_TOLERANCE occur
 		} else if (evt->type == RUP)
-			state = INIT;
+			mouseSt = INIT;
 		break;
 	default:
 		break;
 	}
 }
 
-event_type_t event(){
-	long int y_cord=0xFFFFFF00;
-	long int x_cord=0xFFFFFF00;
-
-switch(st):
-				case INIT:
 
 
-					break;
+event_type_t event() {
+	long int y_cord = 0xFFFFFF00;
+	long int x_cord = 0xFFFFFF00;
+    static int direita=2;
+    int delta=0;
+	switch (st) {
+	case INIT:
+		if(packet[0] & MOUSE_RB)
+		return RDOWN;
+		break;
 
-				case DRAW
-					break;
+	case DRAW:
+		if(packet[0] & MOUSE_RB==0)
+				return RUP;
+
+		if((packet[0] & MOUSE_XSIGN)==0)
+			x_cord=packet[1];
+		else
+			x_cord=|packet[1];
 
 
-				default:
+		if((packet[0] & MOUSE_YSIGN)==0)
+			y_cord=packet[2];
+		else
+			y_cord=|packet[2];
 
-					break;
+		if((length>0 && direita && y_cord>0 && x_cord>0) || length<0 && direita && y_cord<0 && x_cord<0))
+			delta=delta+y_cord;
+			return MOVE;
 
+	break;
 
+	case MOVE:
+	break;
 
+	default:
+
+		break;
+
+	}
 }
 */
 
