@@ -9,24 +9,25 @@
 #include "kbd.h"
 #include "timer.h"
 
-
+extern unsigned long packet[3];
+extern long xdelta, ydelta;
 typedef enum {
 	INIT, DRAW, COMP
 } state_t;
 
 typedef enum {
-	RDOWN, RUP, MOVE
+	RDOWN, RUP, MOV
 } ev_type_t;
 
 struct event_t {
-	ev_type_t evType;
+	ev_type_t type;
 	short length;
-
 	short deltax;
 	short deltay;
 };
 
-//static state_t mouseSt = INIT; // initial state; keep state
+static state_t mouseSt = INIT; // initial state; keep state
+static ev_type_t type,short deltax=0,short deltay=0;
 
 unsigned long cleanOutBuf(){
 	unsigned long  stat, code;
@@ -77,26 +78,13 @@ int mouse_test_packet(unsigned short cnt){
 		} else {
 		}
 	}
-/*
-	if (sys_inb_cnt(STAT_REG, &stat) != Ok)
-		return KBD_TEST_SCAN_ERROR;
 
-	if (stat & OBF) {
-		if (sys_inb_cnt(OUT_BUF, &code) != Ok)
-			return KBD_TEST_SCAN_ERROR;
-	}
-
-	*/
 	if (mouse_unsubscribe_int() != 0)
 		return 1;
-
-
 
 	return Ok;
 
 }	
-
-
 
 int mouse_test_async(unsigned short idle_time) {
 
@@ -175,8 +163,6 @@ int mouse_test_async(unsigned short idle_time) {
 
 }	
 
-
-
 int mouse_test_remote(unsigned long period, unsigned short cnt) {
 	mouse_subscribe_Exc_int();
 
@@ -236,10 +222,9 @@ int mouse_test_gesture(short length){
 	int ipc_status, r, irq_set;
 
 	message msg;
-
 	struct event_t event;
-	event.deltax = 0;
-	event.deltay = 0;
+	event.deltax = xdelta;
+	event.deltay = ydelta;
 	event.length = length;
 
 
@@ -251,21 +236,21 @@ int mouse_test_gesture(short length){
 
 	while (1) {
 
-
 		if ((r = driver_receive(ANY, &msg, &ipc_status)) != 0) {
 			printf("driver_receive failed with: %d", r);
 			continue;
 		}
-
-
 		if (is_ipc_notify(ipc_status)) { /* received notification */
 			switch (_ENDPOINT_P(msg.m_source)) {
 			case HARDWARE: /* hardware interrupt notification */
 				if (msg.NOTIFY_ARG & irq_set) { /* subscribed interrupt */
-
 					mouse_handler();
 					if (fullPacket) {
 
+if((packet[0] & MOUSE_RB) && deltax>0 && deltay<0){
+	short newlength=length;
+	newlength=newlength+deltax;
+}
 
 
 						print_packets();
@@ -279,16 +264,7 @@ int mouse_test_gesture(short length){
 		} else {
 		}
 	}
-	/*
-	if (sys_inb_cnt(STAT_REG, &stat) != Ok)
-		return KBD_TEST_SCAN_ERROR;
 
-	if (stat & OBF) {
-		if (sys_inb_cnt(OUT_BUF, &code) != Ok)
-			return KBD_TEST_SCAN_ERROR;
-	}
-
-	*/
 	if (mouse_unsubscribe_int() != 0)
 		return 1;
 
@@ -298,9 +274,7 @@ int mouse_test_gesture(short length){
 
 }
 
-
-/*
-state_t check_hor_line(event_t * evt) {
+state_t statereader(event_t * evt) {
 
 	switch (mouseSt) {
 	case INIT:
@@ -308,60 +282,49 @@ state_t check_hor_line(event_t * evt) {
 			mouseSt = DRAW;
 		break;
 	case DRAW:
-		if (evt->type == MOVE) {
-
-
-			//[...] // need to check if events VERT_LINE  or HOR_TOLERANCE occur
-		} else if (evt->type == RUP)
+if (evt->type == RUP){
 			mouseSt = INIT;
-		break;
+	}else if(evt->type==MOV){
+
+	}
+	break;
 	default:
 		break;
 	}
 }
 
+ev_type_t event() {
 
-
-event_type_t event() {
-	long int y_cord = 0xFFFFFF00;
-	long int x_cord = 0xFFFFFF00;
     static int direita=2;
-    int delta=0;
-	switch (st) {
+    int length=0;
+	switch (mousest) {
 	case INIT:
 		if(packet[0] & MOUSE_RB)
-		return RDOWN;
+		type=RDOWN;
+		return type;
 		break;
 
 	case DRAW:
-		if(packet[0] & MOUSE_RB==0)
-				return RUP;
+		if((packet[0] & MOUSE_RB)==0){
+			type=RUP;
+			return RUP;}
 
-		if((packet[0] & MOUSE_XSIGN)==0)
-			x_cord=packet[1];
-		else
-			x_cord=|packet[1];
+		if((packet[0] & MOUSE_XSIGN)==0){
+			deltax=packet[1];}
+		else{
+			deltax =| packet[1];}
 
+		if((packet[0] & MOUSE_YSIGN)==0){
+			deltay=packet[2];}
+		else{
+			deltay =| packet[2];}
 
-		if((packet[0] & MOUSE_YSIGN)==0)
-			y_cord=packet[2];
-		else
-			y_cord=|packet[2];
-
-		if((length>0 && direita && y_cord>0 && x_cord>0) || length<0 && direita && y_cord<0 && x_cord<0))
-			delta=delta+y_cord;
-			return MOVE;
-
+		if((length>0 && direita && deltax>0 && deltay>0) || length<0 && direita && deltax<0 && deltay<0){
+			type=MOV;
+			return type;}
 	break;
-
-	case MOVE:
-	break;
-
 	default:
-
 		break;
 
 	}
 }
-*/
-
