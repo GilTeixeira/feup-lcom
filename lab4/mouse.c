@@ -89,6 +89,16 @@ void mouse_handler() {
 
 }
 
+char convertNumber(char number, unsigned long msb) {
+	if (msb == 0)
+		return number;
+	//else return
+	long teste = (~(number|0x100) + 1) & 0xFF;
+	printf("LB = %d \n", packet[0]);
+	printf("LB =  0x%02x \n", packet[0]);
+
+}
+
 
 int print_packets(){
 
@@ -104,6 +114,13 @@ int print_packets(){
 	printf("RB = %d ", packet[0] & MOUSE_RB ? 1 : 0);
 	printf("XOV = %d ", packet[0] & MOUSE_XOVFL ? 1 : 0);
 	printf("YOV = %d \n", packet[0] & MOUSE_YOVFL ? 1 : 0);
+
+	char number=0x43;
+	number = convertNumber(number,1);
+	//printf("B1 = 0x%02x \n", number);
+
+
+
 
 
 
