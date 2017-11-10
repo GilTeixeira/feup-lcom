@@ -6,7 +6,7 @@
 #define BIT(n) (0x01<<(n))
 
 #define OUT_BUF 0x60
-#define IN_BUF 0x60  //estava 0x64
+#define IN_BUF 0x60
 #define STAT_REG 0x64
 #define KBC_CMD_REG 0x64
 

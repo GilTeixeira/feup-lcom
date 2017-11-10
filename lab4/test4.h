@@ -90,6 +90,8 @@ int mouse_test_remote(unsigned long period, unsigned short cnt);
 int mouse_test_gesture(short length);
 
 
+unsigned long cleanOutBuf();
+
 
 long getDeltaX();
 

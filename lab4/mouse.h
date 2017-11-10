@@ -6,6 +6,18 @@
 #define IRQ_MOUSE_ENAB_ERROR 27
 #define IRQ_MOUSE_DISAB_ERROR 28
 #define IRQ_MOUSE_REM_ERROR 29
+#define MOUSE_WRITE_CMD_ERROR 30
+#define MOUSE_SYS_OUT_ERROR 31
+#define MOUSE_SUB_ERROR 32
+#define MOUSE_UNSUB_ERROR 33
+#define CLEAN_OUTBUFF_ERROR 34
+#define ENAB_STREAM_MODE_ERROR 35
+
+
+
+
+//#define IRQ_MOUSE_REM_ERROR 30
+//#define IRQ_MOUSE_REM_ERROR 30
 
 
 //TO DO:ALTERAR
@@ -31,3 +43,4 @@ unsigned long mouseReadOutput();
 long convertNumber(char number, unsigned long msb);
 
 #endif
+

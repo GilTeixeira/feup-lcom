@@ -10,24 +10,10 @@
 #include "timer.h"
 #include "test4.h"
 
-
-
 extern unsigned long packet[3];
 extern int fullPacket;
 
-static state_t mouseSt = INIT; // initial state; keep state
-
-unsigned long cleanOutBuf() {
-	unsigned long stat, code;
-	if (sys_inb(STAT_REG, &stat) != Ok)
-		return SYS_IN_ERROR;
-
-	if (stat & OBF) {
-		if (sys_inb(OUT_BUF, &code) != Ok)
-			return SYS_IN_ERROR;
-	}
-	return Ok;
-}
+static state_t mouseSt = INIT;
 
 int mouse_test_packet(unsigned short cnt) {
 	int ipc_status, r, irq_set;
@@ -36,11 +22,13 @@ int mouse_test_packet(unsigned short cnt) {
 	message msg;
 	irq_set = mouse_subscribe_int();
 
-	//if (irq_set < 0)
-	//return KBD_SUB_ERROR;
-	enable_stream_mode();
+	if (irq_set < 0)
+		return MOUSE_SUB_ERROR;
 
-	while (curr_num_packets < cnt * 3) {
+	if (enable_stream_mode() != 0)
+		return ENAB_STREAM_MODE_ERROR;
+
+	while (curr_num_packets < cnt) {
 
 		if ((r = driver_receive(ANY, &msg, &ipc_status)) != 0) {
 			printf("driver_receive failed with: %d", r);
@@ -53,9 +41,10 @@ int mouse_test_packet(unsigned short cnt) {
 				if (msg.NOTIFY_ARG & irq_set) { /* subscribed interrupt */
 
 					mouse_handler();
-					if (fullPacket)
+					if (fullPacket) {
 						print_packets();
-					curr_num_packets++;
+						curr_num_packets++;
+					}
 				}
 				break;
 			default:
@@ -64,18 +53,12 @@ int mouse_test_packet(unsigned short cnt) {
 		} else {
 		}
 	}
-	/*
-	 if (sys_inb_cnt(STAT_REG, &stat) != Ok)
-	 return KBD_TEST_SCAN_ERROR;
 
-	 if (stat & OBF) {
-	 if (sys_inb_cnt(OUT_BUF, &code) != Ok)
-	 return KBD_TEST_SCAN_ERROR;
-	 }
+	if (cleanOutBuf() != Ok)
+		return CLEAN_OUTBUFF_ERROR;
 
-	 */
-	if (mouse_unsubscribe_int() != 0)
-		return 1;
+	if (mouse_unsubscribe_int() != Ok)
+		return MOUSE_UNSUB_ERROR;
 
 	return Ok;
 
@@ -84,7 +67,6 @@ int mouse_test_packet(unsigned short cnt) {
 int mouse_test_async(unsigned short idle_time) {
 
 	int ipc_status, r, irq_set_timer, irq_set_mouse;
-	unsigned long code = 0, stat;
 
 	int counter = 0;
 
@@ -92,12 +74,11 @@ int mouse_test_async(unsigned short idle_time) {
 	irq_set_mouse = mouse_subscribe_int();
 
 	if (irq_set_mouse < 0)
-		//TODO alterar
-		return KBD_SUB_ERROR;
+		return MOUSE_SUB_ERROR;
 
 	irq_set_timer = timer_subscribe_int();
 
-	if (irq_set_timer < 0)
+	if (irq_set_timer < Ok)
 		return TIMER_SUB_ERROR;
 
 	while (counter != 60 * idle_time) {
@@ -117,17 +98,6 @@ int mouse_test_async(unsigned short idle_time) {
 						print_packets();
 					counter = 0;
 
-					/*if (code == FIRST_BYTE)
-					 isSecondByte = 1;
-					 kbd_handler();
-					 code = globalCode;
-					 if (code != FIRST_BYTE)
-					 printcode(code, isSecondByte);
-
-					 isSecondByte = 0;
-					 counter = 0;
-					 */
-
 				}
 				if (msg.NOTIFY_ARG & irq_set_timer) { /* subscribed interrupt */
 					counter++;
@@ -140,74 +110,48 @@ int mouse_test_async(unsigned short idle_time) {
 		}
 	}
 
-	if (sys_inb(STAT_REG, &stat) != Ok)
-		return SYS_IN_ERROR;
-
-	if (stat & OBF) {
-		if (sys_inb(OUT_BUF, &code) != Ok)
-			return SYS_IN_ERROR;
-	}
+	cleanOutBuf();
 
 	if (timer_unsubscribe_int() != Ok)
 		return TIMER_UNSUB_ERROR;
 
 	if (mouse_unsubscribe_int() != Ok)
-		return KBD_UNSUB_ERROR;
+		return MOUSE_UNSUB_ERROR;
 
 	return Ok;
 
 }
 
 int mouse_test_remote(unsigned long period, unsigned short cnt) {
-	mouse_subscribe_Exc_int();
 
-	//printf("1\n");
+	int irq_set;
+	irq_set = mouse_subscribe_Exc_int();
+
+	if (irq_set < 0)
+		return MOUSE_SUB_ERROR;
 
 	mouseWriteCommandByte(DISABLE_DR);
-	//printf("2\n");
 	mouseWriteCommandByte(SET_REMOTE_MODE);
-	//printf("3\n");
-	/*
-	 cmd_byte = ReadCommandByte();
-	 printf("4\n");
-	 cmd_byte = cmd_byte | DISABLE_MOUSE_INT;
-	 printf("5\n");
 
-	 WriteCommandByte(KBC_CMD_REG, cmd_byte);
-	 */
-	//printf("6\n");
 	while (cnt > 0) {
-		//printf("7\n");
 		mouseWriteCommandByte(READ_DATA);
+
 		int i;
 		for (i = 0; i < 3; i++)
 			mouse_handler();
 
 		cnt--;
-
 		print_packets();
 
 		tickdelay(micros_to_ticks(period * 1000));
-
 	}
 
-	//enable Minix’s IHby writing to the KBC’s command byte
-	/*
-	 cmd_byte = ReadCommandByte();
-	 cmd_byte = cmd_byte | ENABLE_MOUSE_INT;
-
-	 WriteCommandByte(KBC_CMD_REG, cmd_byte);
-	 */
-	// Set	stream mode
-	// ensure data reporting is disabled
-	//printf("7\n");
 	enable_stream_mode();
-	//printf("8\n");
-
 	cleanOutBuf();
-	//printf("9\n");
-	mouse_unsubscribe_int();
-	return 0;
+	if (mouse_unsubscribe_int() != Ok)
+		return MOUSE_UNSUB_ERROR;
+
+	return Ok;
 }
 
 int mouse_test_gesture(short length) {
@@ -221,12 +165,6 @@ int mouse_test_gesture(short length) {
 	mouseEvent.deltay = 0;
 	mouseEvent.length_moved = 0;
 	mouseEvent.length_to_move = length;
-	/*
-	 ev_type_t evType;
-	 short length_moved;
-	 short deltax;
-	 short deltay;
-	 */
 
 	irq_set = mouse_subscribe_int();
 
@@ -251,10 +189,11 @@ int mouse_test_gesture(short length) {
 						processEvent(&mouseEvent);
 						processStateMachine(&mouseEvent);
 
-						printf("\n state = %d distancemoved= %d\n", mouseSt, mouseEvent.length_moved);
+						printf("\n state = %d distancemoved= %d\n", mouseSt,
+								mouseEvent.length_moved);
 
 						print_packets();
-						//return xdelta+ydelta;
+
 					}
 
 				}
@@ -265,21 +204,26 @@ int mouse_test_gesture(short length) {
 		} else {
 		}
 	}
-	/*
-	 if (sys_inb_cnt(STAT_REG, &stat) != Ok)
-	 return KBD_TEST_SCAN_ERROR;
 
-	 if (stat & OBF) {
-	 if (sys_inb_cnt(OUT_BUF, &code) != Ok)
-	 return KBD_TEST_SCAN_ERROR;
-	 }
+	cleanOutBuf();
 
-	 */
-	if (mouse_unsubscribe_int() != 0)
+	if (mouse_unsubscribe_int() != Ok)
 		return 1;
 
 	return Ok;
 
+}
+
+unsigned long cleanOutBuf() {
+	unsigned long stat, code;
+	if (sys_inb(STAT_REG, &stat) != Ok)
+		return SYS_IN_ERROR;
+
+	if (stat & OBF) {
+		if (sys_inb(OUT_BUF, &code) != Ok)
+			return SYS_IN_ERROR;
+	}
+	return Ok;
 }
 
 long getDeltaX() {
@@ -299,7 +243,6 @@ int isRightButtonPressed() {
 	return packet[0] & MOUSE_RB;
 
 }
-
 
 void processStateMachine(struct event_t * mouseEvent) {
 
@@ -348,12 +291,11 @@ void processEvent(struct event_t * mouseEvent) {
 	mouseEvent->deltax = getDeltaX();
 	mouseEvent->deltay = getDeltaY();
 
-	if(!isRightButtonPressed()){
+	if (!isRightButtonPressed()) {
 		mouseEvent->length_moved = 0;
 		mouseEvent->evType = BTTUP;
 		return;
 	}
-
 
 	switch (mouseSt) {
 	case INIT:
@@ -422,8 +364,5 @@ void processEvent(struct event_t * mouseEvent) {
 
 	}
 
-
 }
-
-
 
