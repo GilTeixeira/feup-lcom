@@ -2,15 +2,23 @@
 #define __TEST4_H
 
 
-
+/**
+ * @brief Types of States
+ */
 typedef enum {
 	INIT, MBTTPRESSED, MOVUPRIGHT, MOVEDOWNLEFT, DONE
 } state_t;
 
+/**
+ * @brief Types of Events
+ */
 typedef enum {
 	BTTDOWN, BTTUP, MOVEDUPRIGHT, MOVEDDOWNLEFT, COMPLETED
 } ev_type_t;
 
+/**
+ * @brief Struct to hold event information
+ */
 struct event_t {
 	ev_type_t evType;
 	short length_moved;
@@ -89,18 +97,43 @@ int mouse_test_remote(unsigned long period, unsigned short cnt);
 
 int mouse_test_gesture(short length);
 
-
+/**
+ * @brief Clears Outbuff
+ *
+ * @return Return 0 upon success and non-zero otherwise
+ */
 unsigned long cleanOutBuf();
 
-
+/**
+ * @brief Get Variation of Mouse X coord
+ *
+ * @return Return Variation of Mouse X coord
+ */
 long getDeltaX();
 
+/**
+ * @brief Get Variation of Mouse Y coord
+ *
+ * @return Return Variation of Mouse Y coord
+ */
 long getDeltaY();
 
+/**
+ * @brief Checks if mouse right button is pressed
+ *
+ * @return Return 0 if it isnt and non-zero otherwise
+ */
 int isRightButtonPressed();
 
+/**
+ * @brief Process an Event
+ */
 void processEvent(struct event_t * mouseEvent);
 
+
+/**
+ * @brief Process a State Machine
+ */
 void processStateMachine(struct event_t * mouseEvent);
 
 

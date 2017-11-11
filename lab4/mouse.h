@@ -16,30 +16,76 @@
 
 
 
-//#define IRQ_MOUSE_REM_ERROR 30
-//#define IRQ_MOUSE_REM_ERROR 30
 
-
-//TO DO:ALTERAR
-//#define KBD_SYS_IN_ERROR 29
-
-extern int fullPacket;
-
-
+/**
+ * @brief Subscribes Mouse interrupts
+ *
+ * @return Return 0 upon success and non-zero otherwise
+ */
 int mouse_subscribe_int(void);
 
+/**
+ * @brief Unsubscribes Mouse interrupts
+ *
+ * @return Return 0 upon success and non-zero otherwise
+ */
 int mouse_unsubscribe_int();
 
+/**
+ * @brief Read a Packets Byte
+ *
+ * @return Return the Byte read
+ */
 unsigned long readByte();
 
+/**
+ * @brief Mouse interrupt handler
+ */
 void mouse_handler();
+
+/**
+ * @brief Subscribes Mouse interrupts in exclusive mode only
+ *
+ * @return Return 0 upon success and non-zero otherwise
+ */
 int mouse_subscribe_Exc_int(void);
 
+/**
+ * @brief Shows Packet Read
+ *
+ * Displays in a human friendly way the packets
+ */
 int print_packets();
 
+/**
+ * @brief Enables Mouses Stream Mode
+ *
+ * @return Return 0 upon success and non-zero otherwise
+ */
 int enable_stream_mode();
+
+/**
+ * @brief Write a Mouse CommandByte
+ *
+ * @param cmd the cmd
+ * @return Return 0 upon success and non-zero otherwise
+ */
 int mouseWriteCommandByte(unsigned long cmd);
+
+/**
+ * @brief Read mouse Output
+ *
+ * @return Return the mouse Output
+ */
 unsigned long mouseReadOutput();
+
+/**
+ * @brief Converts number in Twos complement to signed number representation
+ *
+ * @param number the number without its most significant bit
+ * @param msb the most significant bit
+ * @return Return the number in signed number representation
+ */
 long convertNumber(char number, unsigned long msb);
 
 #endif
