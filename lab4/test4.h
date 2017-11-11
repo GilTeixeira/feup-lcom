@@ -1,7 +1,6 @@
 #ifndef __TEST4_H
 #define __TEST4_H
 
-
 /**
  * @brief Types of States
  */
@@ -27,7 +26,6 @@ struct event_t {
 	short length_to_move;
 };
 
-
 /** @defgroup test4 test4
  * @{
  *
@@ -47,8 +45,6 @@ struct event_t {
 
 int mouse_test_packet(unsigned short cnt);
 
-
-
 /** 
  * @brief To test handling of more than one interrupt
  * 
@@ -61,7 +57,6 @@ int mouse_test_packet(unsigned short cnt);
  */
 
 int mouse_test_async(unsigned short idle_time);
-
 
 /** 
  * @brief To test PS/2 remote mode operation 
@@ -93,7 +88,6 @@ int mouse_test_remote(unsigned long period, unsigned short cnt);
  * 
  * @return Return 0 upon success and non-zero otherwise
  */
-
 
 int mouse_test_gesture(short length);
 
@@ -130,11 +124,9 @@ int isRightButtonPressed();
  */
 void processEvent(struct event_t * mouseEvent);
 
-
 /**
  * @brief Process a State Machine
  */
 void processStateMachine(struct event_t * mouseEvent);
-
 
 #endif /* __TEST_4.H */

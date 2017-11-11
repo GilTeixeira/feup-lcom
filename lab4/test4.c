@@ -197,9 +197,6 @@ int mouse_test_gesture(short length) {
 						processEvent(&mouseEvent);
 						processStateMachine(&mouseEvent);
 
-						printf("\n state = %d distancemoved= %d\n", mouseSt,
-								mouseEvent.length_moved);
-
 						print_packets();
 
 					}
@@ -214,7 +211,7 @@ int mouse_test_gesture(short length) {
 	}
 
 	if (cleanOutBuf() != Ok)
-			return CLEAN_OUTBUFF_ERROR;
+		return CLEAN_OUTBUFF_ERROR;
 
 	if (mouse_unsubscribe_int() != Ok)
 		return 1;
@@ -352,7 +349,6 @@ void processEvent(struct event_t * mouseEvent) {
 			mouseEvent->evType = MBTTPRESSED;
 
 		}
-
 
 		break;
 	case MOVEDOWNLEFT:

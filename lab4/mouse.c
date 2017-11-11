@@ -142,7 +142,6 @@ int enable_stream_mode() {
 
 }
 
-
 int mouseWriteCommandByte(unsigned long cmd) {
 	unsigned long stat;
 	while (1) {
@@ -168,7 +167,6 @@ int mouseWriteCommandByte(unsigned long cmd) {
 		tickdelay(micros_to_ticks(DELAY_US));
 	}
 }
-
 
 unsigned long mouseReadOutput() {
 	unsigned long stat, mouseOutput;

@@ -1,7 +1,6 @@
 #ifndef __MOUSE_H
 #define __MOUSE_H
 
-
 #define IRQ_MOUSE_SET_ERROR 26
 #define IRQ_MOUSE_ENAB_ERROR 27
 #define IRQ_MOUSE_DISAB_ERROR 28
@@ -12,10 +11,6 @@
 #define MOUSE_UNSUB_ERROR 33
 #define CLEAN_OUTBUFF_ERROR 34
 #define ENAB_STREAM_MODE_ERROR 35
-
-
-
-
 
 /**
  * @brief Subscribes Mouse interrupts
