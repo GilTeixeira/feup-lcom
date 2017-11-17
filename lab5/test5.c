@@ -1,6 +1,11 @@
+#include <unistd.h>
+
 void *video_test_init(unsigned short mode, unsigned short delay) {
-	
-	/* To be completed */
+
+	void * ret = vg_init(mode);
+	sleep(sleep);
+	vg_exit();
+	return ret;
 	
 }
 

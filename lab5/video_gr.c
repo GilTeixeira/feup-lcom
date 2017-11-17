@@ -5,6 +5,7 @@
 #include <sys/types.h>
 
 #include "vbe.h"
+#include "defs.h"
 
 /* Constants for VBE 0x105 mode */
 
@@ -15,7 +16,7 @@
  * Better run my version of lab5 as follows:
  *     service run `pwd`/lab5 -args "mode 0x105"
  */
-#define VRAM_PHYS_ADDR	0xF0000000
+#define VRAM_PHYS_ADDR	0xE0000000
 #define H_RES             1024
 #define V_RES		  768
 #define BITS_PER_PIXEL	  8
@@ -41,4 +42,50 @@ int vg_exit() {
       return 1;
   } else
       return 0;
+}
+
+
+void *vg_init(unsigned short mode){
+
+	struct reg86u reg86;
+	reg86.u.b.ah = VBE_CALL; // VBE call,
+	reg86.u.b.al = SET_VBE_MODE; //function 02 -- set VBE mode
+	reg86.u.w.bx = SET_LINEAR_FRAME_BUFFER | mode; // set bit 14| mode
+	reg86.u.b.intno = VIDEO_CARD_INTERRUPT;
+
+	if (sys_int86(&reg86) != OK) {
+		printf("set_vbe_mode: sys_int86() failed \n");
+		return NULL;
+	}
+
+
+
+
+
+	int r;
+	struct mem_range mr;
+	unsigned int vram_base; /* VRAM's physical addresss */
+	unsigned int vram_size; /* VRAM's size, but you can use
+	 the frame-buffer size, instead */
+	void *video_mem; /* frame-buffer VM address */
+
+	/* Allow memory mapping */
+
+	mr.mr_base = (phys_bytes) vram_base;
+	mr.mr_limit = mr.mr_base + vram_size;
+
+	if (OK != (r = sys_privctl(SELF, SYS_PRIV_ADD_MEM, &mr)))
+		panic("sys_privctl (ADD_MEM) failed: %d\n", r);
+
+	/* Map memory */
+
+	video_mem = vm_map_phys(SELF, (void *) mr.mr_base, vram_size);
+
+	if (video_mem == MAP_FAILED)
+		panic("couldn't map video memory");
+
+	return video_mem;
+
+
+
 }
