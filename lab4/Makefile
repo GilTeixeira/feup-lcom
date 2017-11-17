@@ -4,20 +4,18 @@ COMPILER_TYPE= gnu
 
 CC= gcc
 
-PROG= lab5
-SRCS= lab5.c vbe.c video_gr.c video_test.c test5.c 
+PROG= lab4
+SRCS= lab4.c test4.c mouse.c kbd.c timer.c 
 
 CFLAGS= -Wall
 CPPFLAGS += -D LAB4
 
 DPADD+= ${LIBDRIVER} ${LIBSYS}
-LDADD+= -llm -ldriver -lsys
+LDADD+= -ldriver -lsys
 
 LDFLAGS+= -L .
 
 MAN=
-
-BINDIR?= /usr/sbin
 
 .include <bsd.prog.mk>
 .include <bsd.gcc.mk>
