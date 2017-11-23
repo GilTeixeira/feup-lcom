@@ -44,11 +44,82 @@ int video_test_square(unsigned short x, unsigned short y, unsigned short size, u
 
 }
 
-int video_test_line(unsigned short xi, unsigned short yi, 
-		           unsigned short xf, unsigned short yf, unsigned long color) {
-	
-	/* To be completed */
-	
+int video_test_line(unsigned short xi, unsigned short yi, unsigned short xf,
+		unsigned short yf, unsigned long color) {
+
+	char * ptr = vg_init(DEFAULT_MODE);
+
+	int d;
+	int dx, dy;
+	int Eincr, NEincr;
+	int yincr;
+	int t;
+
+	dx = abs(xf - xi);
+	dy = abs(yf - yi);
+	if (dy <= dx) {
+		if (xf < xi) {
+			t = xf;
+			xf = xi;
+			xi = t;
+			t = yf;
+			yf = yi;
+			yi = t;
+		}
+		if (yf > yi)
+			yincr = 1;
+		else
+			yincr = -1;
+		d = 2 * dy - dx;
+		Eincr = 2 * dy;
+		NEincr = 2 * (dy - dx);
+		setColorPixel(xi, yi, color, ptr);
+		//putPixel(xi, yi, color);
+
+		for (xi++; xi <= xf; xi++) {
+			if (d < 0)
+				d += Eincr;
+			else {
+				d += NEincr;
+				yi += yincr;
+			}
+//
+			setColorPixel(xi, yi, color, ptr);
+		}
+	} else {
+
+		if (yf < yi) {
+			t = xf;
+			xf = xi;
+			xi = t;
+			t = yf;
+			yf = yi;
+			yi = t;
+		}
+		if (xf > xi)
+			yincr = 1;
+		else
+			yincr = -1;
+		d = 2 * dx - dy;
+		Eincr = 2 * dx;
+		NEincr = 2 * (dx - dy);
+		setColorPixel(xi, yi, color, ptr);
+
+		for (yi++; yi <= yf; yi++) {
+			if (d < 0)
+				d += Eincr;
+			else {
+				d += NEincr;
+				xi += yincr;
+			}
+			setColorPixel(xi, yi, color, ptr);
+		}
+	}
+
+	sleep(10);
+
+	vg_exit();
+
 }
 	
 int test_xpm(char *xpm[], unsigned short xi, unsigned short yi) {
