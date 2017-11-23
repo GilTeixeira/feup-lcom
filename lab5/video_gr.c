@@ -58,14 +58,10 @@ void *vg_init(unsigned short mode){
 		return NULL;
 	}
 
-
-
-
-
 	int r;
 	struct mem_range mr;
-	unsigned int vram_base; /* VRAM's physical addresss */
-	unsigned int vram_size; /* VRAM's size, but you can use
+	unsigned int vram_base = VRAM_PHYS_ADDR; /* VRAM's physical addresss */
+	unsigned int vram_size = H_RES * V_RES * BITS_PER_PIXEL; /* VRAM's size, but you can use
 	 the frame-buffer size, instead */
 	void *video_mem; /* frame-buffer VM address */
 

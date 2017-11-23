@@ -3,8 +3,10 @@
 void *video_test_init(unsigned short mode, unsigned short delay) {
 
 	void * ret = vg_init(mode);
-	sleep(sleep);
+	sleep(delay);
 	vg_exit();
+
+	printf("/n/n/n %d", mode);
 	return ret;
 	
 }
