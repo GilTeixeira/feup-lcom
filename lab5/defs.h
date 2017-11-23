@@ -9,3 +9,5 @@
 #define VIDEO_CARD_INTERRUPT 0x10
 
 
+#define DEFAULT_MODE 0x105
+

@@ -1,6 +1,9 @@
 #ifndef __VIDEO_GR_H
 #define __VIDEO_GR_H
 
+
+
+
 /** @defgroup video_gr video_gr
  * @{
  *
@@ -26,6 +29,9 @@ void *vg_init(unsigned short mode);
  * @return 0 upon success, non-zero upon failure
  */
 int vg_exit(void);
+
+
+void setColorPixel(int x, int y, int color, char * ptr);
 
  /** @} end of video_gr */
  

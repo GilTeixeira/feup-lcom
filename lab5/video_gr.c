@@ -11,7 +11,7 @@
 
 /* The physical address may vary from VM to VM.
  * At one time it was 0xD0000000
- *  #define VRAM_PHYS_ADDR    0xD0000000 
+ *  #define VRAM_PHYS_ADDR    0xD0000000
  * Currently on lab B107 is 0xF0000000
  * Better run my version of lab5 as follows:
  *     service run `pwd`/lab5 -args "mode 0x105"
@@ -83,5 +83,9 @@ void *vg_init(unsigned short mode){
 	return video_mem;
 
 
+}
+
+void setColorPixel(int x, int y, int color, char * ptr){
+	*(ptr + y * H_RES + x) = color;
 
 }
