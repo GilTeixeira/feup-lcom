@@ -37,7 +37,7 @@ static void print_usage(char **argv) {
 }
 
 static int proc_args(int argc, char **argv) {
-	unsigned short mode, delay, x, y, size, xi, yi, xf, yf;
+	unsigned short mode, delay, x, y, size, xi, yi, xf, yf, choosenPix;
 	unsigned long color;
 	short speed, frame_rate;
 	char **xpm;
@@ -118,7 +118,29 @@ static int proc_args(int argc, char **argv) {
 			return 1;
 		}
 
-		xpm=penguin;
+		choosenPix = parse_ushort(argv[2], 10); /* Parses string to unsigned short */
+		if (choosenPix == USHRT_MAX)
+			return 1;
+
+		switch (choosenPix) {
+		case 1:
+			xpm = pic1;
+			break;
+		case 2:
+			xpm = pic2;
+			break;
+		case 3:
+			xpm = cross;
+			break;
+		case 4:
+			xpm = pic3;
+			break;
+		case 5:
+			xpm = penguin;
+			break;
+		default:
+			xpm = penguin;
+		}
 
 		xi = parse_ushort(argv[3], 10); /* Parses string to unsigned short */
 		if (xi == USHRT_MAX)
@@ -137,7 +159,29 @@ static int proc_args(int argc, char **argv) {
 			return 1;
 		}
 
-		/* TODO: Parse XPM */
+		choosenPix = parse_ushort(argv[2], 10); /* Parses string to unsigned short */
+		if (choosenPix == USHRT_MAX)
+			return 1;
+
+		switch (choosenPix) {
+		case 1:
+			xpm = pic1;
+			break;
+		case 2:
+			xpm = pic2;
+			break;
+		case 3:
+			xpm = cross;
+			break;
+		case 4:
+			xpm = pic3;
+			break;
+		case 5:
+			xpm = penguin;
+			break;
+		default:
+			xpm = penguin;
+		}
 
 		xi = parse_ushort(argv[3], 10); /* Parses string to unsigned short */
 		if (xi == USHRT_MAX)
