@@ -15,18 +15,20 @@
  * Currently on lab B107 is 0xF0000000
  * Better run my version of lab5 as follows:
  *     service run `pwd`/lab5 -args "mode 0x105"
- */
+
 #define VRAM_PHYS_ADDR	0xE0000000
 #define H_RES             1024
 #define V_RES		  768
 #define BITS_PER_PIXEL	  8
+ */
 
 /* Private global variables */
 
 static char *video_mem;		/* Process (virtual) address to which VRAM is mapped */
 
-static unsigned h_res;		/* Horizontal screen resolution in pixels */
-static unsigned v_res;		/* Vertical screen resolution in pixels */
+//IMP TODO por static outra vez
+ unsigned h_res;		/* Horizontal screen resolution in pixels */
+ unsigned v_res;		/* Vertical screen resolution in pixels */
 static unsigned bits_per_pixel; /* Number of VRAM bits per pixel */
 
 int vg_exit() {
@@ -48,6 +50,8 @@ int vg_exit() {
 void *vg_init(unsigned short mode){
 
 	struct reg86u reg86;
+	vbe_mode_info_t vmi_p;
+
 	reg86.u.b.ah = VBE_CALL; // VBE call,
 	reg86.u.b.al = SET_VBE_MODE; //function 02 -- set VBE mode
 	reg86.u.w.bx = SET_LINEAR_FRAME_BUFFER | mode; // set bit 14| mode
@@ -58,12 +62,20 @@ void *vg_init(unsigned short mode){
 		return NULL;
 	}
 
+	if (vbe_get_mode_info(mode, &vmi_p) != OK) {
+			//TODO printf
+			return NULL;
+	}
+
+	h_res =vmi_p.XResolution;
+	v_res =vmi_p.YResolution;
+	bits_per_pixel = vmi_p.BitsPerPixel;
+
 	int r;
 	struct mem_range mr;
-	unsigned int vram_base = VRAM_PHYS_ADDR; /* VRAM's physical addresss */
-	unsigned int vram_size = H_RES * V_RES * BITS_PER_PIXEL; /* VRAM's size, but you can use
-	 the frame-buffer size, instead */
-	void *video_mem; /* frame-buffer VM address */
+	unsigned int vram_base =  vmi_p.PhysBasePtr; /* VRAM's physical addresss */
+	unsigned int vram_size = h_res * v_res * bits_per_pixel; /* VRAM's size, but you can use the frame-buffer size, instead */
+
 
 	/* Allow memory mapping */
 
@@ -86,6 +98,6 @@ void *vg_init(unsigned short mode){
 }
 
 void setColorPixel(int x, int y, int color, char * ptr){
-	*(ptr + y * H_RES + x) = color;
+	*(ptr + y * h_res + x) = color;
 
 }

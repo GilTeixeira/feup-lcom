@@ -2,6 +2,7 @@
 
 #define VBE_CALL	0x4F
 
+#define GET_MODE_INFO 0x01
 #define SET_VBE_MODE	0x02
 #define SET_LINEAR_FRAME_BUFFER	1 << 14
 

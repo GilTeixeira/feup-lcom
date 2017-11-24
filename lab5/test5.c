@@ -1,6 +1,8 @@
 #include <unistd.h>
+#include <stdlib.h>
 #include "defs.h"
 #include "video_gr.h"
+#include "kbd.h"
 
 
 
@@ -37,10 +39,11 @@ int video_test_square(unsigned short x, unsigned short y, unsigned short size, u
 			}
 		}
 
-	sleep(10);
+	waitForEscRelease();
 
 	vg_exit();
 
+	return 0;
 
 }
 
@@ -116,27 +119,32 @@ int video_test_line(unsigned short xi, unsigned short yi, unsigned short xf,
 		}
 	}
 
-	sleep(10);
+	waitForEscRelease();
 
 	vg_exit();
+
+	return 0;
 
 }
 	
 int test_xpm(char *xpm[], unsigned short xi, unsigned short yi) {
 	
 	/* To be completed */
+	return 1;
 	
 }	
 
 int test_move(char *xpm[], unsigned short xi, unsigned short yi, unsigned short xf, unsigned short yf, short s, unsigned short f) {
 
 	/* To be completed */
+	return 1;
 	
 }	
 
 int test_controller() {
 
 	/* To be completed */
+	return 1;
 	
 }	
 	
