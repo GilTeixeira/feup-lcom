@@ -9,19 +9,27 @@
 #include "timer.h"
 #include "i8042.h"
 #include "i8254.h"
+#include "video_test.h"
+#include "test5.h"
 
 
 
 
 
-void *video_test_init(unsigned short mode, unsigned short delay) {
+int video_test_init(unsigned short mode, unsigned short delay) {
 
-	void * ret = vg_init(mode);
+
+	if(vg_init(mode) == NULL){
+		printf("Failed to initialize the video module in graphics mode");
+		return 0;
+	}
+
+
 	sleep(delay);
 	vg_exit();
 
 
-	return ret;
+	return 0;
 	
 }
 
@@ -30,12 +38,19 @@ int video_test_square(unsigned short x, unsigned short y, unsigned short size, u
 	
 	int i, j;
 	char * ptr = vg_init(DEFAULT_MODE);
+	if (ptr == NULL) {
+		printf("Failed to initialize the video module in graphics mode");
+		return 1;
+	}
 
 	for (i = x; i < size + x; i++) {
-			for (j = y; j < size + y; j++) {
-				setColorPixel(i+HRES/2-size/2, j+VRES/2-size/2, color, ptr);
-			}
+		for (j = y; j < size + y; j++) {
+			if (validCoord(i + HRES / 2 - size / 2, j + VRES / 2 - size / 2))
+				setColorPixel(i + HRES / 2 - size / 2, j + VRES / 2 - size / 2,
+						color, ptr);
 		}
+	}
+	video_dump_fb();
 
 	waitForEscRelease();
 
@@ -45,6 +60,8 @@ int video_test_square(unsigned short x, unsigned short y, unsigned short size, u
 
 }
 
+
+//based on
 int video_test_line(unsigned short xi, unsigned short yi, unsigned short xf,
 		unsigned short yf, unsigned long color) {
 
@@ -74,7 +91,8 @@ int video_test_line(unsigned short xi, unsigned short yi, unsigned short xf,
 		d = 2 * dy - dx;
 		Eincr = 2 * dy;
 		NEincr = 2 * (dy - dx);
-		setColorPixel(xi, yi, color, ptr);
+		if (validCoord(xi, yi))
+			setColorPixel(xi, yi, color, ptr);
 
 		for (xi++; xi <= xf; xi++) {
 			if (d < 0)
@@ -83,8 +101,8 @@ int video_test_line(unsigned short xi, unsigned short yi, unsigned short xf,
 				d += NEincr;
 				yi += yincr;
 			}
-//
-			setColorPixel(xi, yi, color, ptr);
+			if (validCoord(xi, yi))
+				setColorPixel(xi, yi, color, ptr);
 		}
 	} else {
 
@@ -103,7 +121,8 @@ int video_test_line(unsigned short xi, unsigned short yi, unsigned short xf,
 		d = 2 * dx - dy;
 		Eincr = 2 * dx;
 		NEincr = 2 * (dx - dy);
-		setColorPixel(xi, yi, color, ptr);
+		if (validCoord(xi, yi))
+			setColorPixel(xi, yi, color, ptr);
 
 		for (yi++; yi <= yf; yi++) {
 			if (d < 0)
@@ -112,9 +131,11 @@ int video_test_line(unsigned short xi, unsigned short yi, unsigned short xf,
 				d += NEincr;
 				xi += yincr;
 			}
-			setColorPixel(xi, yi, color, ptr);
+			if (validCoord(xi, yi))
+				setColorPixel(xi, yi, color, ptr);
 		}
 	}
+	video_dump_fb();
 
 	waitForEscRelease();
 
@@ -125,16 +146,15 @@ int video_test_line(unsigned short xi, unsigned short yi, unsigned short xf,
 }
 	
 int test_xpm(char *xpm[], unsigned short xi, unsigned short yi) {
-	int wd, hg, i, j;
-	char *sprite = read_xpm(xpm, &wd, &hg);
+
+
 
 	char * ptr = vg_init(DEFAULT_MODE);
 
-	for (i = 0; i < wd; i++) {
-				for (j = 0; j < hg; j++) {
-					setColorPixel(i+xi, j+yi, *(sprite + j * wd + i) , ptr);
-				}
-			}
+	print_sprite(xpm, xi, yi, ptr);
+
+
+	video_dump_fb();
 
 	
 	waitForEscRelease();
@@ -206,18 +226,31 @@ int test_move(char *xpm[], unsigned short xi, unsigned short yi, unsigned short 
 
 				}
 				if (msg.NOTIFY_ARG & irq_set_timer) { /* subscribed interrupt */
-					int xIncrement = s*counter*xInc;
-					int yIncrement = s*counter*yInc;
+					int xIncrement = s * counter * xInc;
+					int yIncrement = s * counter * yInc;
 
+					if (xi + xIncrement <= xf && yi + yIncrement <= yf) {
 
-
-					for (i = 0; i < wd; i++) {
-								for (j = 0; j < hg; j++) {
-									setColorPixel(i+xi+xIncrement, j+yi+yIncrement, *(sprite + j * wd + i) , ptr);
-								}
+						//apaga sprite anterior
+						for (i = 0; i < wd; i++) {
+							for (j = 0; j < hg; j++) {
+								setColorPixel(i + xi + xIncrement - s * xInc,
+										j + yi + yIncrement - s * yInc, 0, ptr);
 							}
+						}
 
-					counter++;
+						//imprime sprite
+						for (i = 0; i < wd; i++) {
+							for (j = 0; j < hg; j++) {
+								setColorPixel(i + xi + xIncrement,
+										j + yi + yIncrement,
+										*(sprite + j * wd + i), ptr);
+							}
+						}
+						video_dump_fb();
+
+						counter++;
+					}
 				}
 				break;
 
@@ -253,5 +286,8 @@ int test_controller() {
 	/* To be completed */
 	return 1;
 	
-}	
+}
+
+
 	
+

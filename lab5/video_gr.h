@@ -33,6 +33,12 @@ int vg_exit(void);
 
 void setColorPixel(int x, int y, int color, char * ptr);
 
+
+
+int validCoord(int x, int y);
+
+int print_sprite(char *xpm[], unsigned short xi, unsigned short yi, char * ptr);
+
  /** @} end of video_gr */
  
 #endif /* __VIDEO_GR_H */

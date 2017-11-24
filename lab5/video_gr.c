@@ -5,6 +5,7 @@
 #include <sys/types.h>
 
 #include "vbe.h"
+#include "read_xpm.h"
 #include "defs.h"
 
 /* Constants for VBE 0x105 mode */
@@ -101,3 +102,27 @@ void setColorPixel(int x, int y, int color, char * ptr){
 	*(ptr + y * h_res + x) = color;
 
 }
+
+int validCoord(int x, int y){
+	if(x<HRES && y<VRES)
+		return 1;
+	else return 0;
+
+
+}
+
+int print_sprite(char *xpm[], unsigned short xi, unsigned short yi, char * ptr) {
+
+	int wd, hg, i, j;
+	char *sprite = read_xpm(xpm, &wd, &hg);
+
+	for (i = 0; i < wd; i++) {
+		for (j = 0; j < hg; j++)
+			if (validCoord(i + xi, j + yi))
+				setColorPixel(i + xi, j + yi, *(sprite + j * wd + i), ptr);
+
+	}
+
+	return 0;
+}
+
