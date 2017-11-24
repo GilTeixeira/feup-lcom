@@ -20,16 +20,21 @@ int video_test_init(unsigned short mode, unsigned short delay) {
 
 
 	if(vg_init(mode) == NULL){
-		printf("Failed to initialize the video module in graphics mode");
-		return 0;
+		printf("Failed to initialize the video module in graphics mode \n");
+		return 1;
 	}
 
 
 	sleep(delay);
-	vg_exit();
+
+	if(vg_exit()!=Ok){
+		printf("Failed to returns to default Minix 3 text mode \n");
+		return 1;
+
+	}
 
 
-	return 0;
+	return Ok;
 	
 }
 
@@ -39,7 +44,7 @@ int video_test_square(unsigned short x, unsigned short y, unsigned short size, u
 	int i, j;
 	char * ptr = vg_init(DEFAULT_MODE);
 	if (ptr == NULL) {
-		printf("Failed to initialize the video module in graphics mode");
+		printf("Failed to initialize the video module in graphics mode \n");
 		return 1;
 	}
 
@@ -54,24 +59,34 @@ int video_test_square(unsigned short x, unsigned short y, unsigned short size, u
 
 	waitForEscRelease();
 
-	vg_exit();
+	if (vg_exit() != Ok) {
+		printf("Failed to returns to default Minix 3 text mode \n");
+		return 1;
 
-	return 0;
+	}
+
+	return Ok;
 
 }
 
 
-//based on
+/* Based on
+ * VESA  BIOS  EXTENSION  (VBE)
+ * Core  Functions
+ * Standard
+ * Version:  2.0
+ * Page 87
+ */
 int video_test_line(unsigned short xi, unsigned short yi, unsigned short xf,
 		unsigned short yf, unsigned long color) {
 
 	char * ptr = vg_init(DEFAULT_MODE);
+	if (ptr == NULL) {
+		printf("Failed to initialize the video module in graphics mode \n");
+		return 1;
+	}
 
-	int d;
-	int dx, dy;
-	int Eincr, NEincr;
-	int yincr;
-	int t;
+	int d, dx, dy, Eincr, NEincr,yincr, t;
 
 	dx = abs(xf - xi);
 	dy = abs(yf - yi);
@@ -139,9 +154,13 @@ int video_test_line(unsigned short xi, unsigned short yi, unsigned short xf,
 
 	waitForEscRelease();
 
-	vg_exit();
+	if (vg_exit() != Ok) {
+		printf("Failed to returns to default Minix 3 text mode \n");
+		return 1;
 
-	return 0;
+	}
+
+	return Ok;
 
 }
 	
@@ -150,6 +169,11 @@ int test_xpm(char *xpm[], unsigned short xi, unsigned short yi) {
 
 
 	char * ptr = vg_init(DEFAULT_MODE);
+	if (ptr == NULL) {
+		printf("Failed to initialize the video module in graphics mode \n");
+		return 1;
+	}
+
 
 	print_sprite(xpm, xi, yi, ptr);
 
@@ -159,7 +183,12 @@ int test_xpm(char *xpm[], unsigned short xi, unsigned short yi) {
 	
 	waitForEscRelease();
 
-	vg_exit();
+
+	if (vg_exit() != Ok) {
+		printf("Failed to returns to default Minix 3 text mode \n");
+		return 1;
+
+	}
 
 	return 0;
 
@@ -167,7 +196,6 @@ int test_xpm(char *xpm[], unsigned short xi, unsigned short yi) {
 }	
 
 int test_move(char *xpm[], unsigned short xi, unsigned short yi, unsigned short xf, unsigned short yf, short s, unsigned short f) {
-
 
 	int ipc_status, r, irq_set_timer, irq_set_kbd;
 	int counter = 0;
@@ -188,12 +216,6 @@ int test_move(char *xpm[], unsigned short xi, unsigned short yi, unsigned short 
 	else
 		xInc = 0;
 
-
-	//printf("xInc= %d\n", xInc);
-	//printf("yInc= %d\n", yInc);
-
-	//waitForEscRelease();
-
 	message msg;
 
 	irq_set_kbd = kbd_subscribe_int();
@@ -208,6 +230,10 @@ int test_move(char *xpm[], unsigned short xi, unsigned short yi, unsigned short 
 	char *sprite = read_xpm(xpm, &wd, &hg);
 
 	char * ptr = vg_init(DEFAULT_MODE);
+	if (ptr == NULL) {
+		printf("Failed to initialize the video module in graphics mode \n");
+		return 1;
+	}
 
 	while (code != ESC) {
 
@@ -275,7 +301,11 @@ int test_move(char *xpm[], unsigned short xi, unsigned short yi, unsigned short 
 	if (kbd_unsubscribe_int() != Ok)
 		return KBD_UNSUB_ERROR;
 
-	vg_exit();
+	if (vg_exit() != Ok) {
+		printf("Failed to returns to default Minix 3 text mode \n");
+		return 1;
+
+	}
 
 	return Ok;
 	

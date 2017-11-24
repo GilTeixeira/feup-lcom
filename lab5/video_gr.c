@@ -27,9 +27,9 @@
 
 static char *video_mem;		/* Process (virtual) address to which VRAM is mapped */
 
-//IMP TODO por static outra vez
- unsigned h_res;		/* Horizontal screen resolution in pixels */
- unsigned v_res;		/* Vertical screen resolution in pixels */
+
+static unsigned h_res;		/* Horizontal screen resolution in pixels */
+static unsigned v_res;		/* Vertical screen resolution in pixels */
 static unsigned bits_per_pixel; /* Number of VRAM bits per pixel */
 
 int vg_exit() {

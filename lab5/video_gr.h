@@ -30,13 +30,32 @@ void *vg_init(unsigned short mode);
  */
 int vg_exit(void);
 
-
+/**
+* @brief Sets Pixel to Color
+* @param x The X Coord
+* @param y The Y Coord
+* @param color The Color
+* @param ptr Pointer To Vram
+*/
 void setColorPixel(int x, int y, int color, char * ptr);
 
 
-
+/**
+* @brief Check if it is a Valid Coord
+* @param x The X Coord
+* @param y The Y Coord
+ * @return 1 upon success, 0 upon failure
+*/
 int validCoord(int x, int y);
 
+
+/**
+* @brief Prints Sprite
+* @param xpm The Sprite to print
+* @param xi The X Coord
+* @param yi The Y Coord
+* @param ptr Pointer To Vram
+*/
 int print_sprite(char *xpm[], unsigned short xi, unsigned short yi, char * ptr);
 
  /** @} end of video_gr */

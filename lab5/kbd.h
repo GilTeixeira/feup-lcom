@@ -64,6 +64,12 @@ int WriteCommandByte(unsigned long port, unsigned long cmd);
 unsigned long ReadCommandByte();
 
 
+/**
+ * @brief Wait for Esc to Be Released
+ *
+ * @return Return 0 upon success and non-zero otherwise
+ */
+
 int waitForEscRelease();
 
 #endif
