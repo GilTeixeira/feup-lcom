@@ -2,17 +2,10 @@
 #include <stdlib.h>
 #include "defs.h"
 #include "video_gr.h"
+#include "read_xpm.h"
 #include "kbd.h"
 
 
-
-/*
- * TO DO: APAGAR
- */
-#define VRAM_PHYS_ADDR	0xE0000000
-#define H_RES             1024
-#define V_RES		  768
-#define BITS_PER_PIXEL	  8
 
 
 
@@ -35,7 +28,7 @@ int video_test_square(unsigned short x, unsigned short y, unsigned short size, u
 
 	for (i = x; i < size + x; i++) {
 			for (j = y; j < size + y; j++) {
-				setColorPixel(i+H_RES/2-size/2, j+V_RES/2-size/2, color, ptr);
+				setColorPixel(i+HRES/2-size/2, j+VRES/2-size/2, color, ptr);
 			}
 		}
 
@@ -128,9 +121,24 @@ int video_test_line(unsigned short xi, unsigned short yi, unsigned short xf,
 }
 	
 int test_xpm(char *xpm[], unsigned short xi, unsigned short yi) {
+	int wd, hg, i, j;
+	char *sprite = read_xpm(xpm, &wd, &hg);
+
+	char * ptr = vg_init(DEFAULT_MODE);
+
+	for (i = 0; i < wd; i++) {
+				for (j = 0; j < hg; j++) {
+					setColorPixel(i+xi, j+yi, *(sprite + j * wd + i) , ptr);
+				}
+			}
+
 	
-	/* To be completed */
-	return 1;
+	waitForEscRelease();
+
+	vg_exit();
+
+	return 0;
+
 	
 }	
 

@@ -12,3 +12,7 @@
 
 #define DEFAULT_MODE 0x105
 
+
+#define HRES			1024
+#define VRES			768
+

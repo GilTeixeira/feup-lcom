@@ -5,6 +5,7 @@
 #include <string.h>
 #include <minix/driver.h>
 #include "test5.h"
+#include "pixmap.h"
 
 static int proc_args(int argc, char **argv);
 static unsigned short parse_ushort(char *str, int base);
@@ -39,7 +40,7 @@ static int proc_args(int argc, char **argv) {
 	unsigned short mode, delay, x, y, size, xi, yi, xf, yf;
 	unsigned long color;
 	short speed, frame_rate;
-	char *xpm[0];
+	char **xpm;
 
 	if (strncmp(argv[1], "init", strlen("init")) == 0) {
 		if (argc != 4) {
@@ -117,7 +118,7 @@ static int proc_args(int argc, char **argv) {
 			return 1;
 		}
 
-		/* TODO: Parse XPM */
+		xpm=penguin;
 
 		xi = parse_ushort(argv[3], 10); /* Parses string to unsigned short */
 		if (xi == USHRT_MAX)
