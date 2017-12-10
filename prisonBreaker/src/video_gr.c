@@ -25,7 +25,9 @@
 
 /* Private global variables */
 
-static char *video_mem;		/* Process (virtual) address to which VRAM is mapped */
+static short *video_mem;		/* Process (virtual) address to which VRAM is mapped */
+static short *mBuffer;
+static short *buffer;
 
 
 static unsigned h_res;		/* Horizontal screen resolution in pixels */
@@ -89,6 +91,9 @@ void *vg_init(unsigned short mode){
 	/* Map memory */
 
 	video_mem = vm_map_phys(SELF, (void *) mr.mr_base, vram_size);
+	mBuffer = (short*) malloc(h_res * v_res *bits_per_pixel);
+	buffer = (short*) malloc(h_res * v_res *bits_per_pixel);
+
 
 	if (video_mem == MAP_FAILED)
 		panic("couldn't map video memory");
@@ -98,7 +103,18 @@ void *vg_init(unsigned short mode){
 
 }
 
-void setColorPixel(int x, int y, uint16_t color, uint16_t * ptr){
+void flipMBuffer() {
+	memcpy(mBuffer, buffer, h_res * v_res *bits_per_pixel);
+
+}
+
+
+void flipDisplay(){
+	memcpy(video_mem, mBuffer, h_res * v_res *bits_per_pixel);
+
+}
+
+void setColorPixel(int x, int y, short color, short * ptr){
 	*(ptr + y * h_res + x) = color;
 
 }
@@ -111,7 +127,7 @@ int validCoord(int x, int y){
 
 }
 
-int print_sprite(char *xpm[], unsigned short xi, unsigned short yi, char * ptr) {
+int print_sprite(char *xpm[], unsigned short xi, unsigned short yi, short * ptr) {
 
 	int wd, hg, i, j;
 	char *sprite = read_xpm(xpm, &wd, &hg);
@@ -133,13 +149,11 @@ int draw_square(unsigned short x, unsigned short y, unsigned short size, unsigne
 	int i, j;
 	for (i = x; i < size + x; i++) {
 		for (j = y; j < size + y; j++) {
-			if (validCoord(i + HRES / 2 - size / 2, j + VRES / 2 - size / 2))
-				setColorPixel(i + HRES / 2 - size / 2, j + VRES / 2 - size / 2,
-						color, video_mem);
+			if (validCoord(i + h_res / 2 - size / 2, j + v_res / 2 - size / 2))
+				setColorPixel(i + h_res / 2 - size / 2, j + v_res / 2 - size / 2,
+						color, buffer);
 		}
 	}
-
-	waitForEscRelease();
 
 	return 0;
 

@@ -12,6 +12,16 @@ int main(int argc, char **argv) {
 
 	draw_square(1, 1, 200, 0xFFFFFF);
 
+	waitForEscRelease();
+
+	flipMBuffer();
+
+	waitForEscRelease();
+
+	flipDisplay();
+
+	waitForEscRelease();
+
 	vg_exit();
 
 	return Ok;
