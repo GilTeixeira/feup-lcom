@@ -3,6 +3,7 @@
 #include "i8042.h"
 #include "i8254.h"
 #include "video_gr.h"
+#include "prisonBreaker.h"
 
 #include "test5.h"
 
@@ -10,17 +11,19 @@ int main(int argc, char **argv) {
 
 	vg_init(DEFAULT_MODE);
 
-	draw_square(1, 1, 200, 0xFFFFFF);
+	PrisonBreaker* flappy = (PrisonBreaker*) initPrisonBreaker();
+	while (!flappy->done) {
+		updatePrisonBreaker(flappy);
 
-	waitForEscRelease();
+		if (!flappy->done) {
+			if (flappy->draw)
+				drawPrisonBreaker(flappy);
 
-	flipMBuffer();
-
-	waitForEscRelease();
-
-	flipDisplay();
-
-	waitForEscRelease();
+			flipMBuffer();
+			flipDisplay();
+		}
+	}
+	stopPrisonBreaker(flappy);
 
 	vg_exit();
 
