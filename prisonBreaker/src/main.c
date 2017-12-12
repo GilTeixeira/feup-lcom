@@ -11,19 +11,19 @@ int main(int argc, char **argv) {
 
 	vg_init(DEFAULT_MODE);
 
-	PrisonBreaker* flappy = (PrisonBreaker*) initPrisonBreaker();
-	while (!flappy->done) {
-		updatePrisonBreaker(flappy);
+	PrisonBreaker* prisonBreaker = (PrisonBreaker*) initPrisonBreaker();
+	while (!prisonBreaker->done) {
+		updatePrisonBreaker(prisonBreaker);
 
-		if (!flappy->done) {
-			if (flappy->draw)
-				drawPrisonBreaker(flappy);
+		if (!prisonBreaker->done) {
+			if (prisonBreaker->draw)
+				drawPrisonBreaker(prisonBreaker);
 
 			flipMBuffer();
 			flipDisplay();
 		}
 	}
-	stopPrisonBreaker(flappy);
+	stopPrisonBreaker(prisonBreaker);
 
 	vg_exit();
 

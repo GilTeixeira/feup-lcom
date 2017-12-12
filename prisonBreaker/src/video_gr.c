@@ -103,6 +103,8 @@ void *vg_init(unsigned short mode){
 
 }
 
+
+
 void flipMBuffer() {
 	memcpy(mBuffer, buffer, h_res * v_res *bits_per_pixel);
 
@@ -112,6 +114,18 @@ void flipMBuffer() {
 void flipDisplay(){
 	memcpy(video_mem, mBuffer, h_res * v_res *bits_per_pixel);
 
+}
+
+short getHorResolution(){
+	return v_res;
+}
+
+short getVerResolution(){
+	return h_res;
+}
+
+short* getGraphicsBuffer(){
+	return buffer;
 }
 
 void setColorPixel(int x, int y, short color, short * ptr){
