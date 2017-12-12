@@ -23,7 +23,7 @@ PrisonBreaker* initPrisonBreaker() {
 
 
 	//fundo
-	prisonBreaker->fundo=loadBitmap("/home/lcom/lcom1718-t6g08/prisonBreaker/res/images/test.bmp");
+	prisonBreaker->fundo=loadBitmap("/home/lcom/lcom1718-t6g08/prisonBreaker/res/fundo.bmp");
 
 	prisonBreaker->done = 0;
 	prisonBreaker->draw = 1;
