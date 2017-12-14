@@ -117,11 +117,11 @@ void flipDisplay(){
 }
 
 short getHorResolution(){
-	return v_res;
+	return h_res;
 }
 
 short getVerResolution(){
-	return h_res;
+	return v_res;
 }
 
 char* getGraphicsBuffer(){
