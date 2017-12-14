@@ -37,7 +37,7 @@ int vg_exit(void);
 * @param color The Color
 * @param ptr Pointer To Vram
 */
-void setColorPixel(int x, int y, int color, char * ptr);
+void setColorPixel(int x, int y, int color, short * ptr);
 
 
 /**
@@ -56,7 +56,14 @@ int validCoord(int x, int y);
 * @param yi The Y Coord
 * @param ptr Pointer To Vram
 */
-int print_sprite(char *xpm[], unsigned short xi, unsigned short yi, char * ptr);
+//int print_sprite(char *xpm[], unsigned short xi, unsigned short yi, char * ptr);
+
+
+short getHorResolution();
+
+short getVerResolution();
+
+char* getGraphicsBuffer();
 
  /** @} end of video_gr */
  

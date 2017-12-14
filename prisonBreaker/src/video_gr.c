@@ -77,7 +77,7 @@ void *vg_init(unsigned short mode){
 	int r;
 	struct mem_range mr;
 	unsigned int vram_base =  vmi_p.PhysBasePtr; /* VRAM's physical addresss */
-	unsigned int vram_size = h_res * v_res * bits_per_pixel; /* VRAM's size, but you can use the frame-buffer size, instead */
+	unsigned int vram_size = h_res * v_res * bits_per_pixel/8; /* VRAM's size, but you can use the frame-buffer size, instead */
 
 
 	/* Allow memory mapping */
@@ -91,8 +91,8 @@ void *vg_init(unsigned short mode){
 	/* Map memory */
 
 	video_mem = vm_map_phys(SELF, (void *) mr.mr_base, vram_size);
-	mBuffer = (short*) malloc(h_res * v_res *bits_per_pixel);
-	buffer = (short*) malloc(h_res * v_res *bits_per_pixel);
+	mBuffer = (short*) malloc(h_res * v_res *bits_per_pixel/8);
+	buffer = (short*) malloc(h_res * v_res *bits_per_pixel/8);
 
 
 	if (video_mem == MAP_FAILED)
@@ -106,13 +106,13 @@ void *vg_init(unsigned short mode){
 
 
 void flipMBuffer() {
-	memcpy(mBuffer, buffer, h_res * v_res *bits_per_pixel);
+	memcpy(mBuffer, buffer, h_res * v_res *bits_per_pixel/8);
 
 }
 
 
 void flipDisplay(){
-	memcpy(video_mem, mBuffer, h_res * v_res *bits_per_pixel);
+	memcpy(video_mem, mBuffer, h_res * v_res *bits_per_pixel/8);
 
 }
 
@@ -124,12 +124,15 @@ short getVerResolution(){
 	return h_res;
 }
 
-short* getGraphicsBuffer(){
-	return buffer;
+char* getGraphicsBuffer(){
+	return (char *) buffer;
 }
 
 void setColorPixel(int x, int y, short color, short * ptr){
 	*(ptr + y * h_res + x) = color;
+	int offset =  (y * h_res) + x;
+
+	printf("x: %d, y: %d, offset: %d, pos: %p\n", x, y, offset, ptr + offset);
 
 }
 
@@ -141,6 +144,7 @@ int validCoord(int x, int y){
 
 }
 
+/*
 int print_sprite(char *xpm[], unsigned short xi, unsigned short yi, short * ptr) {
 
 	int wd, hg, i, j;
@@ -155,14 +159,15 @@ int print_sprite(char *xpm[], unsigned short xi, unsigned short yi, short * ptr)
 
 	return 0;
 }
+*/
 
 
 
 int draw_square(unsigned short x, unsigned short y, unsigned short size, unsigned long color) {
 
 	int i, j;
-	for (i = x; i < size + x; i++) {
-		for (j = y; j < size + y; j++) {
+	for (j = y; j < size + y; j++) {
+		for (i = x; i < size + x; i++) {
 			if (validCoord(i + h_res / 2 - size / 2, j + v_res / 2 - size / 2))
 				setColorPixel(i + h_res / 2 - size / 2, j + v_res / 2 - size / 2,
 						color, buffer);

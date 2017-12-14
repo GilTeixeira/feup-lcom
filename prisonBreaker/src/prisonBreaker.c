@@ -3,6 +3,7 @@
 #include "video_gr.h"
 #include "kbd.h"
 
+
 #include "prisonBreaker.h"
 
 #include "bitmap.h"
@@ -65,11 +66,14 @@ void updatePrisonBreaker(PrisonBreaker* prisonBreaker) {
 			prisonBreaker->done = 1;
 	}
 
+
+
+
 }
 
 void drawPrisonBreaker(PrisonBreaker* prisonBreaker) {
 
-	draw_square(1, 1, 200, 0xFFFFFF);
+	//draw_square(1, 1, 200, 0xFFFFFF);
 	drawBitmap(prisonBreaker->fundo,0,0,ALIGN_LEFT);
 
 }
