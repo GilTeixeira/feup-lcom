@@ -116,4 +116,15 @@ int timer_test_int(unsigned long time);
  */
 int timer_test_config(unsigned char timer);
 
+
+typedef struct {
+	long ticks;
+	long counter;
+} Timer;
+
+Timer* initTimer();
+void timerHandler(Timer* timer);
+void stopTimer(Timer* timer);
+
+
 #endif /* __TIMER_H */

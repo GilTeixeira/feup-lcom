@@ -2,6 +2,7 @@
 
 #include "video_gr.h"
 #include "kbd.h"
+#include "game.h"
 
 
 #include "prisonBreaker.h"
@@ -30,6 +31,11 @@ PrisonBreaker* initPrisonBreaker() {
 	prisonBreaker->draw = 1;
 	prisonBreaker->scancode = 0;
 
+	prisonBreaker->timer = initTimer();
+
+	//Game
+	prisonBreaker->game = initGame();
+
 	return prisonBreaker;
 }
 
@@ -52,6 +58,10 @@ void updatePrisonBreaker(PrisonBreaker* prisonBreaker) {
 				prisonBreaker->scancode = globalCode;
 			}
 			if (msg.NOTIFY_ARG & prisonBreaker->IRQ_SET_KBD) { /* timer subscribed interrupt */
+				timerHandler(prisonBreaker->timer);
+				if(prisonBreaker->timer->counter==6)
+					prisonBreaker->game->result=LOSE;
+
 
 			}
 
@@ -64,6 +74,8 @@ void updatePrisonBreaker(PrisonBreaker* prisonBreaker) {
 	if (prisonBreaker->scancode != 0) {
 		if (prisonBreaker->scancode == KEY_ESC)
 			prisonBreaker->done = 1;
+		if (prisonBreaker->scancode == KEY_D)
+					prisonBreaker->game->result = WIN;
 	}
 
 
@@ -73,14 +85,18 @@ void updatePrisonBreaker(PrisonBreaker* prisonBreaker) {
 
 void drawPrisonBreaker(PrisonBreaker* prisonBreaker) {
 
-	//draw_square(1, 1, 200, 0xFFFFFF);
+
 	drawBitmap(prisonBreaker->fundo,0,0,ALIGN_LEFT);
+	draw_square(1, 1, 20, 0);
 
 }
 
 void stopPrisonBreaker(PrisonBreaker* prisonBreaker) {
 	kbd_unsubscribe_int();
 	timer_unsubscribe_int();
+
+	stopTimer(prisonBreaker->timer);
+
 	free(prisonBreaker);
 
 }
