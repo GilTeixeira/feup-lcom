@@ -7,8 +7,11 @@ typedef enum {
 
 
 typedef struct {
+	short level;
 	short result;
 	long timePerPlay;
+	Level** levels;
+
 
 } Game;
 
