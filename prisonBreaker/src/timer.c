@@ -246,7 +246,7 @@ Timer* initTimer() {
 }
 void timerHandler(Timer* timer){
 	timer->ticks++;
-	if(timer->ticks%60)
+	if(timer->ticks%60==0)
 		timer->counter++;
 }
 

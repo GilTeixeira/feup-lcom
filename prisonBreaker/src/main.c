@@ -19,9 +19,15 @@ int main(int argc, char **argv) {
 			if (prisonBreaker->draw)
 				drawPrisonBreaker(prisonBreaker);
 
+
+			if(prisonBreaker->game->result == LOSE)
+				drawBitmap(prisonBreaker->lose,0,0,ALIGN_LEFT);
+
 			flipMBuffer();
 			flipDisplay();
 		}
+
+
 	}
 	stopPrisonBreaker(prisonBreaker);
 

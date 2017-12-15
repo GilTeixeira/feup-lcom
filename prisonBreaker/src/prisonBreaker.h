@@ -9,10 +9,15 @@ typedef struct {
 	int IRQ_SET_TIMER;
 
 	Bitmap* fundo;
+	Bitmap* circle;
+	Bitmap* win;
+	Bitmap* lose;
 
 	int done, draw;
 	unsigned long scancode;
 	Timer* timer;
+
+	short deslX;
 
 	Game* game;
 } PrisonBreaker;

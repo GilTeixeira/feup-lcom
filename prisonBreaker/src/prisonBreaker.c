@@ -26,12 +26,19 @@ PrisonBreaker* initPrisonBreaker() {
 
 	//fundo
 	prisonBreaker->fundo=loadBitmap("/home/lcom/lcom1718-t6g08/prisonBreaker/res/fundo.bmp");
+	prisonBreaker->circle=loadBitmap("/home/lcom/lcom1718-t6g08/prisonBreaker/res/circle.bmp");
+	prisonBreaker->win=loadBitmap("/home/lcom/lcom1718-t6g08/prisonBreaker/res/win.bmp");
+	prisonBreaker->lose=loadBitmap("/home/lcom/lcom1718-t6g08/prisonBreaker/res/lose.bmp");
 
 	prisonBreaker->done = 0;
 	prisonBreaker->draw = 1;
 	prisonBreaker->scancode = 0;
 
 	prisonBreaker->timer = initTimer();
+
+	//deslocamento
+	prisonBreaker->deslX=0;
+
 
 	//Game
 	prisonBreaker->game = initGame();
@@ -57,11 +64,14 @@ void updatePrisonBreaker(PrisonBreaker* prisonBreaker) {
 				kbd_handler();
 				prisonBreaker->scancode = globalCode;
 			}
-			if (msg.NOTIFY_ARG & prisonBreaker->IRQ_SET_KBD) { /* timer subscribed interrupt */
+			if (msg.NOTIFY_ARG & prisonBreaker->IRQ_SET_TIMER) { /* timer subscribed interrupt */
 				timerHandler(prisonBreaker->timer);
-				if(prisonBreaker->timer->counter==6)
-					prisonBreaker->game->result=LOSE;
-
+				if (prisonBreaker->game->result == PLAYING){
+					if (prisonBreaker->timer->counter == 3)
+						prisonBreaker->game->result = LOSE;}
+					else if (prisonBreaker->game->result == WIN)
+					if (prisonBreaker->deslX != 200)
+					prisonBreaker->deslX++;
 
 			}
 
@@ -75,8 +85,11 @@ void updatePrisonBreaker(PrisonBreaker* prisonBreaker) {
 		if (prisonBreaker->scancode == KEY_ESC)
 			prisonBreaker->done = 1;
 		if (prisonBreaker->scancode == KEY_D)
+			if(prisonBreaker->game->result==PLAYING)
 					prisonBreaker->game->result = WIN;
 	}
+
+
 
 
 
@@ -87,7 +100,7 @@ void drawPrisonBreaker(PrisonBreaker* prisonBreaker) {
 
 
 	drawBitmap(prisonBreaker->fundo,0,0,ALIGN_LEFT);
-	draw_square(1, 1, 20, 0);
+	drawBitmap(prisonBreaker->circle,361+prisonBreaker->deslX,262,ALIGN_LEFT);
 
 }
 
