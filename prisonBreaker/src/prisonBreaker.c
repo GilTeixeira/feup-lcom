@@ -63,16 +63,11 @@ void updatePrisonBreaker(PrisonBreaker* prisonBreaker) {
 			if (msg.NOTIFY_ARG & prisonBreaker->IRQ_SET_KBD) { /* keyboard interrupt */
 				kbd_handler();
 				prisonBreaker->scancode = globalCode;
+				gameUpdateKeyboard(prisonBreaker->game,prisonBreaker->scancode);
 			}
 			if (msg.NOTIFY_ARG & prisonBreaker->IRQ_SET_TIMER) { /* timer subscribed interrupt */
 				timerHandler(prisonBreaker->timer);
-				if (prisonBreaker->game->result == PLAYING){
-					if (prisonBreaker->timer->counter == 3)
-						prisonBreaker->game->result = LOSE;}
-					else if (prisonBreaker->game->result == WIN)
-					if (prisonBreaker->deslX != 200)
-					prisonBreaker->deslX++;
-
+				gameUpdate(prisonBreaker->game,prisonBreaker->timer);
 			}
 
 			break;
@@ -84,9 +79,9 @@ void updatePrisonBreaker(PrisonBreaker* prisonBreaker) {
 	if (prisonBreaker->scancode != 0) {
 		if (prisonBreaker->scancode == KEY_ESC)
 			prisonBreaker->done = 1;
-		if (prisonBreaker->scancode == KEY_D)
-			if(prisonBreaker->game->result==PLAYING)
-					prisonBreaker->game->result = WIN;
+		//if (prisonBreaker->scancode == KEY_D)
+		//	if(prisonBreaker->game->result==PLAYING)
+			//		prisonBreaker->game->result = WIN;
 	}
 
 

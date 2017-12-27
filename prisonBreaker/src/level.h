@@ -15,7 +15,7 @@ typedef enum {
 
 
 typedef struct {
-	short* acceptedDirections;
+	short acceptedDirections[5];
 	short numAcceptedDirections;
 
 	short instruction;
