@@ -25,3 +25,8 @@ void stopSquare(Square* Square){
 void updateSquare(Square* Square){
 
 }
+
+
+void displaySquare(Square* Square){
+
+}

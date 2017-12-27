@@ -9,6 +9,7 @@
 
 int main(int argc, char **argv) {
 
+	srand(time(NULL));
 	vg_init(DEFAULT_MODE);
 
 	PrisonBreaker* prisonBreaker = (PrisonBreaker*) initPrisonBreaker();
@@ -20,8 +21,8 @@ int main(int argc, char **argv) {
 				drawPrisonBreaker(prisonBreaker);
 
 
-			if(prisonBreaker->game->result == LOSE)
-				drawBitmap(prisonBreaker->lose,0,0,ALIGN_LEFT);
+			//if(prisonBreaker->game->result == LOSE)
+				//drawBitmap(prisonBreaker->lose,0,0,ALIGN_LEFT);
 
 			flipMBuffer();
 			flipDisplay();

@@ -1,18 +1,32 @@
 #include "game.h"
 #include "timer.h"
+#include "kbd.h"
+#include "level.h"
+
+#define KEY_TO_MOVE_UP      KEY_W
+#define KEY_TO_MOVE_DOWN    KEY_S
+#define KEY_TO_MOVE_LEFT    KEY_A
+#define KEY_TO_MOVE_RIGHT   KEY_D
 
 Game* initGame() {
 	Game* game = (Game*) malloc(sizeof(Game));
 	game->result = PLAYING;
+	game->score = 1;
+	game->currLevel = 1;
 
 	game->timePerPlay = 5;
 
 	initLevels(game);
 
+	game->fundo = loadBitmap(
+			"/home/lcom/lcom1718-t6g08/prisonBreaker/res/fundo.bmp");
+
 }
+
 void gameHandler(Game* game) {
 
 }
+
 void stopGame(Game* game) {
 	free(game);
 }
@@ -81,7 +95,7 @@ void gameUpdate(Game* game, Timer* timer) {
 	switch (game->result) {
 
 	case PLAYING:
-		if (timer->counter == 3)
+		if (timer->counter == 3) //check Nothing
 			game->result = LOSE;
 
 	case WAITING:
@@ -98,12 +112,52 @@ void gameUpdate(Game* game, Timer* timer) {
 
 	//} else if (prisonBreaker->game->result == WIN)
 	//	if (prisonBreaker->deslX != 200)
-		//	prisonBreaker->deslX++;
+	//	prisonBreaker->deslX++;
 
 }
 
-void gameUpdateKeyboard(Game* game, unsigned long scancode){
+void gameUpdateKeyboard(Game* game, unsigned long scancode) {
+	Level* currentLevel = game->levels[game->currLevel];
+	short dir = getDirectionFromKey(scancode);
 
-	//gameUpdateKeyboard(prisonBreaker->game,prisonBreaker->scancode)
+	if(game->result==PLAYING){
+		if(isAcceptedDirection(currentLevel, dir))
+			game->result=WAITING;
+	}
+
+//if()
+
+//gameUpdateKeyboard(prisonBreaker->game,prisonBreaker->scancode)
+
+}
+
+void displayGame(Game* game) {
+	drawBitmap(game->fundo, 0, 0, ALIGN_LEFT);
+	displayLevel(game->levels[game->currLevel]);
+	displaySquare(game->square);
+
+}
+
+void selectNextLevel(Game* game) {
+	int nextLevel = rand() % 4 + 1; //random number between 1-4
+
+	game->score++;
+	game->currLevel = nextLevel;
+
+}
+
+short getDirectionFromKey(unsigned long scancode) {
+	if (scancode == KEY_TO_MOVE_LEFT)
+		return LEFT_DIR;
+
+	if (scancode == KEY_TO_MOVE_RIGHT)
+		return RIGHT_DIR;
+
+	if (scancode == KEY_TO_MOVE_UP)
+		return UP_DIR;
+
+	if (scancode == KEY_TO_MOVE_DOWN)
+		return DOWN_DIR;
+
 
 }

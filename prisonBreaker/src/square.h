@@ -23,3 +23,5 @@ Square* initSquare();
 void SquareHandler(Square* Square);
 void stopSquare(Square* Square);
 void updateSquare(Square* Square);
+
+void displaySquare(Square* Square);

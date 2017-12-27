@@ -10,8 +10,8 @@
 #include "bitmap.h"
 
 
-const int FPS = 25;
-const int mouseFPSmult = 3;
+//const int FPS = 25;
+//const int mouseFPSmult = 3;
 
 
 
@@ -25,10 +25,10 @@ PrisonBreaker* initPrisonBreaker() {
 
 
 	//fundo
-	prisonBreaker->fundo=loadBitmap("/home/lcom/lcom1718-t6g08/prisonBreaker/res/fundo.bmp");
-	prisonBreaker->circle=loadBitmap("/home/lcom/lcom1718-t6g08/prisonBreaker/res/circle.bmp");
-	prisonBreaker->win=loadBitmap("/home/lcom/lcom1718-t6g08/prisonBreaker/res/win.bmp");
-	prisonBreaker->lose=loadBitmap("/home/lcom/lcom1718-t6g08/prisonBreaker/res/lose.bmp");
+
+	//prisonBreaker->circle=loadBitmap("/home/lcom/lcom1718-t6g08/prisonBreaker/res/circle.bmp");
+	//prisonBreaker->win=loadBitmap("/home/lcom/lcom1718-t6g08/prisonBreaker/res/win.bmp");
+	//prisonBreaker->lose=loadBitmap("/home/lcom/lcom1718-t6g08/prisonBreaker/res/lose.bmp");
 
 	prisonBreaker->done = 0;
 	prisonBreaker->draw = 1;
@@ -37,7 +37,7 @@ PrisonBreaker* initPrisonBreaker() {
 	prisonBreaker->timer = initTimer();
 
 	//deslocamento
-	prisonBreaker->deslX=0;
+	//prisonBreaker->deslX=0;
 
 
 	//Game
@@ -93,9 +93,9 @@ void updatePrisonBreaker(PrisonBreaker* prisonBreaker) {
 
 void drawPrisonBreaker(PrisonBreaker* prisonBreaker) {
 
-
-	drawBitmap(prisonBreaker->fundo,0,0,ALIGN_LEFT);
-	drawBitmap(prisonBreaker->circle,361+prisonBreaker->deslX,262,ALIGN_LEFT);
+	displayGame(prisonBreaker->game);
+	//drawBitmap(prisonBreaker->fundo,0,0,ALIGN_LEFT);
+	//drawBitmap(prisonBreaker->circle,361+prisonBreaker->deslX,262,ALIGN_LEFT);
 
 }
 

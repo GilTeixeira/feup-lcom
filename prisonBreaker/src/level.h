@@ -1,9 +1,6 @@
 #pragma once
 
 
-typedef enum {
-    LEFT_DIR, RIGHT_DIR, UP_DIR, DOWN_DIR, NOTHING_DIR
-} Direction;
 
 typedef enum {
     LEFT, RIGHT, UP, DOWN,
@@ -29,3 +26,7 @@ typedef struct {
 Level* initLevel();
 void levelHandler(Level* level);
 void stopLevel(Level* level);
+
+void displayLevel(Level* level);
+
+short isAcceptedDirection(Level* level, short direction);
