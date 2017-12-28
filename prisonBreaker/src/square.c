@@ -13,20 +13,26 @@ Square* initSquare(){
 }
 
 
-void SquareHandler(Square* Square){
+void SquareHandler(Square* square){
 
 }
 
-void stopSquare(Square* Square){
+void stopSquare(Square* square){
 
 
 }
 
-void updateSquare(Square* Square){
+void updateSquare(Square* square){
 
 }
 
 
-void displaySquare(Square* Square){
+void displaySquare(Square* square){
 
+}
+
+
+void freeSquare(Square* square){
+	deleteBitmap(square->bitmap);
+	free(square);
 }

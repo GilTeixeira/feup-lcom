@@ -104,6 +104,7 @@ void stopPrisonBreaker(PrisonBreaker* prisonBreaker) {
 	timer_unsubscribe_int();
 
 	stopTimer(prisonBreaker->timer);
+	freeGame(prisonBreaker->game);
 
 	free(prisonBreaker);
 

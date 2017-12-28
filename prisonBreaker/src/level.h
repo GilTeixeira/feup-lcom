@@ -1,6 +1,6 @@
 #pragma once
 
-
+#define numMaxOfAcceptedDirections 5
 
 typedef enum {
     LEFT, RIGHT, UP, DOWN,
@@ -12,7 +12,7 @@ typedef enum {
 
 
 typedef struct {
-	short acceptedDirections[5];
+	short* acceptedDirections;
 	short numAcceptedDirections;
 
 	short instruction;
@@ -30,3 +30,4 @@ void stopLevel(Level* level);
 void displayLevel(Level* level);
 
 short isAcceptedDirection(Level* level, short direction);
+void freeLevel(Level* level);

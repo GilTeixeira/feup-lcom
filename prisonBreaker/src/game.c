@@ -18,8 +18,7 @@ Game* initGame() {
 
 	initLevels(game);
 
-	game->fundo = loadBitmap(
-			"/home/lcom/lcom1718-t6g08/prisonBreaker/res/fundo.bmp");
+	game->fundo = loadBitmap("/home/lcom/lcom1718-t6g08/prisonBreaker/res/fundo.bmp");
 
 }
 
@@ -32,6 +31,9 @@ void stopGame(Game* game) {
 }
 
 void initLevels(Game* game) {
+
+	game->levels = (Level**) malloc(NUMBEROFLEVELS * sizeof(Level*));
+
 	/*******************
 	 *     Level 1     *
 	 ******************/
@@ -43,8 +45,12 @@ void initLevels(Game* game) {
 
 	level1->instruction = LEFT;
 
-	level1->acceptedDirections[0] = LEFT_DIR;
 	level1->numAcceptedDirections = 1;
+	level1->acceptedDirections = (short *) malloc(
+			sizeof(short) * level1->numAcceptedDirections);
+	level1->acceptedDirections[0] = LEFT_DIR;
+
+	game->levels[0] = level1;
 
 	/*******************
 	 *     Level 2     *
@@ -57,37 +63,41 @@ void initLevels(Game* game) {
 
 	level2->instruction = RIGHT;
 
-	level2->acceptedDirections[0] = RIGHT_DIR;
 	level2->numAcceptedDirections = 1;
+	level1->acceptedDirections = (short *) malloc(
+			sizeof(short) * level2->numAcceptedDirections);
+	level2->acceptedDirections[0] = RIGHT_DIR;
+
+	game->levels[1] = level2;
 
 	/*******************
 	 *     Level 3     *
-	 ******************/
-	levelID = 3;
+	 *****************
+	 levelID = 3;
 
-	Level * level3 = (Level*) malloc(sizeof(Level));
+	 Level * level3 = (Level*) malloc(sizeof(Level));
 
-	level3->numAcceptedDirections = levelID;
+	 level3->numAcceptedDirections = levelID;
 
-	level3->instruction = UP;
+	 level3->instruction = UP;
 
-	level3->acceptedDirections[0] = UP_DIR;
-	level3->numAcceptedDirections = 1;
+	 level3->acceptedDirections[0] = UP_DIR;
+	 level3->numAcceptedDirections = 1;
 
-	/*******************
+	 /*******************
 	 *     Level 4     *
-	 ******************/
-	levelID = 4;
+	 *****************
+	 levelID = 4;
 
-	Level * level4 = (Level*) malloc(sizeof(Level));
+	 Level * level4 = (Level*) malloc(sizeof(Level));
 
-	level4->numAcceptedDirections = levelID;
+	 level4->numAcceptedDirections = levelID;
 
-	level4->instruction = DOWN;
+	 level4->instruction = DOWN;
 
-	level4->acceptedDirections[0] = DOWN_DIR;
-	level4->numAcceptedDirections = 1;
-
+	 level4->acceptedDirections[0] = DOWN_DIR;
+	 level4->numAcceptedDirections = 1;
+	 */
 }
 
 void gameUpdate(Game* game, Timer* timer) {
@@ -120,9 +130,9 @@ void gameUpdateKeyboard(Game* game, unsigned long scancode) {
 	Level* currentLevel = game->levels[game->currLevel];
 	short dir = getDirectionFromKey(scancode);
 
-	if(game->result==PLAYING){
-		if(isAcceptedDirection(currentLevel, dir))
-			game->result=WAITING;
+	if (game->result == PLAYING) {
+		if (isAcceptedDirection(currentLevel, dir))
+			game->result = WAITING;
 	}
 
 //if()
@@ -159,5 +169,23 @@ short getDirectionFromKey(unsigned long scancode) {
 	if (scancode == KEY_TO_MOVE_DOWN)
 		return DOWN_DIR;
 
+}
+
+void freeGameLevels(Game* game) {
+	int i;
+	for (i = 0; i < NUMBEROFLEVELS; ++i) {
+		freeLevel(game->levels[i]);
+	}
+	free(game->levels);
+
+}
+
+void freeGame(Game* game) {
+
+	//freeGameLevels(game);
+	//freeSquare(game->square);
+	//deleteBitmap(game->fundo);
+
+	//free(game);
 
 }

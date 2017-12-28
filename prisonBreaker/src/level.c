@@ -13,3 +13,10 @@ short isAcceptedDirection(Level* level, short direction){
 	}
 	return 0;
 }
+
+
+void freeLevel(Level* level){
+	free(level->acceptedDirections);
+	free(level);
+
+}

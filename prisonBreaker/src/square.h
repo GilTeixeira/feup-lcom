@@ -25,3 +25,4 @@ void stopSquare(Square* Square);
 void updateSquare(Square* Square);
 
 void displaySquare(Square* Square);
+void freeSquare(Square* square);
