@@ -68,6 +68,7 @@ void updatePrisonBreaker(PrisonBreaker* prisonBreaker) {
 			if (msg.NOTIFY_ARG & prisonBreaker->IRQ_SET_TIMER) { /* timer subscribed interrupt */
 				timerHandler(prisonBreaker->timer);
 				gameUpdate(prisonBreaker->game,prisonBreaker->timer);
+				prisonBreaker->draw = 1;
 			}
 
 			break;

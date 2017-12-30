@@ -20,6 +20,10 @@ Game* initGame() {
 
 	game->fundo = loadBitmap("/home/lcom/lcom1718-t6g08/prisonBreaker/res/fundo.bmp");
 
+	game->square = initSquare();
+
+	return game;
+
 }
 
 void gameHandler(Game* game) {
@@ -37,11 +41,10 @@ void initLevels(Game* game) {
 	/*******************
 	 *     Level 1     *
 	 ******************/
-	short levelID = 1;
 
 	Level * level1 = (Level*) malloc(sizeof(Level));
 
-	level1->numAcceptedDirections = levelID;
+	level1->levelID = 1;
 
 	level1->instruction = LEFT;
 
@@ -55,11 +58,10 @@ void initLevels(Game* game) {
 	/*******************
 	 *     Level 2     *
 	 ******************/
-	levelID = 2;
 
 	Level * level2 = (Level*) malloc(sizeof(Level));
 
-	level2->numAcceptedDirections = levelID;
+	level2->levelID = 1;
 
 	level2->instruction = RIGHT;
 
@@ -143,8 +145,8 @@ void gameUpdateKeyboard(Game* game, unsigned long scancode) {
 
 void displayGame(Game* game) {
 	drawBitmap(game->fundo, 0, 0, ALIGN_LEFT);
-	displayLevel(game->levels[game->currLevel]);
-	displaySquare(game->square);
+	//displayLevel(game->levels[game->currLevel]);
+//	displaySquare(game->square);
 
 }
 
@@ -173,18 +175,20 @@ short getDirectionFromKey(unsigned long scancode) {
 
 void freeGameLevels(Game* game) {
 	int i;
-	for (i = 0; i < NUMBEROFLEVELS; ++i) {
-		freeLevel(game->levels[i]);
-	}
+	//freeLevel(game->levels[0]);
+	freeLevel(game->levels[1]);
+	//for (i = 0; i < NUMBEROFLEVELS; ++i) {
+	//	freeLevel(game->levels[i]);
+	//}
 	free(game->levels);
 
 }
 
 void freeGame(Game* game) {
 
-	//freeGameLevels(game);
-	//freeSquare(game->square);
-	//deleteBitmap(game->fundo);
+	freeGameLevels(game);
+	freeSquare(game->square);
+	deleteBitmap(game->fundo);
 
 	//free(game);
 

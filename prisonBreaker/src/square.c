@@ -10,6 +10,8 @@ Square* initSquare(){
 	square->bitmap = 0;
 	square->deslocX = 0;
 	square->deslocY = 0;
+
+	return square;
 }
 
 

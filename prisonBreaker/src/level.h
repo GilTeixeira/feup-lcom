@@ -19,6 +19,8 @@ typedef struct {
 
 	short levelID;
 
+	Bitmap* instructionBitmap;
+
 
 
 } Level;
