@@ -14,11 +14,12 @@ Game* initGame() {
 	game->score = 1;
 	game->currLevel = 0;
 
-	game->timePerPlay = 5;
+	game->timePerPlay = 3;
 
 	initLevels(game);
 
 	game->fundo = loadBitmap("/home/lcom/lcom1718-t6g08/prisonBreaker/res/fundo.bmp");
+	game->lose = loadBitmap("/home/lcom/lcom1718-t6g08/prisonBreaker/res/lose.bmp");
 
 	game->square = initSquare();
 
@@ -54,7 +55,7 @@ void initLevels(Game* game) {
 	level1->acceptedDirections[0] = LEFT_DIR;
 
 
-	level1->instructionBitmap = loadBitmap("/home/lcom/lcom1718-t6g08/prisonBreaker/res/left2.bmp");
+	level1->instructionBitmap = loadBitmap("/home/lcom/lcom1718-t6g08/prisonBreaker/res/left.bmp");
 
 	game->levels[0] = level1;
 
@@ -72,9 +73,9 @@ void initLevels(Game* game) {
 	level2->acceptedDirections = (short *) malloc(
 			sizeof(short) * level2->numAcceptedDirections);
 
-	level1->acceptedDirections[0] = RIGHT_DIR;
+	level2->acceptedDirections[0] = RIGHT_DIR;
 
-	level2->instructionBitmap = loadBitmap("/home/lcom/lcom1718-t6g08/prisonBreaker/res/left2.bmp");
+	level2->instructionBitmap = loadBitmap("/home/lcom/lcom1718-t6g08/prisonBreaker/res/right.bmp");
 
 	game->levels[1] = level2;
 
@@ -113,15 +114,21 @@ void gameUpdate(Game* game, Timer* timer) {
 	switch (game->result) {
 
 	case PLAYING:
-		if (timer->counter == 3) //check Nothing
+		if (timer->counter == game->timePerPlay) //check Nothing
 			game->result = LOSE;
-
+		break;
 	case WAITING:
 		updateSquare(game->square);
+		if(hasFinishedMovement(game->square)){
+			 selectNextLevel(game);
+			 resetTimer(timer);
+		}
+
+
 		break;
 
 	case LOSE:
-		//statement(s);
+
 		break;
 
 	}
@@ -155,17 +162,29 @@ void gameUpdateKeyboard(Game* game, unsigned long scancode) {
 }
 
 void displayGame(Game* game) {
+
 	drawBitmap(game->fundo, 0, 0, ALIGN_LEFT);
 	displayLevel(game->levels[game->currLevel]);
 	displaySquare(game->square);
+	if (game->result == LOSE)
+		displayLoseScreen(game);
+
+}
+
+
+void displayLoseScreen(Game* game) {
+	//displayGame(game);
+	drawBitmap(game->lose, 0, 0, ALIGN_LEFT);
+
 
 }
 
 void selectNextLevel(Game* game) {
-	int nextLevel = rand() % NUMBEROFLEVELS + 1; //random number between 1-NUMBEROFLEVELS
+	int nextLevel = rand() % NUMBEROFLEVELS ; //random number between 0-NUMBEROFLEVELS-1
 
 	game->score++;
 	game->currLevel = nextLevel;
+	 game->result = PLAYING;
 
 }
 

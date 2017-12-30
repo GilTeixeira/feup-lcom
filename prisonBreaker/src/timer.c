@@ -254,4 +254,9 @@ void stopTimer(Timer* timer){
 	free(timer);
 }
 
+void resetTimer(Timer* timer){
+	timer->ticks=0;
+	timer->counter=0;
+}
+
 

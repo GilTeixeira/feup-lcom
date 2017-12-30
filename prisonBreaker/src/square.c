@@ -33,18 +33,18 @@ void updateSquare(Square* square) {
 	switch (square->direction) {
 
 	case LEFT_DIR:
-		square->deslocX += 1;
-		break;
-
-	case RIGHT_DIR:
 		square->deslocX -= 1;
 		break;
 
+	case RIGHT_DIR:
+		square->deslocX += 1;
+		break;
+
 	case UP_DIR:
-		square->deslocY += 1;
+		square->deslocY -= 1;
 		break;
 	case DOWN_DIR:
-		square->deslocY -= 1;
+		square->deslocY += 1;
 		break;
 
 	}
@@ -75,6 +75,14 @@ short switchDirection(short direction) {
 
 	}
 
+}
+
+short hasFinishedMovement(Square* square) {
+	if (square->deslocX == 0 && square->deslocY == 0) {
+		square->direction = NOTHING_DIR;
+		return 1;
+	}
+	return 0;
 }
 
 

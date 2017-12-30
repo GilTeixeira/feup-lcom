@@ -28,6 +28,7 @@ typedef struct {
 	Square* square;
 
 	Bitmap* fundo;
+	Bitmap* lose;
 
 } Game;
 
@@ -40,6 +41,7 @@ void gameUpdate(Game* game, Timer* timer);
 
 void gameUpdateKeyboard(Game* game, unsigned long scancode);
 void displayGame(Game* game);
+void displayLoseScreen(Game* game);
 void selectNextLevel(Game* game);
 void freeGameLevels(Game* game);
 void freeGame(Game* game);

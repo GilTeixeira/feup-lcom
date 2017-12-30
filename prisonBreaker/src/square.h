@@ -30,3 +30,5 @@ void displaySquare(Square* Square);
 void freeSquare(Square* square);
 
 short switchDirection(short direction);
+
+short hasFinishedMovement(Square* square);

@@ -125,6 +125,7 @@ typedef struct {
 Timer* initTimer();
 void timerHandler(Timer* timer);
 void stopTimer(Timer* timer);
+void resetTimer(Timer* timer);
 
 
 #endif /* __TIMER_H */
