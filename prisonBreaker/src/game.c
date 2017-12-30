@@ -12,7 +12,7 @@ Game* initGame() {
 	Game* game = (Game*) malloc(sizeof(Game));
 	game->result = PLAYING;
 	game->score = 1;
-	game->currLevel = 1;
+	game->currLevel = 0;
 
 	game->timePerPlay = 5;
 
@@ -53,6 +53,9 @@ void initLevels(Game* game) {
 			sizeof(short) * level1->numAcceptedDirections);
 	level1->acceptedDirections[0] = LEFT_DIR;
 
+
+	level1->instructionBitmap = loadBitmap("/home/lcom/lcom1718-t6g08/prisonBreaker/res/left2.bmp");
+
 	game->levels[0] = level1;
 
 	/*******************
@@ -61,14 +64,17 @@ void initLevels(Game* game) {
 
 	Level * level2 = (Level*) malloc(sizeof(Level));
 
-	level2->levelID = 1;
+	level2->levelID = 2;
 
 	level2->instruction = RIGHT;
 
 	level2->numAcceptedDirections = 1;
-	level1->acceptedDirections = (short *) malloc(
+	level2->acceptedDirections = (short *) malloc(
 			sizeof(short) * level2->numAcceptedDirections);
-	level2->acceptedDirections[0] = RIGHT_DIR;
+
+	level1->acceptedDirections[0] = RIGHT_DIR;
+
+	level2->instructionBitmap = loadBitmap("/home/lcom/lcom1718-t6g08/prisonBreaker/res/left2.bmp");
 
 	game->levels[1] = level2;
 
@@ -131,10 +137,15 @@ void gameUpdate(Game* game, Timer* timer) {
 void gameUpdateKeyboard(Game* game, unsigned long scancode) {
 	Level* currentLevel = game->levels[game->currLevel];
 	short dir = getDirectionFromKey(scancode);
+	printf("dir: %d, scan: %d\n", dir, scancode);
 
 	if (game->result == PLAYING) {
-		if (isAcceptedDirection(currentLevel, dir))
+		printf("chaega\n");
+		if (isAcceptedDirection(currentLevel, dir)){
+			printf("blabla\n");
 			game->result = WAITING;
+			game->square->direction = dir;
+		}
 	}
 
 //if()
@@ -145,13 +156,13 @@ void gameUpdateKeyboard(Game* game, unsigned long scancode) {
 
 void displayGame(Game* game) {
 	drawBitmap(game->fundo, 0, 0, ALIGN_LEFT);
-	//displayLevel(game->levels[game->currLevel]);
-//	displaySquare(game->square);
+	displayLevel(game->levels[game->currLevel]);
+	displaySquare(game->square);
 
 }
 
 void selectNextLevel(Game* game) {
-	int nextLevel = rand() % 4 + 1; //random number between 1-4
+	int nextLevel = rand() % NUMBEROFLEVELS + 1; //random number between 1-NUMBEROFLEVELS
 
 	game->score++;
 	game->currLevel = nextLevel;
@@ -170,6 +181,8 @@ short getDirectionFromKey(unsigned long scancode) {
 
 	if (scancode == KEY_TO_MOVE_DOWN)
 		return DOWN_DIR;
+
+	return INVALID_DIR;
 
 }
 

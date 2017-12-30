@@ -1,5 +1,8 @@
 #pragma once
 
+#include "bitmap.h"
+
+
 #define numMaxOfAcceptedDirections 5
 
 typedef enum {

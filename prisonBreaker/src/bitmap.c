@@ -82,7 +82,7 @@ void drawBitmap(Bitmap* bmp, int x, int y, Alignment alignment) {
 	int drawWidth = width;
 	int height = bmp->bitmapInfoHeader.height;
 
-	printf("Width: %d, H: %d\n", width, height);
+	//printf("Width: %d, H: %d\n", width, height);
 	if (alignment == ALIGN_CENTER)
 		x -= width / 2;
 	else if (alignment == ALIGN_RIGHT)
@@ -104,7 +104,7 @@ void drawBitmap(Bitmap* bmp, int x, int y, Alignment alignment) {
 		drawWidth = getHorResolution() - x;
 	}
 
-	printf("hor: %d, ver %d\n", getHorResolution(), getVerResolution());
+	//printf("hor: %d, ver %d\n", getHorResolution(), getVerResolution());
 	char* bufferStartPos;
 	char* imgStartPos;
 
