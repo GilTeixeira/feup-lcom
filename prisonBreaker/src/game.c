@@ -7,6 +7,7 @@
 #define KEY_TO_MOVE_DOWN    KEY_S
 #define KEY_TO_MOVE_LEFT    KEY_A
 #define KEY_TO_MOVE_RIGHT   KEY_D
+#define MIN_MOUSE_MOVEMENT  1000
 
 Game* initGame() {
 	Game* game = (Game*) malloc(sizeof(Game));
@@ -111,7 +112,7 @@ void initLevels(Game* game) {
 	 */
 }
 
-void gameUpdate(Game* game, Timer* timer) {
+void gameUpdate(Game* game, Timer* timer, Mouse* mouse) {
 
 	switch (game->result) {
 
@@ -127,7 +128,9 @@ void gameUpdate(Game* game, Timer* timer) {
 		updateSquare(game->square);
 		if (hasFinishedMovement(game->square)) {
 			selectNextLevel(game);
+			resetMouse(mouse);
 			resetTimer(timer);
+
 		}
 
 		break;
@@ -162,6 +165,32 @@ void gameUpdateKeyboard(Game* game, unsigned long scancode) {
 			game->square->direction = dir;
 		} else
 			game->result = LOSE;
+	}
+
+//if()
+
+//gameUpdateKeyboard(prisonBreaker->game,prisonBreaker->scancode)
+
+}
+
+
+void gameUpdateMouse(Game* game, Mouse* mouse) {
+	Level* currentLevel = game->levels[game->currLevel];
+	short dir = getDirectionFromMouse(mouse);
+
+	if (dir == INVALID_DIR)
+		return;
+
+	if (game->result == PLAYING) {
+
+		if (isAcceptedDirection(currentLevel, dir)) {
+			//printf("blabla\n");
+			game->result = WAITING;
+			game->square->direction = dir;
+		} else
+			game->result = LOSE;
+
+
 	}
 
 //if()
@@ -207,6 +236,25 @@ short getDirectionFromKey(unsigned long scancode) {
 
 	if (scancode == KEY_TO_MOVE_DOWN)
 		return DOWN_DIR;
+
+	return INVALID_DIR;
+
+}
+
+short getDirectionFromMouse(Mouse* mouse) {
+
+
+	if (mouse->deltaX > MIN_MOUSE_MOVEMENT)
+		return RIGHT_DIR;
+
+	if (mouse->deltaX < -MIN_MOUSE_MOVEMENT)
+			return LEFT_DIR;
+
+	if (mouse->deltaY > MIN_MOUSE_MOVEMENT)
+			return UP_DIR;
+
+	if (mouse->deltaY < -MIN_MOUSE_MOVEMENT)
+			return DOWN_DIR;
 
 	return INVALID_DIR;
 

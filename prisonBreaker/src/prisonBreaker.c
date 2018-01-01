@@ -3,6 +3,7 @@
 #include "video_gr.h"
 #include "kbd.h"
 #include "game.h"
+#include "mouse.h"
 
 
 #include "prisonBreaker.h"
@@ -22,6 +23,9 @@ PrisonBreaker* initPrisonBreaker() {
 	//subscribe devices
 	prisonBreaker->IRQ_SET_KBD = kbd_subscribe_int();
 	prisonBreaker->IRQ_SET_TIMER = timer_subscribe_int();
+	prisonBreaker->IRQ_SET_MOUSE = mouse_subscribe_int();
+
+	enable_stream_mode();
 
 
 	//fundo
@@ -35,6 +39,7 @@ PrisonBreaker* initPrisonBreaker() {
 	prisonBreaker->scancode = 0;
 
 	prisonBreaker->timer = initTimer();
+	prisonBreaker->mouse = initMouse();
 
 	prisonBreaker->gameState = initGameState();
 
@@ -63,14 +68,21 @@ void updatePrisonBreaker(PrisonBreaker* prisonBreaker) {
 			if (msg.NOTIFY_ARG & prisonBreaker->IRQ_SET_KBD) { /* keyboard interrupt */
 				kbd_handler();
 				prisonBreaker->scancode = globalCode;
-				gameStateUpdateKeyboard(prisonBreaker->gameState, prisonBreaker->scancode);
+				gameStateUpdateKeyboard(prisonBreaker->gameState, prisonBreaker->scancode, prisonBreaker->mouse);
 				//gameUpdateKeyboard(prisonBreaker->game,prisonBreaker->scancode);
 			}
 			if (msg.NOTIFY_ARG & prisonBreaker->IRQ_SET_TIMER) { /* timer subscribed interrupt */
 				timerHandler(prisonBreaker->timer);
 				//gameUpdate(prisonBreaker->game,prisonBreaker->timer);
-				gameStateUpdate(prisonBreaker->gameState, prisonBreaker->timer);
+				gameStateUpdate(prisonBreaker->gameState, prisonBreaker->timer, prisonBreaker->mouse);
 				prisonBreaker->draw = 1;
+			}
+			if (msg.NOTIFY_ARG & prisonBreaker->IRQ_SET_MOUSE) { /* timer subscribed interrupt */
+				mouseHandler(prisonBreaker->mouse);
+				gameStateUpdateMouse(prisonBreaker->gameState, prisonBreaker->mouse);
+			//	printf("Mouse interrupt");
+
+
 			}
 
 			break;
@@ -107,8 +119,10 @@ void drawPrisonBreaker(PrisonBreaker* prisonBreaker) {
 void stopPrisonBreaker(PrisonBreaker* prisonBreaker) {
 	kbd_unsubscribe_int();
 	timer_unsubscribe_int();
+	mouse_unsubscribe_int();
 
 	stopTimer(prisonBreaker->timer);
+	stopMouse(prisonBreaker->mouse);
 	stopGameState(prisonBreaker->gameState);
 
 	free(prisonBreaker);

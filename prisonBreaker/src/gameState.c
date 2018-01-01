@@ -9,7 +9,7 @@ GameState* initGameState() {
 	//Game
 	gameState->game = initGame();
 
-	gameState->currState = GAME;
+	gameState->currState = MAINMENU;
 
 	gameState->LoseMenuBitmap = loadBitmap("/home/lcom/lcom1718-t6g08/prisonBreaker/res/lose.bmp");
 	gameState->MainMenuBitmap = loadBitmap("/home/lcom/lcom1718-t6g08/prisonBreaker/res/lose.bmp");
@@ -26,11 +26,11 @@ void displayGameState(GameState* gameState) {
 		drawBitmap(gameState->MainMenuBitmap, 0, 0, ALIGN_LEFT);
 		break;
 	case LOSEMENU:
-		printf("U lose, loser\n");
+		//printf("U lose, loser\n");
 		drawBitmap(gameState->LoseMenuBitmap, 0, 0, ALIGN_LEFT);
 		break;
 	case GAME:
-		printf("Still Drawing this?\n");
+		//printf("Still Drawing this?\n");
 		displayGame(gameState->game);
 		//drawBitmap(gameState->LoseMenuBitmap,0,0,ALIGN_LEFT);
 		break;
@@ -45,7 +45,7 @@ void stopGameState(GameState* gameState) {
 	freeGame(gameState->game);
 }
 
-void gameStateUpdateKeyboard(GameState* gameState, unsigned long scancode) {
+void gameStateUpdateKeyboard(GameState* gameState, unsigned long scancode,  Mouse* mouse) {
 
 	switch (gameState->currState) {
 	case MAINMENU:
@@ -54,6 +54,7 @@ void gameStateUpdateKeyboard(GameState* gameState, unsigned long scancode) {
 
 		else if (scancode == KEY_ENTER) {
 			resetGame(gameState->game);
+			resetMouse(mouse);
 			gameState->currState = GAME;
 		}
 
@@ -64,6 +65,7 @@ void gameStateUpdateKeyboard(GameState* gameState, unsigned long scancode) {
 
 		else if (scancode == KEY_ENTER) {
 			resetGame(gameState->game);
+			resetMouse(mouse);
 			gameState->currState = GAME;
 		}
 		break;
@@ -74,7 +76,7 @@ void gameStateUpdateKeyboard(GameState* gameState, unsigned long scancode) {
 
 }
 
-void gameStateUpdate(GameState* gameState, Timer* timer) {
+void gameStateUpdate(GameState* gameState, Timer* timer, Mouse* mouse) {
 
 	switch (gameState->currState) {
 	case MAINMENU:
@@ -82,7 +84,23 @@ void gameStateUpdate(GameState* gameState, Timer* timer) {
 	case LOSEMENU:
 		break;
 	case GAME:
-		gameUpdate(gameState->game, timer);
+		gameUpdate(gameState->game, timer, mouse);
+		if(gameState->game->result == LOSE)
+			gameState->currState = LOSEMENU;
+		break;
+	}
+
+}
+
+void gameStateUpdateMouse(GameState* gameState, Mouse* mouse) {
+
+	switch (gameState->currState) {
+	case MAINMENU:
+		break;
+	case LOSEMENU:
+		break;
+	case GAME:
+		gameUpdateMouse(gameState->game, mouse);
 		if(gameState->game->result == LOSE)
 			gameState->currState = LOSEMENU;
 		break;

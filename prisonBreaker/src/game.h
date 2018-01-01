@@ -3,6 +3,7 @@
 #include "level.h"
 #include "square.h"
 #include "timer.h"
+#include "mouse.h"
 
 
 // TO DO change for 15
@@ -37,7 +38,7 @@ void gameHandler(Game* game);
 void stopGame(Game* game);
 void initLevels(Game* game);
 
-void gameUpdate(Game* game, Timer* timer);
+void gameUpdate(Game* game, Timer* timer, Mouse* mouse);
 
 void gameUpdateKeyboard(Game* game, unsigned long scancode);
 void displayGame(Game* game);
@@ -51,3 +52,5 @@ void freeGameLevels(Game* game);
 void freeGame(Game* game);
 
 short getDirectionFromKey(unsigned long scancode);
+short getDirectionFromMouse(Mouse* mouse);
+void gameUpdateMouse(Game* game, Mouse* mouse);
