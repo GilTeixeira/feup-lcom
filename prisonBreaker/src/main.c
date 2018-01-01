@@ -5,7 +5,7 @@
 #include "video_gr.h"
 #include "prisonBreaker.h"
 
-#include "test5.h"
+
 
 int main(int argc, char **argv) {
 
@@ -21,7 +21,7 @@ int main(int argc, char **argv) {
 				drawPrisonBreaker(prisonBreaker);
 
 
-			//if(prisonBreaker->game->result == LOSE)
+			//if   (prisonBreaker->game->result == LOSE)
 				//drawBitmap(prisonBreaker->lose,0,0,ALIGN_LEFT);
 
 			flipMBuffer();

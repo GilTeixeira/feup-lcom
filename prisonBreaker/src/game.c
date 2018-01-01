@@ -18,7 +18,8 @@ Game* initGame() {
 
 	initLevels(game);
 
-	game->fundo = loadBitmap("/home/lcom/lcom1718-t6g08/prisonBreaker/res/fundo.bmp");
+	game->fundo = loadBitmap(
+			"/home/lcom/lcom1718-t6g08/prisonBreaker/res/fundo.bmp");
 	//game->lose = loadBitmap("/home/lcom/lcom1718-t6g08/prisonBreaker/res/lose.bmp");
 
 	game->square = initSquare();
@@ -54,8 +55,8 @@ void initLevels(Game* game) {
 			sizeof(short) * level1->numAcceptedDirections);
 	level1->acceptedDirections[0] = LEFT_DIR;
 
-
-	level1->instructionBitmap = loadBitmap("/home/lcom/lcom1718-t6g08/prisonBreaker/res/left.bmp");
+	level1->instructionBitmap = loadBitmap(
+			"/home/lcom/lcom1718-t6g08/prisonBreaker/res/left.bmp");
 
 	game->levels[0] = level1;
 
@@ -75,7 +76,8 @@ void initLevels(Game* game) {
 
 	level2->acceptedDirections[0] = RIGHT_DIR;
 
-	level2->instructionBitmap = loadBitmap("/home/lcom/lcom1718-t6g08/prisonBreaker/res/right.bmp");
+	level2->instructionBitmap = loadBitmap(
+			"/home/lcom/lcom1718-t6g08/prisonBreaker/res/right.bmp");
 
 	game->levels[1] = level2;
 
@@ -114,16 +116,19 @@ void gameUpdate(Game* game, Timer* timer) {
 	switch (game->result) {
 
 	case PLAYING:
-		if (timer->counter == game->timePerPlay) //check Nothing
-			game->result = LOSE;
+		if (timer->counter == game->timePerPlay) {
+			Level* currentLevel = game->levels[game->currLevel];
+			if (!isAcceptedDirection(currentLevel, NOTHING_DIR))
+				game->result = LOSE;
+
+		}
 		break;
 	case WAITING:
 		updateSquare(game->square);
-		if(hasFinishedMovement(game->square)){
-			 selectNextLevel(game);
-			 resetTimer(timer);
+		if (hasFinishedMovement(game->square)) {
+			selectNextLevel(game);
+			resetTimer(timer);
 		}
-
 
 		break;
 
@@ -145,18 +150,18 @@ void gameUpdateKeyboard(Game* game, unsigned long scancode) {
 	Level* currentLevel = game->levels[game->currLevel];
 	short dir = getDirectionFromKey(scancode);
 
-	if(dir == INVALID_DIR)
+	if (dir == INVALID_DIR)
 		return;
 	//printf("dir: %d, scan: %d\n", dir, scancode);
 
 	if (game->result == PLAYING) {
 		//printf("chaega\n");
-		if (isAcceptedDirection(currentLevel, dir)){
+		if (isAcceptedDirection(currentLevel, dir)) {
 			//printf("blabla\n");
 			game->result = WAITING;
 			game->square->direction = dir;
-		}
-		else game->result = LOSE;
+		} else
+			game->result = LOSE;
 	}
 
 //if()
@@ -175,20 +180,18 @@ void displayGame(Game* game) {
 
 }
 
-
 void displayLoseScreen(Game* game) {
 	//displayGame(game);
 	drawBitmap(game->lose, 0, 0, ALIGN_LEFT);
 
-
 }
 
 void selectNextLevel(Game* game) {
-	int nextLevel = rand() % NUMBEROFLEVELS ; //random number between 0-NUMBEROFLEVELS-1
+	int nextLevel = rand() % NUMBEROFLEVELS; //random number between 0-NUMBEROFLEVELS-1
 
 	game->score++;
 	game->currLevel = nextLevel;
-	 game->result = PLAYING;
+	game->result = PLAYING;
 
 }
 
@@ -240,7 +243,7 @@ void freeGame(Game* game) {
 
 //short isAValidKey(unsigned long scancode){
 
-	//if(scancode == KEY_ESC || scancode == KEY_A || scancode == KEY_S || scancode == KEY_D || scancode == KEY_W || scancode == KEY_ENTER)
-	//	return 1;
+//if(scancode == KEY_ESC || scancode == KEY_A || scancode == KEY_S || scancode == KEY_D || scancode == KEY_W || scancode == KEY_ENTER)
+//	return 1;
 
 //}

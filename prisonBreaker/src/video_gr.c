@@ -5,7 +5,6 @@
 #include <sys/types.h>
 
 #include "vbe.h"
-#include "read_xpm.h"
 #include "defs.h"
 
 /* Constants for VBE 0x105 mode */
