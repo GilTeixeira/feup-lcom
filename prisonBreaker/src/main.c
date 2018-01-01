@@ -13,10 +13,10 @@ int main(int argc, char **argv) {
 	vg_init(DEFAULT_MODE);
 
 	PrisonBreaker* prisonBreaker = (PrisonBreaker*) initPrisonBreaker();
-	while (!prisonBreaker->done) {
+	while (!prisonBreaker->gameState->done) {
 		updatePrisonBreaker(prisonBreaker);
 
-		if (!prisonBreaker->done) {
+		if (!prisonBreaker->gameState->done) {
 			if (prisonBreaker->draw)
 				drawPrisonBreaker(prisonBreaker);
 

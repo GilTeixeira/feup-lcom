@@ -43,6 +43,10 @@ void gameUpdateKeyboard(Game* game, unsigned long scancode);
 void displayGame(Game* game);
 void displayLoseScreen(Game* game);
 void selectNextLevel(Game* game);
+void resetGame(Game* game);
+
+short isAValidKey(unsigned long scancode);
+
 void freeGameLevels(Game* game);
 void freeGame(Game* game);
 

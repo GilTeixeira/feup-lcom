@@ -3,6 +3,7 @@
 #include "bitmap.h"
 #include "timer.h"
 #include "game.h"
+#include "gameState.h"
 
 typedef struct {
 	int IRQ_SET_KBD;
@@ -18,8 +19,8 @@ typedef struct {
 	Timer* timer;
 
 	//short deslX;
-
-	Game* game;
+	GameState* gameState;
+	//Game* game;
 } PrisonBreaker;
 
 PrisonBreaker* initPrisonBreaker();

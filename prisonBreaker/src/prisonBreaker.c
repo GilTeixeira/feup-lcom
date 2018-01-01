@@ -30,18 +30,18 @@ PrisonBreaker* initPrisonBreaker() {
 	//prisonBreaker->win=loadBitmap("/home/lcom/lcom1718-t6g08/prisonBreaker/res/win.bmp");
 	//prisonBreaker->lose=loadBitmap("/home/lcom/lcom1718-t6g08/prisonBreaker/res/lose.bmp");
 
-	prisonBreaker->done = 0;
+	//prisonBreaker->done = 0;
 	prisonBreaker->draw = 1;
 	prisonBreaker->scancode = 0;
 
 	prisonBreaker->timer = initTimer();
 
+	prisonBreaker->gameState = initGameState();
+
 	//deslocamento
 	//prisonBreaker->deslX=0;
 
 
-	//Game
-	prisonBreaker->game = initGame();
 
 	return prisonBreaker;
 }
@@ -63,11 +63,13 @@ void updatePrisonBreaker(PrisonBreaker* prisonBreaker) {
 			if (msg.NOTIFY_ARG & prisonBreaker->IRQ_SET_KBD) { /* keyboard interrupt */
 				kbd_handler();
 				prisonBreaker->scancode = globalCode;
-				gameUpdateKeyboard(prisonBreaker->game,prisonBreaker->scancode);
+				gameStateUpdateKeyboard(prisonBreaker->gameState, prisonBreaker->scancode);
+				//gameUpdateKeyboard(prisonBreaker->game,prisonBreaker->scancode);
 			}
 			if (msg.NOTIFY_ARG & prisonBreaker->IRQ_SET_TIMER) { /* timer subscribed interrupt */
 				timerHandler(prisonBreaker->timer);
-				gameUpdate(prisonBreaker->game,prisonBreaker->timer);
+				//gameUpdate(prisonBreaker->game,prisonBreaker->timer);
+				gameStateUpdate(prisonBreaker->gameState, prisonBreaker->timer);
 				prisonBreaker->draw = 1;
 			}
 
@@ -77,13 +79,15 @@ void updatePrisonBreaker(PrisonBreaker* prisonBreaker) {
 		}
 	}
 
-	if (prisonBreaker->scancode != 0) {
-		if (prisonBreaker->scancode == KEY_ESC)
-			prisonBreaker->done = 1;
+
+	//prisonBreaker->done =
+	//if (prisonBreaker->scancode != 0) {
+//		if (prisonBreaker->scancode == KEY_ESC)
+//			prisonBreaker->done = 1;
 		//if (prisonBreaker->scancode == KEY_D)
 		//	if(prisonBreaker->game->result==PLAYING)
 			//		prisonBreaker->game->result = WIN;
-	}
+//	}
 
 
 
@@ -93,8 +97,8 @@ void updatePrisonBreaker(PrisonBreaker* prisonBreaker) {
 }
 
 void drawPrisonBreaker(PrisonBreaker* prisonBreaker) {
-
-	displayGame(prisonBreaker->game);
+	displayGameState(prisonBreaker->gameState);
+	//displayGame(prisonBreaker->game);
 	//drawBitmap(prisonBreaker->fundo,0,0,ALIGN_LEFT);
 	//drawBitmap(prisonBreaker->circle,361+prisonBreaker->deslX,262,ALIGN_LEFT);
 
@@ -105,7 +109,7 @@ void stopPrisonBreaker(PrisonBreaker* prisonBreaker) {
 	timer_unsubscribe_int();
 
 	stopTimer(prisonBreaker->timer);
-	freeGame(prisonBreaker->game);
+	stopGameState(prisonBreaker->gameState);
 
 	free(prisonBreaker);
 

@@ -11,7 +11,7 @@
 Game* initGame() {
 	Game* game = (Game*) malloc(sizeof(Game));
 	game->result = PLAYING;
-	game->score = 1;
+	game->score = 0;
 	game->currLevel = 0;
 
 	game->timePerPlay = 3;
@@ -19,7 +19,7 @@ Game* initGame() {
 	initLevels(game);
 
 	game->fundo = loadBitmap("/home/lcom/lcom1718-t6g08/prisonBreaker/res/fundo.bmp");
-	game->lose = loadBitmap("/home/lcom/lcom1718-t6g08/prisonBreaker/res/lose.bmp");
+	//game->lose = loadBitmap("/home/lcom/lcom1718-t6g08/prisonBreaker/res/lose.bmp");
 
 	game->square = initSquare();
 
@@ -144,15 +144,19 @@ void gameUpdate(Game* game, Timer* timer) {
 void gameUpdateKeyboard(Game* game, unsigned long scancode) {
 	Level* currentLevel = game->levels[game->currLevel];
 	short dir = getDirectionFromKey(scancode);
-	printf("dir: %d, scan: %d\n", dir, scancode);
+
+	if(dir == INVALID_DIR)
+		return;
+	//printf("dir: %d, scan: %d\n", dir, scancode);
 
 	if (game->result == PLAYING) {
-		printf("chaega\n");
+		//printf("chaega\n");
 		if (isAcceptedDirection(currentLevel, dir)){
-			printf("blabla\n");
+			//printf("blabla\n");
 			game->result = WAITING;
 			game->square->direction = dir;
 		}
+		else game->result = LOSE;
 	}
 
 //if()
@@ -166,8 +170,8 @@ void displayGame(Game* game) {
 	drawBitmap(game->fundo, 0, 0, ALIGN_LEFT);
 	displayLevel(game->levels[game->currLevel]);
 	displaySquare(game->square);
-	if (game->result == LOSE)
-		displayLoseScreen(game);
+	//if (game->result == LOSE)
+	//	displayLoseScreen(game);
 
 }
 
@@ -216,6 +220,14 @@ void freeGameLevels(Game* game) {
 
 }
 
+void resetGame(Game* game) {
+
+	game->result = PLAYING;
+	game->score = 0;
+	game->currLevel = 0;
+
+}
+
 void freeGame(Game* game) {
 
 	freeGameLevels(game);
@@ -225,3 +237,10 @@ void freeGame(Game* game) {
 	//free(game);
 
 }
+
+//short isAValidKey(unsigned long scancode){
+
+	//if(scancode == KEY_ESC || scancode == KEY_A || scancode == KEY_S || scancode == KEY_D || scancode == KEY_W || scancode == KEY_ENTER)
+	//	return 1;
+
+//}
