@@ -29,9 +29,9 @@ GameState* initGameState();
 //void gameHandler(GameState* gameState);
 void stopGameState(GameState* gameState);
 
-void displayGameState(GameState* gameState);
+void displayGameState(GameState* gameState, Timer* timer);
 
 void stopGameState(GameState* gameState);
-void gameStateUpdateKeyboard(GameState* gameState, unsigned long scancode,  Mouse* mouse);
+void gameStateUpdateKeyboard(GameState* gameState, unsigned long scancode, Timer* timer, Mouse* mouse);
 void gameStateUpdate(GameState* gameState, Timer* timer, Mouse* mouse);
 void gameStateUpdateMouse(GameState* gameState, Mouse* mouse);

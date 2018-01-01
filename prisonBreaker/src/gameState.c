@@ -19,7 +19,7 @@ GameState* initGameState() {
 }
 //void gameHandler(GameState* gameState);
 
-void displayGameState(GameState* gameState) {
+void displayGameState(GameState* gameState, Timer* timer) {
 
 	switch (gameState->currState) {
 	case MAINMENU:
@@ -31,7 +31,7 @@ void displayGameState(GameState* gameState) {
 		break;
 	case GAME:
 		//printf("Still Drawing this?\n");
-		displayGame(gameState->game);
+		displayGame(gameState->game, timer);
 		//drawBitmap(gameState->LoseMenuBitmap,0,0,ALIGN_LEFT);
 		break;
 	}
@@ -45,7 +45,7 @@ void stopGameState(GameState* gameState) {
 	freeGame(gameState->game);
 }
 
-void gameStateUpdateKeyboard(GameState* gameState, unsigned long scancode,  Mouse* mouse) {
+void gameStateUpdateKeyboard(GameState* gameState, unsigned long scancode, Timer* timer, Mouse* mouse) {
 
 	switch (gameState->currState) {
 	case MAINMENU:
@@ -55,6 +55,7 @@ void gameStateUpdateKeyboard(GameState* gameState, unsigned long scancode,  Mous
 		else if (scancode == KEY_ENTER) {
 			resetGame(gameState->game);
 			resetMouse(mouse);
+			resetTimer(timer);
 			gameState->currState = GAME;
 		}
 
@@ -66,6 +67,7 @@ void gameStateUpdateKeyboard(GameState* gameState, unsigned long scancode,  Mous
 		else if (scancode == KEY_ENTER) {
 			resetGame(gameState->game);
 			resetMouse(mouse);
+			resetTimer(timer);
 			gameState->currState = GAME;
 		}
 		break;

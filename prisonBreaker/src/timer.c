@@ -240,6 +240,7 @@ int timer_test_config(unsigned char timer) {
 Timer* initTimer() {
 	Timer* timer = (Timer*) malloc(sizeof(Timer));
 	timer->counter=0;
+	timer->ticks=0;
 
 	return timer;
 
@@ -248,6 +249,7 @@ void timerHandler(Timer* timer){
 	timer->ticks++;
 	if(timer->ticks%60==0)
 		timer->counter++;
+
 }
 
 void stopTimer(Timer* timer){

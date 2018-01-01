@@ -229,8 +229,8 @@ void mouseHandler(Mouse* mouse) {
 		else
 			mouse->deltaY = getDeltaY();
 
-		printf("DeltaX = %d\n", mouse->deltaX);
-		printf("DeltaY = %d\n", mouse->deltaY);
+		//printf("DeltaX = %d\n", mouse->deltaX);
+		//printf("DeltaY = %d\n", mouse->deltaY);
 	}
 
 }

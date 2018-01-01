@@ -7,7 +7,15 @@
 #define KEY_TO_MOVE_DOWN    KEY_S
 #define KEY_TO_MOVE_LEFT    KEY_A
 #define KEY_TO_MOVE_RIGHT   KEY_D
+
 #define MIN_MOUSE_MOVEMENT  1000
+
+#define BAR_X_COORD_START    25
+#define BAR_X_COORD_END      275
+#define BAR_X_COORD_DIST      BAR_X_COORD_END - BAR_X_COORD_START
+#define BAR_Y_COORD   490
+
+
 
 Game* initGame() {
 	Game* game = (Game*) malloc(sizeof(Game));
@@ -24,6 +32,9 @@ Game* initGame() {
 	//game->lose = loadBitmap("/home/lcom/lcom1718-t6g08/prisonBreaker/res/lose.bmp");
 
 	game->square = initSquare();
+
+	game->timeBar = loadBitmap(
+			"/home/lcom/lcom1718-t6g08/prisonBreaker/res/barra.bmp");
 
 	return game;
 
@@ -199,11 +210,37 @@ void gameUpdateMouse(Game* game, Mouse* mouse) {
 
 }
 
-void displayGame(Game* game) {
+void displayTimeBar(Game* game, Timer* timer) {
+	//long XCoordBar = BAR_X_COORD_START*game->timePerPlay
+
+
+
+	long currTicks = timer->ticks;
+	printf("NumberOfTicks: %d\n", currTicks);
+
+	if (currTicks > game->timePerPlay * 60) {
+		drawBitmap(game->timeBar, BAR_X_COORD_END, BAR_Y_COORD, ALIGN_LEFT);
+		return;
+	}
+
+
+	long XCoordBar = currTicks * (BAR_X_COORD_END - BAR_X_COORD_START)
+			/ (game->timePerPlay * 60.0) + BAR_X_COORD_START;
+	drawBitmap(game->timeBar, XCoordBar, BAR_Y_COORD, ALIGN_LEFT);
+
+	printf("XCoord: %d\n", XCoordBar);
+
+}
+
+void displayGame(Game* game, Timer* timer) {
 
 	drawBitmap(game->fundo, 0, 0, ALIGN_LEFT);
 	displayLevel(game->levels[game->currLevel]);
 	displaySquare(game->square);
+	displayTimeBar(game, timer);
+
+
+
 	//if (game->result == LOSE)
 	//	displayLoseScreen(game);
 

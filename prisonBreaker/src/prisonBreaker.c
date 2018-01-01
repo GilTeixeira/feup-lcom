@@ -68,7 +68,7 @@ void updatePrisonBreaker(PrisonBreaker* prisonBreaker) {
 			if (msg.NOTIFY_ARG & prisonBreaker->IRQ_SET_KBD) { /* keyboard interrupt */
 				kbd_handler();
 				prisonBreaker->scancode = globalCode;
-				gameStateUpdateKeyboard(prisonBreaker->gameState, prisonBreaker->scancode, prisonBreaker->mouse);
+				gameStateUpdateKeyboard(prisonBreaker->gameState, prisonBreaker->scancode,  prisonBreaker->timer, prisonBreaker->mouse);
 				//gameUpdateKeyboard(prisonBreaker->game,prisonBreaker->scancode);
 			}
 			if (msg.NOTIFY_ARG & prisonBreaker->IRQ_SET_TIMER) { /* timer subscribed interrupt */
@@ -109,7 +109,7 @@ void updatePrisonBreaker(PrisonBreaker* prisonBreaker) {
 }
 
 void drawPrisonBreaker(PrisonBreaker* prisonBreaker) {
-	displayGameState(prisonBreaker->gameState);
+	displayGameState(prisonBreaker->gameState, prisonBreaker->timer);
 	//displayGame(prisonBreaker->game);
 	//drawBitmap(prisonBreaker->fundo,0,0,ALIGN_LEFT);
 	//drawBitmap(prisonBreaker->circle,361+prisonBreaker->deslX,262,ALIGN_LEFT);

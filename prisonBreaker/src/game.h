@@ -31,6 +31,8 @@ typedef struct {
 	Bitmap* fundo;
 	Bitmap* lose;
 
+	Bitmap* timeBar;
+
 } Game;
 
 Game* initGame();
@@ -41,7 +43,7 @@ void initLevels(Game* game);
 void gameUpdate(Game* game, Timer* timer, Mouse* mouse);
 
 void gameUpdateKeyboard(Game* game, unsigned long scancode);
-void displayGame(Game* game);
+void displayGame(Game* game, Timer* timer);
 void displayLoseScreen(Game* game);
 void selectNextLevel(Game* game);
 void resetGame(Game* game);
