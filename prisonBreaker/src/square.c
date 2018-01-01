@@ -33,23 +33,23 @@ void updateSquare(Square* square) {
 	switch (square->direction) {
 
 	case LEFT_DIR:
-		square->deslocX -= 1;
+		square->deslocX -= 4;
 		break;
 
 	case RIGHT_DIR:
-		square->deslocX += 1;
+		square->deslocX += 4;
 		break;
 
 	case UP_DIR:
-		square->deslocY -= 1;
+		square->deslocY -= 4;
 		break;
 	case DOWN_DIR:
-		square->deslocY += 1;
+		square->deslocY += 4;
 		break;
 
 	}
 
-	if(square->deslocX > 110 || square->deslocY > 110 ||  square->deslocX < -110 ||	square->deslocY < -110)
+	if(square->deslocX > 120 || square->deslocY > 120 ||  square->deslocX < -120 ||	square->deslocY < -120)
 		square->direction = switchDirection(square->direction);
 
 }

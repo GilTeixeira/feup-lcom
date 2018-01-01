@@ -3,6 +3,8 @@
 #include "kbd.h"
 #include "level.h"
 
+#define TIMEPERPLAY      1
+
 #define KEY_TO_MOVE_UP      KEY_W
 #define KEY_TO_MOVE_DOWN    KEY_S
 #define KEY_TO_MOVE_LEFT    KEY_A
@@ -23,7 +25,7 @@ Game* initGame() {
 	game->score = 0;
 	game->currLevel = 0;
 
-	game->timePerPlay = 3;
+	game->timePerPlay = TIMEPERPLAY;
 
 	initLevels(game);
 
@@ -95,32 +97,52 @@ void initLevels(Game* game) {
 
 	/*******************
 	 *     Level 3     *
-	 *****************
-	 levelID = 3;
+	 ******************/
 
-	 Level * level3 = (Level*) malloc(sizeof(Level));
+	//TODO: Change BITMAP
+	Level * level3 = (Level*) malloc(sizeof(Level));
 
-	 level3->numAcceptedDirections = levelID;
+	level3->levelID = 3;
 
-	 level3->instruction = UP;
+	level3->instruction = NOTHING;
 
-	 level3->acceptedDirections[0] = UP_DIR;
-	 level3->numAcceptedDirections = 1;
+	level3->numAcceptedDirections = 1;
+	level3->acceptedDirections = (short *) malloc(
+				sizeof(short) * level3->numAcceptedDirections);
+
+	level3->acceptedDirections[0] = NOTHING_DIR;
+
+	level3->instructionBitmap = loadBitmap(
+				"/home/lcom/lcom1718-t6g08/prisonBreaker/res/up.bmp");
+
+	game->levels[2] = level3;
 
 	 /*******************
 	 *     Level 4     *
-	 *****************
-	 levelID = 4;
+	 ******************/
+
+	//TODO: Change BITMAP
+
 
 	 Level * level4 = (Level*) malloc(sizeof(Level));
 
-	 level4->numAcceptedDirections = levelID;
+	 level4->levelID = 4;
 
-	 level4->instruction = DOWN;
+	 level4->instruction = NOT_LEFT;
 
-	 level4->acceptedDirections[0] = DOWN_DIR;
-	 level4->numAcceptedDirections = 1;
-	 */
+	 level4->numAcceptedDirections = 3;
+	 level4->acceptedDirections = (short *) malloc(
+	 				sizeof(short) * level4->numAcceptedDirections);
+
+	 level4->acceptedDirections[0] = RIGHT_DIR;
+	 level4->acceptedDirections[1] = UP_DIR;
+	 level4->acceptedDirections[2] = DOWN_DIR;
+
+	 level4->instructionBitmap = loadBitmap(
+	 				"/home/lcom/lcom1718-t6g08/prisonBreaker/res/down.bmp");
+
+	 	game->levels[3] = level4;
+
 }
 
 void gameUpdate(Game* game, Timer* timer, Mouse* mouse) {
@@ -130,8 +152,14 @@ void gameUpdate(Game* game, Timer* timer, Mouse* mouse) {
 	case PLAYING:
 		if (timer->counter == game->timePerPlay) {
 			Level* currentLevel = game->levels[game->currLevel];
-			if (!isAcceptedDirection(currentLevel, NOTHING_DIR))
+			if (!isAcceptedDirection(currentLevel, NOTHING_DIR)) {
 				game->result = LOSE;
+			} else {
+				selectNextLevel(game);
+				resetMouse(mouse);
+				resetTimer(timer);
+
+			}
 
 		}
 		break;
@@ -312,7 +340,7 @@ void resetGame(Game* game) {
 
 	game->result = PLAYING;
 	game->score = 0;
-	game->currLevel = 0;
+	game->currLevel = 3;
 
 }
 

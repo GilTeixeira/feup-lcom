@@ -7,7 +7,7 @@
 
 
 // TO DO change for 15
-#define NUMBEROFLEVELS 2
+#define NUMBEROFLEVELS 4
 
 typedef enum {
     LEFT_DIR, RIGHT_DIR, UP_DIR, DOWN_DIR, NOTHING_DIR, INVALID_DIR
