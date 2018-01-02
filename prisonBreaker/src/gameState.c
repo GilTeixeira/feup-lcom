@@ -28,6 +28,7 @@ void displayGameState(GameState* gameState, Timer* timer) {
 	case LOSEMENU:
 		//printf("U lose, loser\n");
 		drawBitmap(gameState->LoseMenuBitmap, 0, 0, ALIGN_LEFT);
+		displayScore(gameState->game);
 		break;
 	case GAME:
 		//printf("Still Drawing this?\n");

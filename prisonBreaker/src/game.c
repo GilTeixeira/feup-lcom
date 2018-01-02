@@ -23,7 +23,42 @@ Game* initGame() {
 	game->timeBar = loadBitmap(
 			"/home/lcom/lcom1718-t6g08/prisonBreaker/res/barra.bmp");
 
+	game->scoreNumbers = initScoreNumbers();
+
 	return game;
+
+}
+
+ScoreNumbers* initScoreNumbers() {
+	ScoreNumbers* scoreNumbers = (ScoreNumbers*) malloc(sizeof(ScoreNumbers));
+
+	scoreNumbers->numberOfNumbers=10;
+
+	scoreNumbers->scoreNumbers = (Bitmap **) malloc(
+				sizeof(Bitmap*) * scoreNumbers->numberOfNumbers);
+	scoreNumbers->scoreNumbers[0] = loadBitmap(
+				"/home/lcom/lcom1718-t6g08/prisonBreaker/res/0.bmp");
+	scoreNumbers->scoreNumbers[1] = loadBitmap(
+					"/home/lcom/lcom1718-t6g08/prisonBreaker/res/1.bmp");
+	scoreNumbers->scoreNumbers[2] = loadBitmap(
+					"/home/lcom/lcom1718-t6g08/prisonBreaker/res/2.bmp");
+	scoreNumbers->scoreNumbers[3] = loadBitmap(
+					"/home/lcom/lcom1718-t6g08/prisonBreaker/res/3.bmp");
+	scoreNumbers->scoreNumbers[4] = loadBitmap(
+					"/home/lcom/lcom1718-t6g08/prisonBreaker/res/4.bmp");
+	scoreNumbers->scoreNumbers[5] = loadBitmap(
+					"/home/lcom/lcom1718-t6g08/prisonBreaker/res/5.bmp");
+	scoreNumbers->scoreNumbers[6] = loadBitmap(
+					"/home/lcom/lcom1718-t6g08/prisonBreaker/res/6.bmp");
+	scoreNumbers->scoreNumbers[7] = loadBitmap(
+					"/home/lcom/lcom1718-t6g08/prisonBreaker/res/7.bmp");
+	scoreNumbers->scoreNumbers[8] = loadBitmap(
+					"/home/lcom/lcom1718-t6g08/prisonBreaker/res/8.bmp");
+	scoreNumbers->scoreNumbers[9] = loadBitmap(
+						"/home/lcom/lcom1718-t6g08/prisonBreaker/res/9.bmp");
+
+	return scoreNumbers;
+
 
 }
 
@@ -351,7 +386,7 @@ void initExpertLevels(Game* game) {
 	level14->acceptedDirections[3] = RIGHT_DIR;
 
 	level14->instructionBitmap = loadBitmap(
-			"/home/lcom/lcom1718-t6g08/prisonBreaker/res/nothing.bmp");
+			"/home/lcom/lcom1718-t6g08/prisonBreaker/res/notnothing.bmp");
 
 	game->levels[13] = level14;
 
@@ -373,7 +408,7 @@ void initExpertLevels(Game* game) {
 	level15->acceptedDirections[0] = NOTHING_DIR;
 
 	level15->instructionBitmap = loadBitmap(
-			"/home/lcom/lcom1718-t6g08/prisonBreaker/res/nothing.bmp");
+			"/home/lcom/lcom1718-t6g08/prisonBreaker/res/notnotnothing.bmp");
 
 	game->levels[14] = level15;
 
@@ -480,7 +515,7 @@ void displayTimeBar(Game* game, Timer* timer) {
 	//long XCoordBar = BAR_X_COORD_START*game->timePerPlay
 
 	long currTicks = timer->ticks;
-	printf("NumberOfTicks: %d\n", currTicks);
+	//printf("NumberOfTicks: %d\n", currTicks);
 
 	if (currTicks > game->timePerPlay * 60) {
 		drawBitmap(game->timeBar, BAR_X_COORD_END, BAR_Y_COORD, ALIGN_LEFT);
@@ -491,13 +526,31 @@ void displayTimeBar(Game* game, Timer* timer) {
 			/ (game->timePerPlay * 60.0) + BAR_X_COORD_START;
 	drawBitmap(game->timeBar, XCoordBar, BAR_Y_COORD, ALIGN_LEFT);
 
-	printf("XCoord: %d\n", XCoordBar);
+	//printf("XCoord: %d\n", XCoordBar);
 
 }
 
-void displayLoseScreen(Game* game) {
-	//displayGame(game);
-	drawBitmap(game->lose, 0, 0, ALIGN_LEFT);
+
+void displayScore(Game* game) {
+
+	short gameFinalScore = game->score;
+	short deltax=0;
+	short deltay=0;
+
+	if(gameFinalScore==0)
+		drawBitmap(game->scoreNumbers->scoreNumbers[0], SCORE_X_COORD_START, SCORE_Y_COORD_START, ALIGN_LEFT);
+
+	while(gameFinalScore)
+	{
+		short bitmapToPrint = gameFinalScore % 10;
+		printf("bitmapToPrint= %d", bitmapToPrint);
+		drawBitmap(game->scoreNumbers->scoreNumbers[bitmapToPrint], SCORE_X_COORD_START+deltax, SCORE_Y_COORD_START+deltay, ALIGN_LEFT);
+		gameFinalScore /= 10;
+		deltax -= SCORE_DELTAX;
+		deltay -= SCORE_DELTAY;
+	}
+
+
 
 }
 

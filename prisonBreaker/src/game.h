@@ -23,6 +23,11 @@
 #define BAR_X_COORD_END      275
 #define BAR_Y_COORD   489
 
+#define SCORE_X_COORD_START    670
+#define SCORE_Y_COORD_START    455
+#define SCORE_DELTAX    22
+#define SCORE_DELTAY    3
+
 
 /** @defgroup Game
  * @{
@@ -36,6 +41,12 @@ typedef enum {
 typedef enum {
 	PLAYING, WAITING, LOSE
 } Result;
+
+typedef struct {
+	Bitmap** scoreNumbers;
+	short numberOfNumbers;
+
+} ScoreNumbers;
 
 /**
  * @struct Game
@@ -56,7 +67,11 @@ typedef struct {
 
 	Bitmap* timeBar;
 
+	ScoreNumbers* scoreNumbers;
+
 } Game;
+
+
 
 /**
  * @brief Initializes the Game
@@ -64,6 +79,8 @@ typedef struct {
  * @return The New Game
  */
 Game* initGame();
+
+ScoreNumbers* initScoreNumbers();
 
 /**
  * @brief Initializes the Games Levels
@@ -142,11 +159,11 @@ void displayGame(Game* game, Timer* timer);
 void displayTimeBar(Game* game, Timer* timer);
 
 /**
- * @brief Displays the Game Lose Screen
+ * @brief Displays the Game Score
  *
- * @param game The Game to be displayed
+ * @param game The Game which score will be displayed
  */
-void displayLoseScreen(Game* game);
+void displayScore(Game* game);
 
 /**
  * @brief Selects the Game next Level
