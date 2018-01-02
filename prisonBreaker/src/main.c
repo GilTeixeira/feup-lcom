@@ -23,7 +23,7 @@ int main(int argc, char **argv) {
 			//if   (prisonBreaker->game->result == LOSE)
 				//drawBitmap(prisonBreaker->lose,0,0,ALIGN_LEFT);
 
-			flipMBuffer();
+			//flipMBuffer();
 			flipDisplay();
 		}
 

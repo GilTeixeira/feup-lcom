@@ -1,3 +1,4 @@
+#pragma once
 
 /* VBE CALL */
 #define VBE_CALL	0x4F

@@ -6,6 +6,31 @@
 int hook_id = 0;
 int counter = 0;
 
+Timer* initTimer() {
+	Timer* timer = (Timer*) malloc(sizeof(Timer));
+	timer->counter = 0;
+	timer->ticks = 0;
+
+	return timer;
+
+}
+
+void timerHandler(Timer* timer) {
+	timer->ticks++;
+	if (timer->ticks % 60 == 0)
+		timer->counter++;
+
+}
+
+void stopTimer(Timer* timer) {
+	free(timer);
+}
+
+void resetTimer(Timer* timer) {
+	timer->ticks = 0;
+	timer->counter = 0;
+}
+
 void printErrors(char * msg) {
 	if (DEBUG)
 		printf("%s", msg);
@@ -27,7 +52,7 @@ int timer_set_frequency(unsigned char timer, unsigned long freq) {
 		return FREQ_OVERFLOW_ERROR;
 	}
 
-	timerfreqdiv = TIMER_FREQ / freq; //timerfreqdiv is what we send to alter the i8254 timer frequency
+	timerfreqdiv = TIMER_FREQ / freq;
 	lsb = timerfreqdiv & 0xFF;
 	msb = (timerfreqdiv >> 8) & 0xFF;
 	if (timer_get_conf(0, &timerconfig) != Ok)
@@ -49,7 +74,7 @@ int timer_set_frequency(unsigned char timer, unsigned long freq) {
 
 int timer_subscribe_int(void) {
 
-	int temp_hook_id = hook_id; // we create it in order to not change  hook_id during the call in sys_irqsetpolicy
+	int temp_hook_id = hook_id;
 
 	if (sys_irqsetpolicy(TIMER0_IRQ, IRQ_REENABLE, &hook_id) != Ok)
 		return IRQ_SET_ERROR;
@@ -111,21 +136,17 @@ int timer_get_conf(unsigned char timer, unsigned char *st) {
 
 int timer_display_conf(unsigned char conf) {
 
-	//Used to see Control Byte
-	//printf("\nTime Config: %x\n", (conf&0xff));
-
 	printf("\n Output value: ");
 	if ((conf & BIT(7)) == 0)
-			printf("0 \n");
-		else
-			printf("1 \n");
-
+		printf("0 \n");
+	else
+		printf("1 \n");
 
 	printf("\n Null Count value: ");
 	if ((conf & BIT(6)) == 0)
-			printf("0 \n");
-		else
-			printf("1 \n");
+		printf("0 \n");
+	else
+		printf("1 \n");
 
 	printf("\n Type of access: ");
 
@@ -174,17 +195,16 @@ int timer_display_conf(unsigned char conf) {
 	return Ok;
 }
 
-int timer_test_time_base(unsigned long freq) { //calls timer_set_frequency
-	return timer_set_frequency(0, freq); //changes timer 0 frequency
+int timer_test_time_base(unsigned long freq) {
+	return timer_set_frequency(0, freq);
 }
 
 int timer_test_int(unsigned long time) {
 
-	if(time<0){
+	if (time < 0) {
 		printErrors("Input can't be negative\n");
 		return INPUT_NEG_ERROR;
 	}
-
 
 	int ipc_status, r, irq_set;
 	message msg;
@@ -236,29 +256,4 @@ int timer_test_config(unsigned char timer) {
 
 	return Ok;
 }
-
-Timer* initTimer() {
-	Timer* timer = (Timer*) malloc(sizeof(Timer));
-	timer->counter=0;
-	timer->ticks=0;
-
-	return timer;
-
-}
-void timerHandler(Timer* timer){
-	timer->ticks++;
-	if(timer->ticks%60==0)
-		timer->counter++;
-
-}
-
-void stopTimer(Timer* timer){
-	free(timer);
-}
-
-void resetTimer(Timer* timer){
-	timer->ticks=0;
-	timer->counter=0;
-}
-
 

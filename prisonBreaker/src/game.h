@@ -42,6 +42,12 @@ typedef enum {
 	PLAYING, WAITING, LOSE
 } Result;
 
+/**
+ * @struct ScoreNumbers
+ * @brief This structure holds the Bitmaps for the numbers used in display the Game Scire
+ */
+
+
 typedef struct {
 	Bitmap** scoreNumbers;
 	short numberOfNumbers;

@@ -27,6 +27,44 @@
  */
 
 /**
+ * @struct Timer
+ * @brief This structure holds time passed in form of seconds and ticks of the Timer
+ */
+
+typedef struct {
+	long ticks;
+	long counter;
+} Timer;
+
+/**
+ * @brief Initializes the Timer
+ *
+ * @return The new Timer
+ */
+Timer* initTimer();
+
+/**
+ * @brief Processes an interrupt
+ *
+ * @param timer The Timer to be handled
+ */
+void timerHandler(Timer* timer);
+
+/**
+ * @brief Free the Timer and all the resources used by it
+ *
+ * @param timer The Timer to be freed
+ */
+void stopTimer(Timer* timer);
+
+/**
+ * @brief Reset The Timer Settings
+ *
+ * @param timer The Timer to be reset
+ */
+void resetTimer(Timer* timer);
+
+/**
  * @brief print error message when DEBUG is activated (= 1)
  *
  * @param msg The message to print
@@ -116,16 +154,6 @@ int timer_test_int(unsigned long time);
  */
 int timer_test_config(unsigned char timer);
 
-
-typedef struct {
-	long ticks;
-	long counter;
-} Timer;
-
-Timer* initTimer();
-void timerHandler(Timer* timer);
-void stopTimer(Timer* timer);
-void resetTimer(Timer* timer);
-
+/** @} end of timer */
 
 #endif /* __TIMER_H */

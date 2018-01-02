@@ -27,7 +27,7 @@ typedef struct {
 /**
  * @brief Initializes the GameState setting it to the MainMenu
  *
- * @return
+ * @return The Initialized GameState
  */
 GameState* initGameState();
 
@@ -40,7 +40,7 @@ GameState* initGameState();
 void displayGameState(GameState* gameState, Timer* timer);
 
 /**
- * @brief Updates the Game in function of Timer interrupt
+ * @brief Updates the GameState in function of Timer interrupt
  *
  * @param gameState The GameState to be updated
  * @param timer The updated Timer
@@ -49,7 +49,7 @@ void displayGameState(GameState* gameState, Timer* timer);
 void gameStateUpdate(GameState* gameState, Timer* timer, Mouse* mouse);
 
 /**
- * @brief Updates the Game in function of Keyboard interrupt
+ * @brief Updates the GameState in function of Keyboard interrupt
  *
  * @param gameState The GameState to be updated
  * @param scancode The scancode read from the interrupt
@@ -59,7 +59,7 @@ void gameStateUpdate(GameState* gameState, Timer* timer, Mouse* mouse);
 void gameStateUpdateKeyboard(GameState* gameState, unsigned long scancode, Timer* timer, Mouse* mouse);
 
 /**
- * @brief  Updates the Game in function of Mouse interrupt
+ * @brief  Updates the GameState in function of Mouse interrupt
  *
  * @param gameState The GameState to be updated
  * @param mouse The updated Mouse

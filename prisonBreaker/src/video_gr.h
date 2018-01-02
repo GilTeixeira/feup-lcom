@@ -1,9 +1,6 @@
 #ifndef __VIDEO_GR_H
 #define __VIDEO_GR_H
 
-
-
-
 /** @defgroup video_gr video_gr
  * @{
  *
@@ -23,7 +20,7 @@
  */
 void *vg_init(unsigned short mode);
 
- /**
+/**
  * @brief Returns to default Minix 3 text mode (0x03: 25 x 80, 16 colors)
  * 
  * @return 0 upon success, non-zero upon failure
@@ -31,40 +28,48 @@ void *vg_init(unsigned short mode);
 int vg_exit(void);
 
 /**
-* @brief Sets Pixel to Color
-* @param x The X Coord
-* @param y The Y Coord
-* @param color The Color
-* @param ptr Pointer To Vram
-*/
+ * @brief Sets Pixel to Color
+ * @param x The X Coord
+ * @param y The Y Coord
+ * @param color The Color
+ * @param ptr Pointer To Vram
+ */
 void setColorPixel(int x, int y, int color, short * ptr);
 
-
 /**
-* @brief Check if it is a Valid Coord
-* @param x The X Coord
-* @param y The Y Coord
+ * @brief Check if it is a Valid Coord
+ * @param x The X Coord
+ * @param y The Y Coord
  * @return 1 upon success, 0 upon failure
-*/
+ */
 int validCoord(int x, int y);
 
+/**
+ * @brief Copy the buffer to the video memory (Double Buffering).
+ */
+void flipDisplay();
 
 /**
-* @brief Prints Sprite
-* @param xpm The Sprite to print
-* @param xi The X Coord
-* @param yi The Y Coord
-* @param ptr Pointer To Vram
-*/
-//int print_sprite(char *xpm[], unsigned short xi, unsigned short yi, char * ptr);
-
-
+ * @brief Gets Horizontal Resolution of the Screen
+ *
+ * @return The Horizontal Resolution of the Screen
+ */
 short getHorResolution();
 
+/**
+ * @brief Gets Vertical Resolution of the Screen
+ *
+ * @return The Vertical Resolution of the Screen
+ */
 short getVerResolution();
 
+/**
+ * @brief Gets The buffer in which the Bitmaps are written
+ *
+ * @return The Buffer
+ */
 char* getGraphicsBuffer();
 
- /** @} end of video_gr */
- 
+/** @} end of video_gr */
+
 #endif /* __VIDEO_GR_H */
