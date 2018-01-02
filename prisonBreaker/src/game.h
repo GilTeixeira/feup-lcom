@@ -6,7 +6,7 @@
 #include "mouse.h"
 
 // TO DO change for 15
-#define NUMBEROFLEVELS 4
+#define NUMBEROFLEVELS 15
 
 /** @defgroup Game
  * @{
@@ -50,6 +50,12 @@ Game* initGame();
  * @param game The Game to be Initialized
  */
 void initLevels(Game* game);
+
+
+void initBeginnerLevels(Game* game);
+void initNormalLevels(Game* game);
+void initAdvancedLevels(Game* game);
+void initExpertLevels(Game* game);
 
 /**
  * @brief Updates the Game in function of Timer interrupt
