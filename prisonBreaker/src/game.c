@@ -14,7 +14,6 @@
 
 #define BAR_X_COORD_START    25
 #define BAR_X_COORD_END      275
-#define BAR_X_COORD_DIST      BAR_X_COORD_END - BAR_X_COORD_START
 #define BAR_Y_COORD   490
 
 
@@ -40,14 +39,6 @@ Game* initGame() {
 
 	return game;
 
-}
-
-void gameHandler(Game* game) {
-
-}
-
-void stopGame(Game* game) {
-	free(game);
 }
 
 void initLevels(Game* game) {
@@ -212,7 +203,6 @@ void gameUpdateKeyboard(Game* game, unsigned long scancode) {
 
 }
 
-
 void gameUpdateMouse(Game* game, Mouse* mouse) {
 	Level* currentLevel = game->levels[game->currLevel];
 	short dir = getDirectionFromMouse(mouse);
@@ -353,10 +343,3 @@ void freeGame(Game* game) {
 	//free(game);
 
 }
-
-//short isAValidKey(unsigned long scancode){
-
-//if(scancode == KEY_ESC || scancode == KEY_A || scancode == KEY_S || scancode == KEY_D || scancode == KEY_W || scancode == KEY_ENTER)
-//	return 1;
-
-//}

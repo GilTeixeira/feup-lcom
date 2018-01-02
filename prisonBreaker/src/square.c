@@ -49,11 +49,15 @@ void updateSquare(Square* square) {
 
 	}
 
-	if(square->deslocX > 120 || square->deslocY > 120 ||  square->deslocX < -120 ||	square->deslocY < -120)
-		square->direction = switchDirection(square->direction);
+	if(square->deslocX > 120 || square->deslocY > 120 ||  square->deslocX < -120 ||	square->deslocY < -120){
+		square->deslocX *= -1;
+		square->deslocY *= -1;
+
+	}
+
 
 }
-
+/*
 short switchDirection(short direction) {
 
 	switch (direction) {
@@ -76,6 +80,7 @@ short switchDirection(short direction) {
 	}
 
 }
+*/
 
 short hasFinishedMovement(Square* square) {
 	if (square->deslocX == 0 && square->deslocY == 0) {

@@ -3,6 +3,8 @@
 /** @defgroup Bitmap Bitmap
  * @{
  * Functions for manipulating bitmaps
+ *
+ *  @author Henrique Ferrolho (http://difusal.blogspot.pt/2014/09/minixtutorial-8-loading-bmp-images.html)
  */
 
 typedef enum {
