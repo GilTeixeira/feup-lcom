@@ -3,18 +3,6 @@
 #include "kbd.h"
 #include "level.h"
 
-#define TIMEPERPLAY      2
-
-#define KEY_TO_MOVE_UP      KEY_W
-#define KEY_TO_MOVE_DOWN    KEY_S
-#define KEY_TO_MOVE_LEFT    KEY_A
-#define KEY_TO_MOVE_RIGHT   KEY_D
-
-#define MIN_MOUSE_MOVEMENT  1000
-
-#define BAR_X_COORD_START    25
-#define BAR_X_COORD_END      275
-#define BAR_Y_COORD   490
 
 Game* initGame() {
 	Game* game = (Game*) malloc(sizeof(Game));
@@ -36,6 +24,17 @@ Game* initGame() {
 			"/home/lcom/lcom1718-t6g08/prisonBreaker/res/barra.bmp");
 
 	return game;
+
+}
+
+void initLevels(Game* game) {
+
+	game->levels = (Level**) malloc(NUMBEROFLEVELS * sizeof(Level*));
+
+	initBeginnerLevels(game);
+	initNormalLevels(game);
+	initAdvancedLevels(game);
+	initExpertLevels(game);
 
 }
 
@@ -62,7 +61,7 @@ void initBeginnerLevels(Game* game) {
 	game->levels[0] = level1;
 
 	/***********************
-	 *   Level 1  - DOWN   *
+	 *   Level 2  - DOWN   *
 	 ***********************/
 
 	Level * level2 = (Level*) malloc(sizeof(Level));
@@ -86,7 +85,6 @@ void initBeginnerLevels(Game* game) {
 	 *   Level 3 - LEFT    *
 	 ***********************/
 
-	//TODO: Change BITMAP
 	Level * level3 = (Level*) malloc(sizeof(Level));
 
 	level3->levelID = 3;
@@ -108,7 +106,6 @@ void initBeginnerLevels(Game* game) {
 	 *  Level 4 - RIGHT  *
 	 *********************/
 
-	//TODO: Change BITMAP
 	Level * level4 = (Level*) malloc(sizeof(Level));
 
 	level4->levelID = 4;
@@ -130,9 +127,9 @@ void initBeginnerLevels(Game* game) {
 
 void initNormalLevels(Game* game) {
 
-	/***********************
-	 *     Level 5  - NOT UP   *
-	 ***********************/
+	/*************************
+	 *   Level 5  - NOT UP   *
+	 *************************/
 
 	Level * level5 = (Level*) malloc(sizeof(Level));
 
@@ -153,9 +150,9 @@ void initNormalLevels(Game* game) {
 
 	game->levels[4] = level5;
 
-	/***********************
-	 *   Level 6  - NOT DOWN   *
-	 ***********************/
+	/*************************
+	 *  Level 6  - NOT DOWN  *
+	 *************************/
 
 	Level * level6 = (Level*) malloc(sizeof(Level));
 
@@ -177,10 +174,9 @@ void initNormalLevels(Game* game) {
 	game->levels[5] = level6;
 
 	/***********************
-	 *   Level 7 - NOT LEFT    *
+	 *  Level 7 - NOT LEFT *
 	 ***********************/
 
-	//TODO: Change BITMAP
 	Level * level7 = (Level*) malloc(sizeof(Level));
 
 	level7->levelID = 7;
@@ -200,11 +196,10 @@ void initNormalLevels(Game* game) {
 
 	game->levels[6] = level7;
 
-	/*********************
-	 *  Level 8 - NOT RIGHT  *
-	 *********************/
+	/***********************
+	 * Level 8 - NOT RIGHT *
+	 ***********************/
 
-	//TODO: Change BITMAP
 	Level * level8 = (Level*) malloc(sizeof(Level));
 
 	level8->levelID = 8;
@@ -228,9 +223,9 @@ void initNormalLevels(Game* game) {
 
 void initAdvancedLevels(Game* game) {
 
-	/***********************
-	 *     Level 1  - NOT NOT UP   *
-	 ***********************/
+	/*************************
+	 * Level 9  - NOT NOT UP *
+	 *************************/
 
 	Level * level9 = (Level*) malloc(sizeof(Level));
 
@@ -248,9 +243,9 @@ void initAdvancedLevels(Game* game) {
 
 	game->levels[8] = level9;
 
-	/***********************
-	 *     Level 1  - NOT NOT DOWN   *
-	 ***********************/
+	/***************************
+	 * Level 10 - NOT NOT DOWN *
+	 ***************************/
 
 	Level * level10 = (Level*) malloc(sizeof(Level));
 
@@ -269,11 +264,10 @@ void initAdvancedLevels(Game* game) {
 
 	game->levels[9] = level10;
 
-	/*******************
-	 *     Level 3 NOT NOT LEFT    *
-	 ******************/
+	/***************************
+	 * Level 11 - NOT NOT LEFT *
+	 ***************************/
 
-	//TODO: Change BITMAP
 	Level * level11 = (Level*) malloc(sizeof(Level));
 
 	level11->levelID = 11;
@@ -291,11 +285,10 @@ void initAdvancedLevels(Game* game) {
 
 	game->levels[10] = level11;
 
-	/*******************
-	 *     Level 4  NOT NOT RIGHT    *
-	 ******************/
+	/****************************
+	 * Level 12 - NOT NOT RIGHT *
+	 ***************************/
 
-	//TODO: Change BITMAP
 	Level * level12 = (Level*) malloc(sizeof(Level));
 
 	level12->levelID = 12;
@@ -317,8 +310,8 @@ void initAdvancedLevels(Game* game) {
 
 void initExpertLevels(Game* game) {
 
-	/***********************
-	 *     Level 1  - NOTHING  *
+	/************************
+	 * Level 13  - NOTHING  *
 	 ***********************/
 
 	Level * level13 = (Level*) malloc(sizeof(Level));
@@ -337,10 +330,11 @@ void initExpertLevels(Game* game) {
 
 	game->levels[12] = level13;
 
-	/***********************
-	 *     Level 1  - NOT NOTHING   *
-	 ***********************/
+	/***************************
+	 * Level 14  - NOT NOTHING *
+	 **************************/
 
+	//TODO: Change BITMAP
 	Level * level14 = (Level*) malloc(sizeof(Level));
 
 	level14->levelID = 14;
@@ -361,9 +355,9 @@ void initExpertLevels(Game* game) {
 
 	game->levels[13] = level14;
 
-	/*******************
-	 *     Level 3 NOT NOT NOTHING    *
-	 ******************/
+	/*******************************
+	 *  Level 15 - NOT NOT NOTHING *
+	 ******************************/
 
 	//TODO: Change BITMAP
 	Level * level15 = (Level*) malloc(sizeof(Level));
@@ -382,17 +376,6 @@ void initExpertLevels(Game* game) {
 			"/home/lcom/lcom1718-t6g08/prisonBreaker/res/nothing.bmp");
 
 	game->levels[14] = level15;
-
-}
-
-void initLevels(Game* game) {
-
-	game->levels = (Level**) malloc(NUMBEROFLEVELS * sizeof(Level*));
-
-	initBeginnerLevels(game);
-	initNormalLevels(game);
-	initAdvancedLevels(game);
-	initExpertLevels(game);
 
 }
 
@@ -430,12 +413,6 @@ void gameUpdate(Game* game, Timer* timer, Mouse* mouse) {
 		break;
 
 	}
-
-	//if (prisonBreaker->game->result == PLAYING) {
-
-	//} else if (prisonBreaker->game->result == WIN)
-	//	if (prisonBreaker->deslX != 200)
-	//	prisonBreaker->deslX++;
 
 }
 
@@ -487,6 +464,18 @@ void gameUpdateMouse(Game* game, Mouse* mouse) {
 
 }
 
+void displayGame(Game* game, Timer* timer) {
+
+	drawBitmap(game->fundo, 0, 0, ALIGN_LEFT);
+	displayLevel(game->levels[game->currLevel]);
+	displaySquare(game->square);
+	displayTimeBar(game, timer);
+
+	//if (game->result == LOSE)
+	//	displayLoseScreen(game);
+
+}
+
 void displayTimeBar(Game* game, Timer* timer) {
 	//long XCoordBar = BAR_X_COORD_START*game->timePerPlay
 
@@ -506,18 +495,6 @@ void displayTimeBar(Game* game, Timer* timer) {
 
 }
 
-void displayGame(Game* game, Timer* timer) {
-
-	drawBitmap(game->fundo, 0, 0, ALIGN_LEFT);
-	displayLevel(game->levels[game->currLevel]);
-	displaySquare(game->square);
-	displayTimeBar(game, timer);
-
-	//if (game->result == LOSE)
-	//	displayLoseScreen(game);
-
-}
-
 void displayLoseScreen(Game* game) {
 	//displayGame(game);
 	drawBitmap(game->lose, 0, 0, ALIGN_LEFT);
@@ -525,11 +502,19 @@ void displayLoseScreen(Game* game) {
 }
 
 void selectNextLevel(Game* game) {
-	int nextLevel = rand() % NUMBEROFLEVELS; //random number between 0-NUMBEROFLEVELS-1
+	int nextLevel = rand() % NUMBEROFLEVELS; //generates Random Number [0 - NUMBEROFLEVELS-1]
 
 	game->score++;
 	game->currLevel = nextLevel;
 	game->result = PLAYING;
+
+}
+
+void resetGame(Game* game) {
+
+	game->result = PLAYING;
+	game->score = 0;
+	game->currLevel = 3;
 
 }
 
@@ -576,15 +561,6 @@ void freeGameLevels(Game* game) {
 	//	freeLevel(game->levels[i]);
 	//}
 	free(game->levels);
-
-}
-
-void resetGame(Game* game) {
-
-	game->result = PLAYING;
-	game->score = 0;
-	game->currLevel = 3;
-
 }
 
 void freeGame(Game* game) {

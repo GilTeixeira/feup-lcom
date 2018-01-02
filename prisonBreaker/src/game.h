@@ -5,8 +5,24 @@
 #include "timer.h"
 #include "mouse.h"
 
-// TO DO change for 15
+
+/**
+ * Game Settings
+ */
 #define NUMBEROFLEVELS 15
+#define TIMEPERPLAY      2
+
+#define KEY_TO_MOVE_UP      KEY_W
+#define KEY_TO_MOVE_DOWN    KEY_S
+#define KEY_TO_MOVE_LEFT    KEY_A
+#define KEY_TO_MOVE_RIGHT   KEY_D
+
+#define MIN_MOUSE_MOVEMENT  1000
+
+#define BAR_X_COORD_START    25
+#define BAR_X_COORD_END      275
+#define BAR_Y_COORD   489
+
 
 /** @defgroup Game
  * @{
@@ -20,6 +36,11 @@ typedef enum {
 typedef enum {
 	PLAYING, WAITING, LOSE
 } Result;
+
+/**
+ * @struct Game
+ * @brief This structure holds information about the Game
+ */
 
 typedef struct {
 	short currLevel;
@@ -51,10 +72,32 @@ Game* initGame();
  */
 void initLevels(Game* game);
 
-
+/**
+ * @brief Initializes the Games Beginner Levels
+ *
+ * @param game The Game to be Initialized
+ */
 void initBeginnerLevels(Game* game);
+
+/**
+ * @brief Initializes the Games Normal Levels
+ *
+ * @param game The Game to be Initialized
+ */
 void initNormalLevels(Game* game);
+
+/**
+ * @brief Initializes the Games Advanced Levels
+ *
+ * @param game The Game to be Initialized
+ */
 void initAdvancedLevels(Game* game);
+
+/**
+ * @brief Initializes the Games Expert Levels
+ *
+ * @param game The Game to be Initialized
+ */
 void initExpertLevels(Game* game);
 
 /**
@@ -75,12 +118,28 @@ void gameUpdate(Game* game, Timer* timer, Mouse* mouse);
 void gameUpdateKeyboard(Game* game, unsigned long scancode);
 
 /**
+ * @brief Updates the Game in function of Mouse interrupt
+ *
+ * @param game The Game to be updated
+ * @param mouse The current Mouse
+ */
+void gameUpdateMouse(Game* game, Mouse* mouse);
+
+/**
  * @brief Displays the Game
  *
  * @param game The Game to be displayed
  * @param timer The current Timer
  */
 void displayGame(Game* game, Timer* timer);
+
+/**
+ * @brief Displays the Game Time Bar
+ *
+ * @param game The Game to be displayed
+ * @param timer The current Timer
+ */
+void displayTimeBar(Game* game, Timer* timer);
 
 /**
  * @brief Displays the Game Lose Screen
@@ -104,20 +163,6 @@ void selectNextLevel(Game* game);
 void resetGame(Game* game);
 
 /**
- * @brief Free the Games Levels and all the resources used by them
- *
- * @param game The Game which levels will be freed
- */
-void freeGameLevels(Game* game);
-
-/**
- * @brief Free the Game and all the resources used by it
- *
- * @param game The Game to be freed
- */
-void freeGame(Game* game);
-
-/**
  * @brief Gets the Direction from a Key
  *
  * @param scancode The scancode of a Key
@@ -136,10 +181,18 @@ short getDirectionFromKey(unsigned long scancode);
 short getDirectionFromMouse(Mouse* mouse);
 
 /**
- * @brief Updates the Game in function of Mouse interrupt
+ * @brief Free the Game and all the resources used by it
  *
- * @param game The Game to be updated
- * @param mouse The current Mouse
+ * @param game The Game to be freed
  */
-void gameUpdateMouse(Game* game, Mouse* mouse);
+void freeGame(Game* game);
+
+/**
+ * @brief Free the Games Levels and all the resources used by them
+ *
+ * @param game The Game which levels will be freed
+ */
+void freeGameLevels(Game* game);
+
+
 

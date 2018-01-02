@@ -17,7 +17,7 @@ GameState* initGameState() {
 	return gameState;
 
 }
-//void gameHandler(GameState* gameState);
+
 
 void displayGameState(GameState* gameState, Timer* timer) {
 
@@ -38,12 +38,22 @@ void displayGameState(GameState* gameState, Timer* timer) {
 
 }
 
-void stopGameState(GameState* gameState) {
+void gameStateUpdate(GameState* gameState, Timer* timer, Mouse* mouse) {
 
-	deleteBitmap(gameState->LoseMenuBitmap);
-	deleteBitmap(gameState->MainMenuBitmap);
-	freeGame(gameState->game);
+	switch (gameState->currState) {
+	case MAINMENU:
+		break;
+	case LOSEMENU:
+		break;
+	case GAME:
+		gameUpdate(gameState->game, timer, mouse);
+		if(gameState->game->result == LOSE)
+			gameState->currState = LOSEMENU;
+		break;
+	}
+
 }
+
 
 void gameStateUpdateKeyboard(GameState* gameState, unsigned long scancode, Timer* timer, Mouse* mouse) {
 
@@ -78,21 +88,6 @@ void gameStateUpdateKeyboard(GameState* gameState, unsigned long scancode, Timer
 
 }
 
-void gameStateUpdate(GameState* gameState, Timer* timer, Mouse* mouse) {
-
-	switch (gameState->currState) {
-	case MAINMENU:
-		break;
-	case LOSEMENU:
-		break;
-	case GAME:
-		gameUpdate(gameState->game, timer, mouse);
-		if(gameState->game->result == LOSE)
-			gameState->currState = LOSEMENU;
-		break;
-	}
-
-}
 
 void gameStateUpdateMouse(GameState* gameState, Mouse* mouse) {
 
@@ -108,4 +103,12 @@ void gameStateUpdateMouse(GameState* gameState, Mouse* mouse) {
 		break;
 	}
 
+}
+
+
+void stopGameState(GameState* gameState) {
+
+	deleteBitmap(gameState->LoseMenuBitmap);
+	deleteBitmap(gameState->MainMenuBitmap);
+	freeGame(gameState->game);
 }
