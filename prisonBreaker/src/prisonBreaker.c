@@ -1,40 +1,21 @@
 #include <minix/drivers.h>
-
 #include "video_gr.h"
 #include "kbd.h"
 #include "game.h"
 #include "mouse.h"
-
-
 #include "prisonBreaker.h"
-
 #include "bitmap.h"
-
-
-//const int FPS = 25;
-//const int mouseFPSmult = 3;
-
-
 
 PrisonBreaker* initPrisonBreaker() {
 	PrisonBreaker* prisonBreaker = (PrisonBreaker*) malloc(
 			sizeof(PrisonBreaker));
 
-	//subscribe devices
 	prisonBreaker->IRQ_SET_KBD = kbd_subscribe_int();
 	prisonBreaker->IRQ_SET_TIMER = timer_subscribe_int();
 	prisonBreaker->IRQ_SET_MOUSE = mouse_subscribe_int();
 
 	enable_stream_mode();
 
-
-	//fundo
-
-	//prisonBreaker->circle=loadBitmap("/home/lcom/lcom1718-t6g08/prisonBreaker/res/circle.bmp");
-	//prisonBreaker->win=loadBitmap("/home/lcom/lcom1718-t6g08/prisonBreaker/res/win.bmp");
-	//prisonBreaker->lose=loadBitmap("/home/lcom/lcom1718-t6g08/prisonBreaker/res/lose.bmp");
-
-	//prisonBreaker->done = 0;
 	prisonBreaker->draw = 1;
 	prisonBreaker->scancode = 0;
 
@@ -42,9 +23,6 @@ PrisonBreaker* initPrisonBreaker() {
 	prisonBreaker->mouse = initMouse();
 
 	prisonBreaker->gameState = initGameState();
-
-	//deslocamento
-	//prisonBreaker->deslX=0;
 
 
 
@@ -68,19 +46,22 @@ void updatePrisonBreaker(PrisonBreaker* prisonBreaker) {
 			if (msg.NOTIFY_ARG & prisonBreaker->IRQ_SET_KBD) { /* keyboard interrupt */
 				kbd_handler();
 				prisonBreaker->scancode = globalCode;
-				gameStateUpdateKeyboard(prisonBreaker->gameState, prisonBreaker->scancode,  prisonBreaker->timer, prisonBreaker->mouse);
-				//gameUpdateKeyboard(prisonBreaker->game,prisonBreaker->scancode);
+				gameStateUpdateKeyboard(prisonBreaker->gameState,
+						prisonBreaker->scancode, prisonBreaker->timer,
+						prisonBreaker->mouse);
+
 			}
-			if (msg.NOTIFY_ARG & prisonBreaker->IRQ_SET_TIMER) { /* timer subscribed interrupt */
+			if (msg.NOTIFY_ARG & prisonBreaker->IRQ_SET_TIMER) { /* timer interrupt */
 				timerHandler(prisonBreaker->timer);
-				//gameUpdate(prisonBreaker->game,prisonBreaker->timer);
-				gameStateUpdate(prisonBreaker->gameState, prisonBreaker->timer, prisonBreaker->mouse);
+
+				gameStateUpdate(prisonBreaker->gameState, prisonBreaker->timer,
+						prisonBreaker->mouse);
 				prisonBreaker->draw = 1;
 			}
-			if (msg.NOTIFY_ARG & prisonBreaker->IRQ_SET_MOUSE) { /* timer subscribed interrupt */
+			if (msg.NOTIFY_ARG & prisonBreaker->IRQ_SET_MOUSE) { /* mouse interrupt */
 				mouseHandler(prisonBreaker->mouse);
-				gameStateUpdateMouse(prisonBreaker->gameState, prisonBreaker->mouse);
-			//	printf("Mouse interrupt");
+				gameStateUpdateMouse(prisonBreaker->gameState,
+						prisonBreaker->mouse);
 
 
 			}
@@ -92,27 +73,10 @@ void updatePrisonBreaker(PrisonBreaker* prisonBreaker) {
 	}
 
 
-	//prisonBreaker->done =
-	//if (prisonBreaker->scancode != 0) {
-//		if (prisonBreaker->scancode == KEY_ESC)
-//			prisonBreaker->done = 1;
-		//if (prisonBreaker->scancode == KEY_D)
-		//	if(prisonBreaker->game->result==PLAYING)
-			//		prisonBreaker->game->result = WIN;
-//	}
-
-
-
-
-
-
 }
 
 void drawPrisonBreaker(PrisonBreaker* prisonBreaker) {
 	displayGameState(prisonBreaker->gameState, prisonBreaker->timer);
-	//displayGame(prisonBreaker->game);
-	//drawBitmap(prisonBreaker->fundo,0,0,ALIGN_LEFT);
-	//drawBitmap(prisonBreaker->circle,361+prisonBreaker->deslX,262,ALIGN_LEFT);
 
 }
 

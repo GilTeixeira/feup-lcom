@@ -1,17 +1,6 @@
 #ifndef __KBD_H
 #define __KBD_H
 
-
-typedef enum {
-	KEY_ESC = 0x01,
-	KEY_ENTER = 0x1C,
-	KEY_W = 0x11,
-	KEY_A = 0x1E,
-	KEY_S = 0x1F,
-	KEY_D = 0x20
-
-} KEYS_USED;
-
 #define KBD_SYS_IN_ERROR 0xFFE //Error Reading Code
 #define KBD_IN_CMD_ERROR 0xFFF //Error Reading Command Byte
 
@@ -28,6 +17,20 @@ typedef enum {
 #define KBD_WRITE_CMD_BYTE_ERROR 25
 
 unsigned long globalCode;
+
+/**
+ * @brief The Keys Used by the Game
+ */
+
+typedef enum {
+	KEY_ESC = 0x01,
+	KEY_ENTER = 0x1C,
+	KEY_W = 0x11,
+	KEY_A = 0x1E,
+	KEY_S = 0x1F,
+	KEY_D = 0x20
+
+} KEYS_USED;
 
 /**
  * @brief Subscribes Keyboard interrupts
@@ -49,7 +52,6 @@ int kbd_unsubscribe_int(void);
  * @return Return code upon success and KBD_SYS_IN_ERROR otherwise
  */
 unsigned long readCode();
-
 
 /**
  * @brief Keyboard interrupt handler
@@ -73,7 +75,6 @@ int WriteCommandByte(unsigned long port, unsigned long cmd);
  * @return Return the Command Byte
  */
 unsigned long ReadCommandByte();
-
 
 /**
  * @brief Wait for Esc to Be Released

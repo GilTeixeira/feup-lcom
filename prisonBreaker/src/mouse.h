@@ -13,6 +13,57 @@
 #define ENAB_STREAM_MODE_ERROR 35
 
 /**
+ * @struct Mouse
+ * @brief This structure holds the information about Mouse Movement
+ */
+typedef struct {
+	long deltaX;
+	long deltaY;
+} Mouse;
+
+/**
+ * @brief Initializes the Mouse
+ *
+ * @return The new Mouse
+ */
+Mouse* initMouse();
+
+/**
+ * @brief Processes an interrupt
+ *
+ * @param mouse The Mouse to be handled
+ */
+void mouseHandler(Mouse* mouse);
+
+/**
+ * @brief Free the Mouse and all the resources used by it
+ *
+ * @param mouse The Mouse to be freed
+ */
+void stopMouse(Mouse* mouse);
+
+/**
+ * @brief Reset The Mouse Settings
+ *
+ * @param mouse The Mouse to be reset
+ */
+void resetMouse(Mouse* mouse);
+
+/**
+ * @brief Gets the Mouse Y movement
+ *
+ * @return The Mouse Y movement
+ */
+long getDeltaY();
+
+/**
+ * @brief Gets the Mouse X movement
+ *
+ * @return The Mouse X movement
+ */
+long getDeltaX();
+
+/**
  * @brief Subscribes Mouse interrupts
  *
  * @return Return 0 upon success and non-zero otherwise
@@ -79,22 +130,20 @@ unsigned long mouseReadOutput();
  *
  * @param number the number without its most significant bit
  * @param msb the most significant bit
+ *
  * @return Return the number in signed number representation
  */
 long convertNumber(char number, unsigned long msb);
 
-typedef struct {
-	long deltaX;
-	long deltaY;
-} Mouse;
-
-long getDeltaY();
-long getDeltaX();
-
-Mouse* initMouse();
-void mouseHandler(Mouse* mouse);
-void stopMouse(Mouse* mouse);
-void resetMouse(Mouse* mouse);
+/**
+ * @brief Compares 2 numbers and check if they have the same signal
+ *
+ * @param number1
+ * @param number2
+ *
+ * @return Return 1 if true, 0 if false
+ */
+short hasSameSignal(long number1, long number2);
 
 #endif
 

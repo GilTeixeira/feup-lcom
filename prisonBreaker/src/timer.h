@@ -111,48 +111,6 @@ void timer_int_handler();
  */
 int timer_get_conf(unsigned char timer, unsigned char *st);
 
-/**
- * @brief Shows timer configuration
- * 
- * Displays in a human friendly way, the configuration of a timer
- *  as read via the read-back command, by providing the values 
- *  (and meanings) of the different components of a timer configuration 
- *
- * @param conf configuration to display in human friendly way
- * @return Return 0 upon success and non-zero otherwise
- */
-int timer_display_conf(unsigned char conf);
-
-/**
- * @brief Tests change of Timer O interrupt frequency
- *
- * Programs Timer 0 to generate interrupts with input frequency
- *
- * @param freq Frequency of interrupts to generate
- * @return Return 0 upon success and non-zero otherwise
- */
-int timer_test_time_base(unsigned long freq);
-
-/**
- * @brief Tests Timer 0 interrupt handling
- *
- * Subscribes Timer 0 interrupts and prints a message once
- *  per second for the specified time interval
- *
- * @param time Length of time interval while interrupts are subscribed
- * @return Return 0 upon success and non-zero otherwise
- */
-int timer_test_int(unsigned long time);
-
-/**
- * @brief Tests display of timer config
- *
- * Just calls timer_get_conf() followed by timer_display_conf()
- *
- * @param timer Timer whose config to read (Ranges from 0 to 2)
- * @return Return 0 upon success and non-zero otherwise
- */
-int timer_test_config(unsigned char timer);
 
 /** @} end of timer */
 

@@ -1,7 +1,6 @@
 #ifndef _LCOM_I8042_H_
 #define _LCOM_I8042_H_
 
-
 /* Useful KBD Codes */
 #define ESC 			0x81
 #define FIRST_BYTE		0xE0
@@ -59,8 +58,5 @@
 
 /* Time To Delay */
 #define DELAY_US    20000
-
-
-
 
 #endif

@@ -14,6 +14,54 @@ unsigned long packet[3];
 int mouse_counter = 0;
 int fullPacket = 0;
 
+Mouse* initMouse() {
+	Mouse* mouse = (Mouse*) malloc(sizeof(Mouse));
+	mouse->deltaX = 0;
+	mouse->deltaY = 0;
+
+	return mouse;
+}
+
+void mouseHandler(Mouse* mouse) {
+	mouse_handler();
+	if (fullPacket) {
+		long newDeltaX, newDelatY;
+
+		newDeltaX = getDeltaX();
+		newDelatY = getDeltaY();
+
+		if (hasSameSignal(mouse->deltaX, newDeltaX))
+			mouse->deltaX += getDeltaX();
+		else
+			mouse->deltaX = getDeltaX();
+
+		if (hasSameSignal(mouse->deltaY, newDelatY))
+			mouse->deltaY += getDeltaY();
+		else
+			mouse->deltaY = getDeltaY();
+
+	}
+
+}
+
+void stopMouse(Mouse* mouse) {
+	free(mouse);
+}
+
+void resetMouse(Mouse* mouse) {
+	mouse->deltaX = 0;
+	mouse->deltaY = 0;
+
+}
+
+long getDeltaX() {
+	return convertNumber(packet[1], packet[0] & MOUSE_XSIGN);
+}
+
+long getDeltaY() {
+	return convertNumber(packet[2], packet[0] & MOUSE_YSIGN);
+}
+
 int mouse_subscribe_int(void) {
 
 	int temp_hook_id_mouse = hook_id_mouse;
@@ -84,13 +132,11 @@ void mouse_handler() {
 			mouse_counter++;
 			fullPacket = 0;
 		}
-
 		break;
 
 	case 1:
 		packet[mouse_counter] = byte_read;
 		mouse_counter++;
-
 		break;
 	case 2:
 		packet[mouse_counter] = byte_read;
@@ -139,7 +185,6 @@ int enable_stream_mode() {
 		return MOUSE_WRITE_CMD_ERROR;
 
 	return Ok;
-
 }
 
 int mouseWriteCommandByte(unsigned long cmd) {
@@ -188,59 +233,9 @@ unsigned long mouseReadOutput() {
 
 		tickdelay(micros_to_ticks(DELAY_US));
 	}
-
-}
-
-long getDeltaX() {
-	return convertNumber(packet[1], packet[0] & MOUSE_XSIGN);
-}
-
-long getDeltaY() {
-	return convertNumber(packet[2], packet[0] & MOUSE_YSIGN);
 }
 
 short hasSameSignal(long number1, long number2) {
 	return ((number1 < 0) == (number2 < 0));
 }
 
-Mouse* initMouse() {
-	Mouse* mouse = (Mouse*) malloc(sizeof(Mouse));
-	mouse->deltaX = 0;
-	mouse->deltaY = 0;
-
-	return mouse;
-
-}
-void mouseHandler(Mouse* mouse) {
-	mouse_handler();
-	if (fullPacket) {
-		long newDeltaX, newDelatY;
-
-		newDeltaX = getDeltaX();
-		newDelatY = getDeltaY();
-
-		if (hasSameSignal(mouse->deltaX, newDeltaX))
-			mouse->deltaX += getDeltaX();
-		else
-			mouse->deltaX = getDeltaX();
-
-		if (hasSameSignal(mouse->deltaY, newDelatY))
-			mouse->deltaY += getDeltaY();
-		else
-			mouse->deltaY = getDeltaY();
-
-		//printf("DeltaX = %d\n", mouse->deltaX);
-		//printf("DeltaY = %d\n", mouse->deltaY);
-	}
-
-}
-
-void stopMouse(Mouse* mouse) {
-	free(mouse);
-}
-
-void resetMouse(Mouse* mouse) {
-	mouse->deltaX = 0;
-	mouse->deltaY = 0;
-
-}

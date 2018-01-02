@@ -56,7 +56,6 @@
 /* OTHERS */
 #define Ok         0
 
-
 /**@}*/
 
 #endif /* _LCOM_I8254_H */

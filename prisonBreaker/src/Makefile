@@ -3,7 +3,7 @@ COMPILER_TYPE = gnu
 CC = gcc
 
 PROG = prisonBreaker
-SRCS = main.c video_gr.c vbe.c     timer.c kbd.c prisonBreaker.c bitmap.c game.c square.c level.c gameState.c mouse.c
+SRCS = main.c video_gr.c vbe.c timer.c kbd.c prisonBreaker.c bitmap.c game.c square.c level.c gameState.c mouse.c
 
 CCFLAGS= -Wall -O3
 

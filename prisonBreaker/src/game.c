@@ -3,7 +3,6 @@
 #include "kbd.h"
 #include "level.h"
 
-
 Game* initGame() {
 	Game* game = (Game*) malloc(sizeof(Game));
 	game->result = PLAYING;
@@ -16,7 +15,6 @@ Game* initGame() {
 
 	game->fundo = loadBitmap(
 			"/home/lcom/lcom1718-t6g08/prisonBreaker/res/fundo.bmp");
-	//game->lose = loadBitmap("/home/lcom/lcom1718-t6g08/prisonBreaker/res/lose.bmp");
 
 	game->square = initSquare();
 
@@ -32,33 +30,33 @@ Game* initGame() {
 ScoreNumbers* initScoreNumbers() {
 	ScoreNumbers* scoreNumbers = (ScoreNumbers*) malloc(sizeof(ScoreNumbers));
 
-	scoreNumbers->numberOfNumbers=10;
+	scoreNumbers->numberOfNumbers = 10;
 
 	scoreNumbers->scoreNumbers = (Bitmap **) malloc(
-				sizeof(Bitmap*) * scoreNumbers->numberOfNumbers);
+			sizeof(Bitmap*) * scoreNumbers->numberOfNumbers);
+
 	scoreNumbers->scoreNumbers[0] = loadBitmap(
-				"/home/lcom/lcom1718-t6g08/prisonBreaker/res/0.bmp");
+			"/home/lcom/lcom1718-t6g08/prisonBreaker/res/0.bmp");
 	scoreNumbers->scoreNumbers[1] = loadBitmap(
-					"/home/lcom/lcom1718-t6g08/prisonBreaker/res/1.bmp");
+			"/home/lcom/lcom1718-t6g08/prisonBreaker/res/1.bmp");
 	scoreNumbers->scoreNumbers[2] = loadBitmap(
-					"/home/lcom/lcom1718-t6g08/prisonBreaker/res/2.bmp");
+			"/home/lcom/lcom1718-t6g08/prisonBreaker/res/2.bmp");
 	scoreNumbers->scoreNumbers[3] = loadBitmap(
-					"/home/lcom/lcom1718-t6g08/prisonBreaker/res/3.bmp");
+			"/home/lcom/lcom1718-t6g08/prisonBreaker/res/3.bmp");
 	scoreNumbers->scoreNumbers[4] = loadBitmap(
-					"/home/lcom/lcom1718-t6g08/prisonBreaker/res/4.bmp");
+			"/home/lcom/lcom1718-t6g08/prisonBreaker/res/4.bmp");
 	scoreNumbers->scoreNumbers[5] = loadBitmap(
-					"/home/lcom/lcom1718-t6g08/prisonBreaker/res/5.bmp");
+			"/home/lcom/lcom1718-t6g08/prisonBreaker/res/5.bmp");
 	scoreNumbers->scoreNumbers[6] = loadBitmap(
-					"/home/lcom/lcom1718-t6g08/prisonBreaker/res/6.bmp");
+			"/home/lcom/lcom1718-t6g08/prisonBreaker/res/6.bmp");
 	scoreNumbers->scoreNumbers[7] = loadBitmap(
-					"/home/lcom/lcom1718-t6g08/prisonBreaker/res/7.bmp");
+			"/home/lcom/lcom1718-t6g08/prisonBreaker/res/7.bmp");
 	scoreNumbers->scoreNumbers[8] = loadBitmap(
-					"/home/lcom/lcom1718-t6g08/prisonBreaker/res/8.bmp");
+			"/home/lcom/lcom1718-t6g08/prisonBreaker/res/8.bmp");
 	scoreNumbers->scoreNumbers[9] = loadBitmap(
-						"/home/lcom/lcom1718-t6g08/prisonBreaker/res/9.bmp");
+			"/home/lcom/lcom1718-t6g08/prisonBreaker/res/9.bmp");
 
 	return scoreNumbers;
-
 
 }
 
@@ -369,7 +367,6 @@ void initExpertLevels(Game* game) {
 	 * Level 14  - NOT NOTHING *
 	 **************************/
 
-	//TODO: Change BITMAP
 	Level * level14 = (Level*) malloc(sizeof(Level));
 
 	level14->levelID = 14;
@@ -394,7 +391,6 @@ void initExpertLevels(Game* game) {
 	 *  Level 15 - NOT NOT NOTHING *
 	 ******************************/
 
-	//TODO: Change BITMAP
 	Level * level15 = (Level*) malloc(sizeof(Level));
 
 	level15->levelID = 15;
@@ -427,9 +423,7 @@ void gameUpdate(Game* game, Timer* timer, Mouse* mouse) {
 				selectNextLevel(game);
 				resetMouse(mouse);
 				resetTimer(timer);
-
 			}
-
 		}
 		break;
 	case WAITING:
@@ -438,17 +432,11 @@ void gameUpdate(Game* game, Timer* timer, Mouse* mouse) {
 			selectNextLevel(game);
 			resetMouse(mouse);
 			resetTimer(timer);
-
 		}
-
 		break;
-
 	case LOSE:
-
 		break;
-
 	}
-
 }
 
 void gameUpdateKeyboard(Game* game, unsigned long scancode) {
@@ -457,22 +445,14 @@ void gameUpdateKeyboard(Game* game, unsigned long scancode) {
 
 	if (dir == INVALID_DIR)
 		return;
-	//printf("dir: %d, scan: %d\n", dir, scancode);
 
 	if (game->result == PLAYING) {
-		//printf("chaega\n");
 		if (isAcceptedDirection(currentLevel, dir)) {
-			//printf("blabla\n");
 			game->result = WAITING;
 			game->square->direction = dir;
 		} else
 			game->result = LOSE;
 	}
-
-//if()
-
-//gameUpdateKeyboard(prisonBreaker->game,prisonBreaker->scancode)
-
 }
 
 void gameUpdateMouse(Game* game, Mouse* mouse) {
@@ -483,20 +463,13 @@ void gameUpdateMouse(Game* game, Mouse* mouse) {
 		return;
 
 	if (game->result == PLAYING) {
-
 		if (isAcceptedDirection(currentLevel, dir)) {
-			//printf("blabla\n");
 			game->result = WAITING;
 			game->square->direction = dir;
 		} else
 			game->result = LOSE;
 
 	}
-
-//if()
-
-//gameUpdateKeyboard(prisonBreaker->game,prisonBreaker->scancode)
-
 }
 
 void displayGame(Game* game, Timer* timer) {
@@ -505,17 +478,10 @@ void displayGame(Game* game, Timer* timer) {
 	displayLevel(game->levels[game->currLevel]);
 	displaySquare(game->square);
 	displayTimeBar(game, timer);
-
-	//if (game->result == LOSE)
-	//	displayLoseScreen(game);
-
 }
 
 void displayTimeBar(Game* game, Timer* timer) {
-	//long XCoordBar = BAR_X_COORD_START*game->timePerPlay
-
 	long currTicks = timer->ticks;
-	//printf("NumberOfTicks: %d\n", currTicks);
 
 	if (currTicks > game->timePerPlay * 60) {
 		drawBitmap(game->timeBar, BAR_X_COORD_END, BAR_Y_COORD, ALIGN_LEFT);
@@ -524,38 +490,37 @@ void displayTimeBar(Game* game, Timer* timer) {
 
 	long XCoordBar = currTicks * (BAR_X_COORD_END - BAR_X_COORD_START)
 			/ (game->timePerPlay * 60.0) + BAR_X_COORD_START;
+
 	drawBitmap(game->timeBar, XCoordBar, BAR_Y_COORD, ALIGN_LEFT);
-
-	//printf("XCoord: %d\n", XCoordBar);
-
 }
-
 
 void displayScore(Game* game) {
 
 	short gameFinalScore = game->score;
-	short deltax=0;
-	short deltay=0;
+	short deltax = 0;
+	short deltay = 0;
 
-	if(gameFinalScore==0)
-		drawBitmap(game->scoreNumbers->scoreNumbers[0], SCORE_X_COORD_START, SCORE_Y_COORD_START, ALIGN_LEFT);
+	if (gameFinalScore == 0)
+		drawBitmap(game->scoreNumbers->scoreNumbers[0], SCORE_X_COORD_START,
+		SCORE_Y_COORD_START, ALIGN_LEFT);
 
-	while(gameFinalScore)
-	{
+	while (gameFinalScore) {
 		short bitmapToPrint = gameFinalScore % 10;
-		printf("bitmapToPrint= %d", bitmapToPrint);
-		drawBitmap(game->scoreNumbers->scoreNumbers[bitmapToPrint], SCORE_X_COORD_START+deltax, SCORE_Y_COORD_START+deltay, ALIGN_LEFT);
+
+		drawBitmap(game->scoreNumbers->scoreNumbers[bitmapToPrint],
+		SCORE_X_COORD_START + deltax, SCORE_Y_COORD_START + deltay, ALIGN_LEFT);
+
 		gameFinalScore /= 10;
+
 		deltax -= SCORE_DELTAX;
 		deltay -= SCORE_DELTAY;
 	}
 
-
-
 }
 
 void selectNextLevel(Game* game) {
-	int nextLevel = rand() % NUMBEROFLEVELS; //generates Random Number [0 - NUMBEROFLEVELS-1]
+	//generates Random Number [0 - NUMBEROFLEVELS-1]
+	int nextLevel = rand() % NUMBEROFLEVELS;
 
 	game->score++;
 	game->currLevel = nextLevel;

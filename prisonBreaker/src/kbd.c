@@ -8,9 +8,7 @@
 #include "i8042.h"
 #include "i8254.h"
 
-
 int hook_id_kbd = 1;
-
 
 int kbd_subscribe_int(void) {
 
@@ -24,7 +22,6 @@ int kbd_subscribe_int(void) {
 		return IRQ_KBD_ENAB_ERROR;
 
 	return BIT(temp_hook_id_kbd);
-
 
 }
 
@@ -58,7 +55,6 @@ unsigned long readCode() {
 	}
 
 }
-
 
 void kbd_handler() {
 	globalCode = readCode();
@@ -101,7 +97,7 @@ unsigned long ReadCommandByte() {
 	}
 }
 
-int waitForEscRelease(){
+int waitForEscRelease() {
 	int ipc_status, r, irq_set;
 	unsigned long code = 0, stat;
 
@@ -123,8 +119,8 @@ int waitForEscRelease(){
 			case HARDWARE: /* hardware interrupt notification */
 				if (msg.NOTIFY_ARG & irq_set) { /* subscribed interrupt */
 
-						kbd_handler();
-						code = globalCode;
+					kbd_handler();
+					code = globalCode;
 				}
 				break;
 			default:
@@ -145,11 +141,7 @@ int waitForEscRelease(){
 	if (kbd_unsubscribe_int() != 0)
 		return KBD_UNSUB_ERROR;
 
-
 	return Ok;
 
 }
-
-
-
 

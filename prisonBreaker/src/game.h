@@ -4,29 +4,34 @@
 #include "square.h"
 #include "timer.h"
 #include "mouse.h"
+#include "kbd.h"
 
 
 /**
- * Game Settings
+ * @brief The Game Settings
  */
-#define NUMBEROFLEVELS 15
-#define TIMEPERPLAY      2
 
-#define KEY_TO_MOVE_UP      KEY_W
-#define KEY_TO_MOVE_DOWN    KEY_S
-#define KEY_TO_MOVE_LEFT    KEY_A
-#define KEY_TO_MOVE_RIGHT   KEY_D
+typedef enum {
+	NUMBEROFLEVELS = 15,
+	TIMEPERPLAY = 2,
 
-#define MIN_MOUSE_MOVEMENT  1000
+	KEY_TO_MOVE_UP = KEY_W,
+	KEY_TO_MOVE_DOWN = KEY_S,
+	KEY_TO_MOVE_LEFT = KEY_A,
+	KEY_TO_MOVE_RIGHT = KEY_D,
 
-#define BAR_X_COORD_START    25
-#define BAR_X_COORD_END      275
-#define BAR_Y_COORD   489
+	MIN_MOUSE_MOVEMENT = 1000,
 
-#define SCORE_X_COORD_START    670
-#define SCORE_Y_COORD_START    455
-#define SCORE_DELTAX    22
-#define SCORE_DELTAY    3
+	BAR_X_COORD_START = 25,
+	BAR_X_COORD_END = 275,
+	BAR_Y_COORD = 489,
+
+	SCORE_X_COORD_START = 670,
+	SCORE_Y_COORD_START = 455,
+	SCORE_DELTAX = 22,
+	SCORE_DELTAY = 3
+
+} GameSettings;
 
 
 /** @defgroup Game
@@ -34,20 +39,24 @@
  * Game Struct and functions for manipulating the Game
  */
 
+/**
+ * @brief The Game Square possible directions
+ */
 typedef enum {
 	LEFT_DIR, RIGHT_DIR, UP_DIR, DOWN_DIR, NOTHING_DIR, INVALID_DIR
 } Direction;
 
+/**
+ * @brief The Game possible States
+ */
 typedef enum {
 	PLAYING, WAITING, LOSE
 } Result;
 
 /**
  * @struct ScoreNumbers
- * @brief This structure holds the Bitmaps for the numbers used in display the Game Scire
+ * @brief This structure holds the Bitmaps for the numbers used in display the Game Score
  */
-
-
 typedef struct {
 	Bitmap** scoreNumbers;
 	short numberOfNumbers;
@@ -58,26 +67,23 @@ typedef struct {
  * @struct Game
  * @brief This structure holds information about the Game
  */
-
 typedef struct {
 	short currLevel;
 	short score;
 	short result;
 	long timePerPlay;
+
 	Level** levels;
 
 	Square* square;
 
 	Bitmap* fundo;
-	Bitmap* lose;
 
 	Bitmap* timeBar;
 
 	ScoreNumbers* scoreNumbers;
 
 } Game;
-
-
 
 /**
  * @brief Initializes the Game
@@ -86,6 +92,11 @@ typedef struct {
  */
 Game* initGame();
 
+/**
+ * @brief Initializes the the Score Numbers Bitmaps
+ *
+ * @return The Initialized Bitmaps
+ */
 ScoreNumbers* initScoreNumbers();
 
 /**
@@ -174,7 +185,7 @@ void displayScore(Game* game);
 /**
  * @brief Selects the Game next Level
  *
- * @param game The Game to be displayed
+ * @param game The Game which will be updated
  */
 void selectNextLevel(Game* game);
 
@@ -218,4 +229,5 @@ void freeGame(Game* game);
 void freeGameLevels(Game* game);
 
 
+/** @} end of Game */
 

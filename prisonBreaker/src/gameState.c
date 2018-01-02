@@ -6,18 +6,18 @@ GameState* initGameState() {
 
 	gameState->done = 0;
 
-	//Game
 	gameState->game = initGame();
 
 	gameState->currState = MAINMENU;
 
-	gameState->LoseMenuBitmap = loadBitmap("/home/lcom/lcom1718-t6g08/prisonBreaker/res/lose.bmp");
-	gameState->MainMenuBitmap = loadBitmap("/home/lcom/lcom1718-t6g08/prisonBreaker/res/menu.bmp");
+	gameState->LoseMenuBitmap = loadBitmap(
+			"/home/lcom/lcom1718-t6g08/prisonBreaker/res/lose.bmp");
+	gameState->MainMenuBitmap = loadBitmap(
+			"/home/lcom/lcom1718-t6g08/prisonBreaker/res/menu.bmp");
 
 	return gameState;
 
 }
-
 
 void displayGameState(GameState* gameState, Timer* timer) {
 
@@ -26,17 +26,13 @@ void displayGameState(GameState* gameState, Timer* timer) {
 		drawBitmap(gameState->MainMenuBitmap, 0, 0, ALIGN_LEFT);
 		break;
 	case LOSEMENU:
-		//printf("U lose, loser\n");
 		drawBitmap(gameState->LoseMenuBitmap, 0, 0, ALIGN_LEFT);
 		displayScore(gameState->game);
 		break;
 	case GAME:
-		//printf("Still Drawing this?\n");
 		displayGame(gameState->game, timer);
-		//drawBitmap(gameState->LoseMenuBitmap,0,0,ALIGN_LEFT);
 		break;
 	}
-
 }
 
 void gameStateUpdate(GameState* gameState, Timer* timer, Mouse* mouse) {
@@ -48,15 +44,14 @@ void gameStateUpdate(GameState* gameState, Timer* timer, Mouse* mouse) {
 		break;
 	case GAME:
 		gameUpdate(gameState->game, timer, mouse);
-		if(gameState->game->result == LOSE)
+		if (gameState->game->result == LOSE)
 			gameState->currState = LOSEMENU;
 		break;
 	}
-
 }
 
-
-void gameStateUpdateKeyboard(GameState* gameState, unsigned long scancode, Timer* timer, Mouse* mouse) {
+void gameStateUpdateKeyboard(GameState* gameState, unsigned long scancode,
+		Timer* timer, Mouse* mouse) {
 
 	switch (gameState->currState) {
 	case MAINMENU:
@@ -86,9 +81,7 @@ void gameStateUpdateKeyboard(GameState* gameState, unsigned long scancode, Timer
 		gameUpdateKeyboard(gameState->game, scancode);
 		break;
 	}
-
 }
-
 
 void gameStateUpdateMouse(GameState* gameState, Mouse* mouse) {
 
@@ -99,16 +92,13 @@ void gameStateUpdateMouse(GameState* gameState, Mouse* mouse) {
 		break;
 	case GAME:
 		gameUpdateMouse(gameState->game, mouse);
-		if(gameState->game->result == LOSE)
+		if (gameState->game->result == LOSE)
 			gameState->currState = LOSEMENU;
 		break;
 	}
-
 }
 
-
 void stopGameState(GameState* gameState) {
-
 	deleteBitmap(gameState->LoseMenuBitmap);
 	deleteBitmap(gameState->MainMenuBitmap);
 	freeGame(gameState->game);
