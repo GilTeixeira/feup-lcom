@@ -3,7 +3,7 @@
 #include "kbd.h"
 #include "level.h"
 
-#define TIMEPERPLAY      1
+#define TIMEPERPLAY      2
 
 #define KEY_TO_MOVE_UP      KEY_W
 #define KEY_TO_MOVE_DOWN    KEY_S
@@ -149,7 +149,7 @@ void initNormalLevels(Game* game) {
 	level5->acceptedDirections[2] = RIGHT_DIR;
 
 	level5->instructionBitmap = loadBitmap(
-			"/home/lcom/lcom1718-t6g08/prisonBreaker/res/up.bmp");
+			"/home/lcom/lcom1718-t6g08/prisonBreaker/res/notup.bmp");
 
 	game->levels[4] = level5;
 
@@ -168,11 +168,11 @@ void initNormalLevels(Game* game) {
 			sizeof(short) * level6->numAcceptedDirections);
 
 	level6->acceptedDirections[0] = UP_DIR;
-	level6->acceptedDirections[2] = LEFT_DIR;
-	level6->acceptedDirections[3] = RIGHT_DIR;
+	level6->acceptedDirections[1] = LEFT_DIR;
+	level6->acceptedDirections[2] = RIGHT_DIR;
 
 	level6->instructionBitmap = loadBitmap(
-			"/home/lcom/lcom1718-t6g08/prisonBreaker/res/down.bmp");
+			"/home/lcom/lcom1718-t6g08/prisonBreaker/res/notdown.bmp");
 
 	game->levels[5] = level6;
 
@@ -196,7 +196,7 @@ void initNormalLevels(Game* game) {
 	level7->acceptedDirections[2] = RIGHT_DIR;
 
 	level7->instructionBitmap = loadBitmap(
-			"/home/lcom/lcom1718-t6g08/prisonBreaker/res/left.bmp");
+			"/home/lcom/lcom1718-t6g08/prisonBreaker/res/notleft.bmp");
 
 	game->levels[6] = level7;
 
@@ -220,7 +220,7 @@ void initNormalLevels(Game* game) {
 	level8->acceptedDirections[2] = LEFT_DIR;
 
 	level8->instructionBitmap = loadBitmap(
-			"/home/lcom/lcom1718-t6g08/prisonBreaker/res/right.bmp");
+			"/home/lcom/lcom1718-t6g08/prisonBreaker/res/notright.bmp");
 
 	game->levels[7] = level8;
 
@@ -244,7 +244,7 @@ void initAdvancedLevels(Game* game) {
 	level9->acceptedDirections[0] = UP_DIR;
 
 	level9->instructionBitmap = loadBitmap(
-			"/home/lcom/lcom1718-t6g08/prisonBreaker/res/up.bmp");
+			"/home/lcom/lcom1718-t6g08/prisonBreaker/res/notnotup.bmp");
 
 	game->levels[8] = level9;
 
@@ -265,7 +265,7 @@ void initAdvancedLevels(Game* game) {
 	level10->acceptedDirections[0] = DOWN_DIR;
 
 	level10->instructionBitmap = loadBitmap(
-			"/home/lcom/lcom1718-t6g08/prisonBreaker/res/down.bmp");
+			"/home/lcom/lcom1718-t6g08/prisonBreaker/res/notnotdown.bmp");
 
 	game->levels[9] = level10;
 
@@ -287,7 +287,7 @@ void initAdvancedLevels(Game* game) {
 	level11->acceptedDirections[0] = LEFT_DIR;
 
 	level11->instructionBitmap = loadBitmap(
-			"/home/lcom/lcom1718-t6g08/prisonBreaker/res/left.bmp");
+			"/home/lcom/lcom1718-t6g08/prisonBreaker/res/notnotleft.bmp");
 
 	game->levels[10] = level11;
 
@@ -309,7 +309,7 @@ void initAdvancedLevels(Game* game) {
 	level12->acceptedDirections[0] = RIGHT_DIR;
 
 	level12->instructionBitmap = loadBitmap(
-			"/home/lcom/lcom1718-t6g08/prisonBreaker/res/right.bmp");
+			"/home/lcom/lcom1718-t6g08/prisonBreaker/res/notnotright.bmp");
 
 	game->levels[11] = level12;
 
@@ -333,7 +333,7 @@ void initExpertLevels(Game* game) {
 	level13->acceptedDirections[0] = NOTHING_DIR;
 
 	level13->instructionBitmap = loadBitmap(
-			"/home/lcom/lcom1718-t6g08/prisonBreaker/res/up.bmp");
+			"/home/lcom/lcom1718-t6g08/prisonBreaker/res/nothing.bmp");
 
 	game->levels[12] = level13;
 
@@ -357,7 +357,7 @@ void initExpertLevels(Game* game) {
 	level14->acceptedDirections[3] = RIGHT_DIR;
 
 	level14->instructionBitmap = loadBitmap(
-			"/home/lcom/lcom1718-t6g08/prisonBreaker/res/down.bmp");
+			"/home/lcom/lcom1718-t6g08/prisonBreaker/res/nothing.bmp");
 
 	game->levels[13] = level14;
 
@@ -379,7 +379,7 @@ void initExpertLevels(Game* game) {
 	level15->acceptedDirections[0] = NOTHING_DIR;
 
 	level15->instructionBitmap = loadBitmap(
-			"/home/lcom/lcom1718-t6g08/prisonBreaker/res/left.bmp");
+			"/home/lcom/lcom1718-t6g08/prisonBreaker/res/nothing.bmp");
 
 	game->levels[14] = level15;
 

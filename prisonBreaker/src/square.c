@@ -2,6 +2,10 @@
 #include "square.h"
 #include "game.h"
 
+#define SQUARE_X_COORD   366
+#define SQUARE_Y_COORD   268
+#define SQUARE_MAX_MOVE   120
+
 
 Square* initSquare(){
 
@@ -13,7 +17,7 @@ Square* initSquare(){
 	square->deslocX = 0;
 	square->deslocY = 0;
 
-	square->bitmap = loadBitmap("/home/lcom/lcom1718-t6g08/prisonBreaker/res/circle.bmp");
+	square->bitmap = loadBitmap("/home/lcom/lcom1718-t6g08/prisonBreaker/res/square.bmp");
 
 	return square;
 }
@@ -49,7 +53,7 @@ void updateSquare(Square* square) {
 
 	}
 
-	if(square->deslocX > 120 || square->deslocY > 120 ||  square->deslocX < -120 ||	square->deslocY < -120){
+	if(square->deslocX > SQUARE_MAX_MOVE || square->deslocY > SQUARE_MAX_MOVE ||  square->deslocX < -SQUARE_MAX_MOVE ||	square->deslocY < -SQUARE_MAX_MOVE){
 		square->deslocX *= -1;
 		square->deslocY *= -1;
 
@@ -92,7 +96,7 @@ short hasFinishedMovement(Square* square) {
 
 
 void displaySquare(Square* square){
-	drawBitmap(square->bitmap, 361+ square->deslocX , 262 + square->deslocY , ALIGN_LEFT);
+	drawBitmap(square->bitmap, SQUARE_X_COORD+ square->deslocX , SQUARE_Y_COORD + square->deslocY , ALIGN_LEFT);
 }
 
 

@@ -12,7 +12,7 @@ GameState* initGameState() {
 	gameState->currState = MAINMENU;
 
 	gameState->LoseMenuBitmap = loadBitmap("/home/lcom/lcom1718-t6g08/prisonBreaker/res/lose.bmp");
-	gameState->MainMenuBitmap = loadBitmap("/home/lcom/lcom1718-t6g08/prisonBreaker/res/lose.bmp");
+	gameState->MainMenuBitmap = loadBitmap("/home/lcom/lcom1718-t6g08/prisonBreaker/res/menu.bmp");
 
 	return gameState;
 
