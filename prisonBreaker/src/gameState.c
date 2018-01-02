@@ -101,5 +101,8 @@ void gameStateUpdateMouse(GameState* gameState, Mouse* mouse) {
 void stopGameState(GameState* gameState) {
 	deleteBitmap(gameState->LoseMenuBitmap);
 	deleteBitmap(gameState->MainMenuBitmap);
+
 	freeGame(gameState->game);
+
+	free(gameState);
 }

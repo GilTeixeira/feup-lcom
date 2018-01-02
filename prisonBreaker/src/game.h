@@ -215,6 +215,13 @@ short getDirectionFromKey(unsigned long scancode);
 short getDirectionFromMouse(Mouse* mouse);
 
 /**
+ * @brief Free the ScoreNumbers and all the bitmaps used by it
+ *
+ * @param scoreNumbers The ScoreNumbers to be freed
+ */
+void freeScoreNumbers(ScoreNumbers* scoreNumbers);
+
+/**
  * @brief Free the Game and all the resources used by it
  *
  * @param game The Game to be freed

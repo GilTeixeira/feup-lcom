@@ -532,7 +532,7 @@ void resetGame(Game* game) {
 
 	game->result = PLAYING;
 	game->score = 0;
-	game->currLevel = 3;
+	game->currLevel = 0;
 
 }
 
@@ -573,20 +573,33 @@ short getDirectionFromMouse(Mouse* mouse) {
 
 void freeGameLevels(Game* game) {
 	int i;
-	//freeLevel(game->levels[0]);
-	freeLevel(game->levels[1]);
-	//for (i = 0; i < NUMBEROFLEVELS; ++i) {
-	//	freeLevel(game->levels[i]);
-	//}
+
+	for (i = 0; i < NUMBEROFLEVELS; i++) {
+		freeLevel(game->levels[i]);
+	}
 	free(game->levels);
+}
+
+void freeScoreNumbers(ScoreNumbers* scoreNumbers) {
+	int i;
+
+	for (i = 0; i < scoreNumbers->numberOfNumbers; i++) {
+		deleteBitmap(scoreNumbers->scoreNumbers[i]);
+	}
+
+	free(scoreNumbers);
 }
 
 void freeGame(Game* game) {
 
 	freeGameLevels(game);
 	freeSquare(game->square);
-	deleteBitmap(game->fundo);
 
-	//free(game);
+	deleteBitmap(game->fundo);
+	deleteBitmap(game->timeBar);
+
+	freeScoreNumbers(game->scoreNumbers);
+
+	free(game);
 
 }

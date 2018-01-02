@@ -15,6 +15,7 @@ short isAcceptedDirection(Level* level, short direction) {
 
 void freeLevel(Level* level) {
 	free(level->acceptedDirections);
+	deleteBitmap(level->instructionBitmap);
 	free(level);
 
 }
